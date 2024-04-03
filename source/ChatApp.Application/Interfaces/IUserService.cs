@@ -1,9 +1,8 @@
 ﻿using ChatApp.Domain.Entities;
 
-namespace ChatApp.Application.Interfaces
+namespace ChatApp.Application.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<User?> GetByName(string name);
-    }
+    Task<User?> GetByName(string name);
 }

@@ -1,9 +1,8 @@
 ﻿using System.Data;
 
-namespace ChatApp.Infrastructure.Database.DbConnectionFactory
+namespace ChatApp.Infrastructure.Database.DbConnectionFactory;
+
+public interface IDbConnectionFactory
 {
-    public interface IDbConnectionFactory
-    {
-        IDbConnection Create();
-    }
+    IDbConnection Create();
 }

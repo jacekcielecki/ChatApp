@@ -1,9 +1,8 @@
 ﻿using ChatApp.Domain.Entities;
 
-namespace ChatApp.Domain.Interfaces.Repositories
+namespace ChatApp.Domain.Interfaces.Repositories;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<User?> GetByName(string name);
-    }
+    Task<User?> GetByName(string name);
 }

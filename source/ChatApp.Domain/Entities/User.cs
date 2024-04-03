@@ -1,7 +1,6 @@
-﻿namespace ChatApp.Domain.Entities
+﻿namespace ChatApp.Domain.Entities;
+
+public class User
 {
-    public class User
-    {
-        public required string Name { get; set; }
-    }
+    public required string Name { get; set; }
 }

@@ -3,30 +3,29 @@ using ChatApp.Domain.Interfaces.Repositories;
 using ChatApp.Infrastructure.Database.DbConnectionFactory;
 using Dapper;
 
-namespace ChatApp.Infrastructure.Repositories
+namespace ChatApp.Infrastructure.Repositories;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly IDbConnectionFactory _connectionFactory;
+
+    public UserRepository(IDbConnectionFactory connectionFactory)
     {
-        private readonly IDbConnectionFactory _connectionFactory;
+        _connectionFactory = connectionFactory;
+    }
 
-        public UserRepository(IDbConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
+    public async Task<User?> GetByName(string name)
+    {
+        const string sql =
+            """
+            SELECT name
+            FROM public."User"
+            WHERE Name = @Name
+            """;
 
-        public async Task<User?> GetByName(string name)
-        {
-            const string sql =
-                """
-                SELECT name
-                FROM public."User"
-                WHERE Name = @Name
-                """;
+        using var connection = _connectionFactory.Create();
+        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { name });
 
-            using var connection = _connectionFactory.Create();
-            var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { name });
-
-            return user;
-        }
+        return user;
     }
 }
