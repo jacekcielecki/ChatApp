@@ -5,10 +5,16 @@ namespace ChatApp.Infrastructure.Database.DbConnectionFactory
 {
     public class DbConnectionFactory : IDbConnectionFactory
     {
+        private readonly string _connectionString;
+
+        public DbConnectionFactory(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         public IDbConnection Create()
         {
-            var connectionString = "";
-            return new NpgsqlConnection(connectionString);
+            return new NpgsqlConnection(_connectionString);
         }
     }
 }
