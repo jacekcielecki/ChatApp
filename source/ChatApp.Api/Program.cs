@@ -1,6 +1,11 @@
+using ChatApp.Application;
+using ChatApp.Application.Interfaces;
+using ChatApp.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddInfrastructure().AddApplication();
 
 var app = builder.Build();
 
@@ -24,6 +29,12 @@ app.MapGet("/weatherforecast", () =>
         ))
         .ToArray();
     return forecast;
+});
+
+app.MapGet("/User/GetByName", async (IUserService userService) =>
+{
+    var user = await userService.GetByName("Johny");
+    return user;
 });
 
 app.Run();

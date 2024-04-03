@@ -4,3 +4,8 @@ GET {{ChatApp.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{ChatApp.Api_HostAddress}}/User/GetByName/
+Accept: application/json
+
+###
