@@ -1,6 +1,9 @@
+using ChatApp.Api.Endpoints;
 using ChatApp.Application;
-using ChatApp.Application.Interfaces;
 using ChatApp.Infrastructure;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("ChatApp.IntegrationTests")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +16,6 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/User/GetByName", async (IUserService userService) =>
-{
-    var user = await userService.GetByName("Johny");
-    return TypedResults.Ok(user);
-});
+app.MapUserEndpoints();
 
 app.Run();

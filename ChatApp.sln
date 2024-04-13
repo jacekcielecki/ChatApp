@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Api", "source\ChatApp.Api\ChatApp.Api.csproj", "{C94356F5-F194-4AAE-8DC5-3160CA5B314A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Api", "source\ChatApp.Api\ChatApp.Api.csproj", "{C94356F5-F194-4AAE-8DC5-3160CA5B314A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Infrastructure", "source\ChatApp.Infrastructure\ChatApp.Infrastructure.csproj", "{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Infrastructure", "source\ChatApp.Infrastructure\ChatApp.Infrastructure.csproj", "{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Domain", "source\ChatApp.Domain\ChatApp.Domain.csproj", "{B20ACB76-4364-4A42-BCB4-10F57AB06A22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Domain", "source\ChatApp.Domain\ChatApp.Domain.csproj", "{B20ACB76-4364-4A42-BCB4-10F57AB06A22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Application", "source\ChatApp.Application\ChatApp.Application.csproj", "{E1387675-75F4-4CB6-8D0F-3A4F403270E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Application", "source\ChatApp.Application\ChatApp.Application.csproj", "{E1387675-75F4-4CB6-8D0F-3A4F403270E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.IntegrationTests", "tests\ChatApp.IntegrationTests\ChatApp.IntegrationTests.csproj", "{AE2BB131-F6D0-486C-93DA-00089D982D98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
