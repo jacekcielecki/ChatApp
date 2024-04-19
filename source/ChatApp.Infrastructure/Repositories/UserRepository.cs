@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
         const string sql =
             """
             SELECT name
-            FROM public."User"
+            FROM public."users"
             WHERE Name = @Name
             """;
 
