@@ -14,17 +14,17 @@ public class UserRepository : IUserRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<User?> GetByName(string name)
+    public async Task<User?> GetByEmail(string email)
     {
         const string sql =
             """
-            SELECT name
-            FROM public."users"
-            WHERE Name = @Name
+            SELECT id, email
+            FROM users
+            WHERE email = @email
             """;
 
         using var connection = _connectionFactory.Create();
-        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { name });
+        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { email });
 
         return user;
     }

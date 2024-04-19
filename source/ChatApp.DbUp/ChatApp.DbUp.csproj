@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\Script0001 - Insert test user.sql" />
+    <None Remove="Scripts\Script0001 - Create users table.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script0001 - Insert test user.sql" />
+    <EmbeddedResource Include="Scripts\Script0001 - Create users table.sql" />
   </ItemGroup>
 
   <ItemGroup>

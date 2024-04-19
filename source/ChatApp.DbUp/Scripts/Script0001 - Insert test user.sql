@@ -1,1 +1,0 @@
-INSERT INTO "User" VALUES ('UA503');
