@@ -1,10 +1,21 @@
 using ChatApp.Web.Components;
+using ChatApp.Web.Interfaces.Services;
+using ChatApp.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var apiUrl = builder.Configuration.GetValue<string>("Api:Url");
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient("ChatAppApi", (_, client) =>
+{
+    client.Timeout = new TimeSpan(0, 0, 60);
+    client.BaseAddress = new Uri(apiUrl!);
+});
+builder.Services.AddTransient<IVersionService, VersionService>();
 
 var app = builder.Build();
 
