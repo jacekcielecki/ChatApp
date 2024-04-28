@@ -1,24 +1,21 @@
 ﻿using DbUp;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace ChatApp.DbUp;
 
 public class DatabaseUpdater
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _dbConnectionString;
 
-    public DatabaseUpdater(IConfiguration configuration)
+    public DatabaseUpdater(string dbConnectionString)
     {
-        _configuration = configuration;
+        _dbConnectionString = dbConnectionString;
     }
 
     public void UpdateDatabase()
     {
-        var connectionString = _configuration["Database:ConnectionString"];
-
         var upgrader = DeployChanges.To
-            .PostgresqlDatabase(connectionString)
+            .PostgresqlDatabase(_dbConnectionString)
             .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
             .LogToConsole()
             .Build();

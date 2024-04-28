@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ChatApp.IntegrationTests")]
 
 var builder = WebApplication.CreateBuilder(args);
+var dbConnectionString = builder.Configuration.GetValue<string>("Database:ConnectionString");
 
 // Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
@@ -14,7 +15,7 @@ builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var dbUp = new DatabaseUpdater(builder.Configuration);
+var dbUp = new DatabaseUpdater(dbConnectionString);
 dbUp.UpdateDatabase();
 
 var app = builder.Build();
