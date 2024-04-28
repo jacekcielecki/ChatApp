@@ -30,5 +30,6 @@ if (!app.Environment.IsProduction())
 app.UseHttpsRedirection();
 
 app.MapUserEndpoints();
+app.MapVersionEndpoints();
 
 app.Run();
