@@ -19,4 +19,10 @@ public class UserService : IUserService
         var user = await _userRepository.GetByEmail(email);
         return user;
     }
+
+    public async Task<Guid?> Create(CreateUserRequest request)
+    {
+        var userId = await _userRepository.Create(request);
+        return userId;
+    }
 }

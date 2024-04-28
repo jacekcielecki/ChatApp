@@ -29,4 +29,19 @@ public class UserRepository : IUserRepository
 
         return user;
     }
+
+    public async Task<Guid?> Create(CreateUserRequest request)
+    {
+        const string sql =
+            """
+            INSERT INTO users (email)
+            VALUES (@email)
+            RETURNING id;
+            """;
+
+        using var connection = _connectionFactory.Create();
+        var userId = await connection.QuerySingleOrDefaultAsync<Guid?>(sql, new { email = request.Email });
+
+        return userId;
+    }
 }
