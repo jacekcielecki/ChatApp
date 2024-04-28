@@ -1,4 +1,5 @@
 ﻿using ChatApp.Application.Interfaces;
+using ChatApp.Contracts.Request;
 using ChatApp.Domain.Entities;
 using ChatApp.Domain.Interfaces.Repositories;
 

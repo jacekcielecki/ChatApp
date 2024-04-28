@@ -1,5 +1,6 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Application.Mapping;
+using ChatApp.Contracts.Request;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -13,5 +14,12 @@ public static class UserEndpoints
             var user = await userService.GetByEmail(email);
             return user == null ? Results.NotFound() : Results.Ok(user.ToUserResponse());
         });
+
+        app.MapPost("/api/users",
+            async (IUserService userService, CreateUserRequest request) =>
+            {
+                var userId = await userService.Create(request);
+                return userId == null ? Results.Problem() : Results.Ok(userId);
+            });
     }
 }

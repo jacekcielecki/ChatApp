@@ -1,4 +1,5 @@
-﻿using ChatApp.Domain.Entities;
+﻿using ChatApp.Contracts.Request;
+using ChatApp.Domain.Entities;
 using ChatApp.Domain.Interfaces.Repositories;
 using ChatApp.Infrastructure.Database.DbConnectionFactory;
 using Dapper;
