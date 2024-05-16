@@ -1,3 +1,4 @@
+using ChatApp.Api;
 using ChatApp.Api.Endpoints;
 using ChatApp.Application;
 using ChatApp.DbUp;
@@ -14,9 +15,10 @@ var dbConnectionString = builder.Configuration.GetValue<string>("Database:Connec
 var keyCloakRealm = builder.Configuration.GetValue<string>("KeyCloak:RealmUrl");
 
 // Add services to the container.
-builder.Services.AddInfrastructure(builder.Configuration).AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration).AddApplication().AddApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
