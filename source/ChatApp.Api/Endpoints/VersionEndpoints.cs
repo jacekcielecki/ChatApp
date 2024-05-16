@@ -4,10 +4,7 @@ public static class VersionEndpoints
 {
     public static void MapVersionEndpoints(this WebApplication app)
     {
-        app.MapGet("/api/version", () =>
-        {
-            var version = "1.0.0";
-            return Results.Text(version);
-        });
+        app.MapGet("/api/version",
+            () => Results.Text("1.0.0"));
     }
 }

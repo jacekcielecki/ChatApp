@@ -9,17 +9,17 @@ public static class UserEndpoints
     public static void MapUserEndpoints(this WebApplication app)
     {
         app.MapGet("/api/users/{email}",
-            async (IUserService userService, string email) =>
+        async (IUserService userService, string email) =>
         {
             var user = await userService.GetByEmail(email);
             return user == null ? Results.NotFound() : Results.Ok(user.ToUserResponse());
-        });
+        }).RequireAuthorization();
 
         app.MapPost("/api/users",
-            async (IUserService userService, CreateUserRequest request) =>
-            {
-                var userId = await userService.Create(request);
-                return userId == null ? Results.Problem() : Results.Ok(userId);
-            });
+        async (IUserService userService, CreateUserRequest request) =>
+        {
+            var userId = await userService.Create(request);
+            return userId == null ? Results.Problem() : Results.Ok(userId);
+        }).RequireAuthorization();
     }
 }
