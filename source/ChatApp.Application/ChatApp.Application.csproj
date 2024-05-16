@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OneOf" Version="3.0.271" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChatApp.Contracts\ChatApp.Contracts.csproj" />
     <ProjectReference Include="..\ChatApp.Domain\ChatApp.Domain.csproj" />
     <ProjectReference Include="..\ChatApp.Infrastructure\ChatApp.Infrastructure.csproj" />

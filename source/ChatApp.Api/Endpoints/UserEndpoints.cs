@@ -10,8 +10,20 @@ public static class UserEndpoints
         app.MapGet("/api/users/me",
         async (IGetLoggedUserHelper userHelper) =>
         {
-            var user = await userHelper.GetLoggedUser();
-            return Results.Ok(user.ToUserResponse());
+            var result = await userHelper.GetLoggedUser();
+
+            return result.Match(
+                user => Results.Ok(user.ToUserResponse()),
+                validationErrors => Results.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
+        })
+        .RequireAuthorization();
+
+        app.MapGet("/api/users/search/{searchPhrase}",
+        async (IUserService userService, string searchPhrase) =>
+        {
+            var emails = await userService.GetEmailsBySearchPhrase(searchPhrase);
+            return Results.Ok(emails);
         })
         .RequireAuthorization();
     }

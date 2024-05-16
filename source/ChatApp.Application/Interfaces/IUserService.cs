@@ -5,6 +5,8 @@ namespace ChatApp.Application.Interfaces;
 
 public interface IUserService
 {
+    Task<User?> GetById(Guid id);
     Task<User?> GetByEmail(string email);
+    Task<string[]> GetEmailsBySearchPhrase(string searchPhrase);
     Task<Guid?> Create(CreateUserRequest request);
 }

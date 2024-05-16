@@ -15,6 +15,21 @@ public class UserRepository : IUserRepository
         _connectionFactory = connectionFactory;
     }
 
+    public async Task<User?> GetById(Guid id)
+    {
+        const string sql =
+            """
+            SELECT id, email
+            FROM users
+            WHERE id = @id
+            """;
+
+        using var connection = _connectionFactory.Create();
+        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
+
+        return user;
+    }
+
     public async Task<User?> GetByEmail(string email)
     {
         const string sql =
@@ -28,6 +43,21 @@ public class UserRepository : IUserRepository
         var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { email });
 
         return user;
+    }
+        
+    public async Task<string[]> GetEmailsBySearchPhrase(string searchPhrase)
+    {
+        const string sql =
+            """
+            SELECT email
+            FROM public.users as u
+            WHERE u.email LIKE @Phrase
+            """;
+
+        using var connection = _connectionFactory.Create();
+        var emails = await connection.QueryAsync<string>(sql, new { Phrase = $"%{searchPhrase}%" });
+
+        return emails.ToArray();
     }
 
     public async Task<Guid?> Create(CreateUserRequest request)

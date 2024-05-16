@@ -14,10 +14,22 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<User?> GetById(Guid id)
+    {
+        var user = await _userRepository.GetById(id);
+        return user;
+    }
+
     public async Task<User?> GetByEmail(string email)
     {
         var user = await _userRepository.GetByEmail(email);
         return user;
+    }
+
+    public async Task<string[]> GetEmailsBySearchPhrase(string searchPhrase)
+    {
+        var emails = await _userRepository.GetEmailsBySearchPhrase(searchPhrase);
+        return emails;
     }
 
     public async Task<Guid?> Create(CreateUserRequest request)
