@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
             WHERE id = @id
             """;
 
-        using var connection = _connectionFactory.Create();
+        await using var connection = _connectionFactory.Create();
         var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
 
         return user;
@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
             WHERE email = @email
             """;
 
-        using var connection = _connectionFactory.Create();
+        await using var connection = _connectionFactory.Create();
         var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { email });
 
         return user;
@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
             WHERE u.email LIKE @Phrase
             """;
 
-        using var connection = _connectionFactory.Create();
+        await using var connection = _connectionFactory.Create();
         var emails = await connection.QueryAsync<string>(sql, new { Phrase = $"%{searchPhrase}%" });
 
         return emails.ToArray();
@@ -77,7 +77,7 @@ public class UserRepository : IUserRepository
             RETURNING id;
             """;
 
-        using var connection = _connectionFactory.Create();
+        await using var connection = _connectionFactory.Create();
         var userId = await connection.QuerySingleOrDefaultAsync<Guid?>(sql, new { email = request.Email, created_at = DateTime.Now });
 
         return userId;

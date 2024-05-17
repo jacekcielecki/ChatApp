@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using System.Data;
 
 namespace ChatApp.Infrastructure.Database.DbConnectionFactory;
 
@@ -12,7 +11,7 @@ public class DbConnectionFactory : IDbConnectionFactory
         _connectionString = connectionString;
     }
 
-    public IDbConnection Create()
+    public NpgsqlConnection Create()
     {
         return new NpgsqlConnection(_connectionString);
     }
