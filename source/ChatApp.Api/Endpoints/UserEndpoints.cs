@@ -1,5 +1,7 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Application.Mapping;
+using ChatApp.Contracts.Response;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -7,24 +9,26 @@ public static class UserEndpoints
 {
     public static void MapUserEndpoints(this WebApplication app)
     {
-        app.MapGet("/api/users/me",
-        async (IGetLoggedUserHelper userHelper) =>
-        {
-            var result = await userHelper.GetLoggedUser();
+        var userEndpoints = app.MapGroup("/api/users").WithTags("Users");
 
-            return result.Match(
-                user => Results.Ok(user.ToUserResponse()),
-                validationErrors => Results.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
-                );
-        })
-        .RequireAuthorization();
+        userEndpoints.MapGet("/me",
+            async (IGetLoggedUserHelper userHelper) =>
+            {
+                var result = await userHelper.GetLoggedUser();
 
-        app.MapGet("/api/users/search/{searchPhrase}",
-        async (IUserService userService, string searchPhrase) =>
-        {
-            var emails = await userService.GetEmailsBySearchPhrase(searchPhrase);
-            return Results.Ok(emails);
-        })
+                return result.Match<Results<Ok<UserResponse>, BadRequest<HttpValidationProblemDetails>>>(
+                    user => TypedResults.Ok(user.ToUserResponse()),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    );
+            })
+            .RequireAuthorization();
+
+        userEndpoints.MapGet("/search/{searchPhrase}",
+            async (IUserService userService, string searchPhrase) =>
+            {
+                var emails = await userService.GetEmailsBySearchPhrase(searchPhrase);
+                return TypedResults.Ok(emails);
+            })
         .RequireAuthorization();
     }
 }
