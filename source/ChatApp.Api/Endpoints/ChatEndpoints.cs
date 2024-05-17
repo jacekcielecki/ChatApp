@@ -1,4 +1,5 @@
 ﻿using ChatApp.Application.Interfaces;
+using ChatApp.Application.Mapping;
 using ChatApp.Contracts.Request;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -20,6 +21,16 @@ public static class ChatEndpoints
                     success => TypedResults.Ok(success.Value),
                     validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
                 );
+            })
+            .RequireAuthorization();
+
+        chatEndpoints.MapGet("/group",
+            async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await chatService.GetGroupChats(user.Id);
+
+                return TypedResults.Ok(result.ToGroupChatResponse());
             })
             .RequireAuthorization();
     }

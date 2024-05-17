@@ -1,8 +1,9 @@
-﻿using ChatApp.Contracts.Request;
+﻿using ChatApp.Domain.Entities;
 
 namespace ChatApp.Domain.Interfaces.Repositories;
 
 public interface IChatRepository
 {
-    Task<Guid?> CreateGroup(CreateGroupChatRequest request, Guid creatorId);
+    Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId);
+    Task<Guid?> CreateGroup(string name, List<Guid> members, Guid creatorId);
 }

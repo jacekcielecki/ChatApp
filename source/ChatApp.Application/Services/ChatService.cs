@@ -1,5 +1,6 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Contracts.Request;
+using ChatApp.Domain.Entities;
 using ChatApp.Domain.Interfaces.Repositories;
 using ChatApp.Domain.ResultTypes;
 using OneOf;
@@ -18,7 +19,12 @@ public class ChatService : IChatService
         _userService = userService;
     }
 
-    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid senderId)
+    public async Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId)
+    {
+        return await _chatRepository.GetGroupChats(userId);
+    }
+
+    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid creatorId)
     {
         Dictionary<string, string[]> validationErrors = new();
 
@@ -26,7 +32,9 @@ public class ChatService : IChatService
         {
             validationErrors.Add("Name", ["Chat name has to be at least 5 character long"]);
         }
-        foreach (var memberId in request.Members)
+
+        var members = request.Members.Append(creatorId).Distinct().ToList();
+        foreach (var memberId in members)
         {
             var user = await _userService.GetById(memberId);
             if (user == null)
@@ -41,7 +49,7 @@ public class ChatService : IChatService
             return new ValidationErrors(validationErrors);
         }
 
-        var chatId = await _chatRepository.CreateGroup(request, senderId);
+        var chatId = await _chatRepository.CreateGroup(request.Name, members, creatorId);
         if (chatId != null)
         {
             return new Success<Guid>(chatId.Value);
