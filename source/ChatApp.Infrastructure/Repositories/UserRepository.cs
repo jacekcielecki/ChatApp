@@ -17,9 +17,11 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetById(Guid id)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql =
             """
-            SELECT id, email
+            SELECT id, email, created_at
             FROM users
             WHERE id = @id
             """;
@@ -32,9 +34,11 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmail(string email)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql =
             """
-            SELECT id, email
+            SELECT id, email, created_at
             FROM users
             WHERE email = @email
             """;
@@ -44,9 +48,11 @@ public class UserRepository : IUserRepository
 
         return user;
     }
-        
+
     public async Task<string[]> GetEmailsBySearchPhrase(string searchPhrase)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql =
             """
             SELECT email
@@ -62,15 +68,17 @@ public class UserRepository : IUserRepository
 
     public async Task<Guid?> Create(CreateUserRequest request)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql =
             """
-            INSERT INTO users (email)
-            VALUES (@email)
+            INSERT INTO users (email, created_at)
+            VALUES (@email, @created_at)
             RETURNING id;
             """;
 
         using var connection = _connectionFactory.Create();
-        var userId = await connection.QuerySingleOrDefaultAsync<Guid?>(sql, new { email = request.Email });
+        var userId = await connection.QuerySingleOrDefaultAsync<Guid?>(sql, new { email = request.Email, created_at = DateTime.Now });
 
         return userId;
     }
