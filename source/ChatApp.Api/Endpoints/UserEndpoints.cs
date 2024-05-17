@@ -1,7 +1,5 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Application.Mapping;
-using ChatApp.Contracts.Response;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -14,12 +12,8 @@ public static class UserEndpoints
         userEndpoints.MapGet("/me",
             async (IGetLoggedUserHelper userHelper) =>
             {
-                var result = await userHelper.GetLoggedUser();
-
-                return result.Match<Results<Ok<UserResponse>, BadRequest<HttpValidationProblemDetails>>>(
-                    user => TypedResults.Ok(user.ToUserResponse()),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
-                    );
+                var user = await userHelper.GetLoggedUser();
+                TypedResults.Ok(user.ToUserResponse());
             })
             .RequireAuthorization();
 

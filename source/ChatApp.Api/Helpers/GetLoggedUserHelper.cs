@@ -1,8 +1,6 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Contracts.Request;
 using ChatApp.Domain.Entities;
-using ChatApp.Domain.ResultTypes;
-using OneOf;
 using System.Security.Claims;
 
 namespace ChatApp.Api.Helpers;
@@ -22,7 +20,7 @@ public class GetLoggedUserHelper : IGetLoggedUserHelper
         _userService = userService;
     }
 
-    public async Task<OneOf<User, ValidationErrors>> GetLoggedUser()
+    public async Task<User> GetLoggedUser()
     {
         var email = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
@@ -41,6 +39,6 @@ public class GetLoggedUserHelper : IGetLoggedUserHelper
             }
         }
 
-        return new ValidationErrors(new Dictionary<string, string[]> { { "Claims", ["User email not present in claims"] } });
+        throw new Exception("User email not present in claims");
     }
 }
