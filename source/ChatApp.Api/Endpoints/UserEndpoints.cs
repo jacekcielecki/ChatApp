@@ -13,7 +13,7 @@ public static class UserEndpoints
             async (IGetLoggedUserHelper userHelper) =>
             {
                 var user = await userHelper.GetLoggedUser();
-                TypedResults.Ok(user.ToUserResponse());
+                return TypedResults.Ok(user.ToUserResponse());
             })
             .RequireAuthorization();
 
@@ -23,6 +23,6 @@ public static class UserEndpoints
                 var emails = await userService.GetEmailsBySearchPhrase(searchPhrase);
                 return TypedResults.Ok(emails);
             })
-        .RequireAuthorization();
+            .RequireAuthorization();
     }
 }

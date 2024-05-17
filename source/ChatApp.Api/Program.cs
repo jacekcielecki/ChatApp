@@ -66,6 +66,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapUserEndpoints();
+app.MapChatEndpoints();
 app.MapVersionEndpoints();
 
 app.Run();

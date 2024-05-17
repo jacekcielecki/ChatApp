@@ -21,6 +21,7 @@ public static class DependencyInjection
             return new DbConnectionFactory(connectionString);
         });
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IChatRepository, ChatRepository>();
         return services;
     }
 }
