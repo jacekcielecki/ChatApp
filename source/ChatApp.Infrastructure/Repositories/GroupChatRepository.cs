@@ -6,16 +6,16 @@ using System.Data;
 
 namespace ChatApp.Infrastructure.Repositories;
 
-internal class ChatRepository : IChatRepository
+internal class GroupChatRepository : IGroupChatRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
-    public ChatRepository(IDbConnectionFactory connectionFactory)
+    public GroupChatRepository(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId)
+    public async Task<IEnumerable<GroupChat>> Get(Guid userId)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -70,7 +70,7 @@ internal class ChatRepository : IChatRepository
         return result;
     }
 
-    public async Task<GroupChat?> GetGroupChatById(Guid id)
+    public async Task<GroupChat?> GetById(Guid id)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -87,31 +87,32 @@ internal class ChatRepository : IChatRepository
         return chat;
     }
 
-    public async Task<Guid?> CreateGroup(string name, List<Guid> members, Guid creatorId)
+    public async Task<Guid?> Insert(GroupChat groupChat)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         const string sql =
             """
-            INSERT INTO group_chats (name, created_at, created_by_id)
-            VALUES (@name, @created_at, @created_by_id)
+            INSERT INTO group_chats (id, name, created_at, created_by_id)
+            VALUES (@id, @name, @created_at, @created_by_id)
             RETURNING id;
             """;
 
         await using var connection = _connectionFactory.Create();
         var chatId = await connection.QuerySingleOrDefaultAsync<Guid>(sql, new
         {
-            name = name,
-            created_at = DateTime.Now,
-            created_by_id = creatorId
+            id = groupChat.Id,
+            name = groupChat.Name,
+            created_at = groupChat.CreatedAt,
+            created_by_id = groupChat.CreatedById
         });
 
-        await BulkInsertGroupChatMembers(members, chatId);
+        await BulkInsertGroupChatMembers(groupChat.Members, groupChat.Id);
 
         return chatId;
     }
 
-    private async Task BulkInsertGroupChatMembers(List<Guid> userIds, Guid groupChatId)
+    private async Task BulkInsertGroupChatMembers(List<User> members, Guid groupChatId)
     {
         await using var connection = _connectionFactory.Create();
         connection.Open();
@@ -120,11 +121,11 @@ internal class ChatRepository : IChatRepository
 
         await using var writer = await connection.BeginBinaryImportAsync(sql);
 
-        foreach (var userId in userIds)
+        foreach (var member in members)
         {
             await writer.StartRowAsync();
             await writer.WriteAsync(groupChatId, NpgsqlTypes.NpgsqlDbType.Uuid);
-            await writer.WriteAsync(userId, NpgsqlTypes.NpgsqlDbType.Uuid);
+            await writer.WriteAsync(member.Id, NpgsqlTypes.NpgsqlDbType.Uuid);
             await writer.WriteAsync(DateTime.Now, NpgsqlTypes.NpgsqlDbType.Timestamp);
         }
         await writer.CompleteAsync();

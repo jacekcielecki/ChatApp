@@ -1,5 +1,4 @@
-﻿using ChatApp.Contracts.Request;
-using ChatApp.Domain.Entities;
+﻿using ChatApp.Domain.Entities;
 using ChatApp.Domain.Interfaces.Repositories;
 using ChatApp.Infrastructure.Database.DbConnectionFactory;
 using Dapper;
@@ -66,19 +65,24 @@ public class UserRepository : IUserRepository
         return emails.ToArray();
     }
 
-    public async Task<Guid?> Create(CreateUserRequest request)
+    public async Task<Guid?> Insert(User user)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         const string sql =
             """
-            INSERT INTO users (email, created_at)
-            VALUES (@email, @created_at)
+            INSERT INTO users (id, email, created_at)
+            VALUES (@id, @email, @created_at)
             RETURNING id;
             """;
 
         await using var connection = _connectionFactory.Create();
-        var userId = await connection.QuerySingleOrDefaultAsync<Guid?>(sql, new { email = request.Email, created_at = DateTime.Now });
+        var userId = await connection.QuerySingleOrDefaultAsync<Guid>(sql, new
+        {
+            id = user.Id,
+            email = user.Email,
+            created_at = user.CreatedAt
+        });
 
         return userId;
     }

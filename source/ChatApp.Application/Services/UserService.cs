@@ -34,7 +34,14 @@ public class UserService : IUserService
 
     public async Task<Guid?> Create(CreateUserRequest request)
     {
-        var userId = await _userRepository.Create(request);
-        return userId;
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.UtcNow,
+            Email = request.Email,
+        };
+
+        await _userRepository.Insert(user);
+        return user.Id;
     }
 }
