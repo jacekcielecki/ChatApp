@@ -1,6 +1,7 @@
 ﻿using ChatApp.Application.Interfaces;
 using ChatApp.Application.Mapping;
 using ChatApp.Contracts.Request;
+using ChatApp.Contracts.Response;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatApp.Api.Endpoints;
@@ -28,10 +29,10 @@ public static class ChatEndpoints
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await chatService.GetGroupChats(user.Id);
+                var groupChats = await chatService.GetGroupChats(user.Id);
+                var privateChats = await chatService.GetPrivateChats(user.Id);
 
-                //TODO: Add private chats
-                return TypedResults.Ok(result.ToGroupChatResponse());
+                return TypedResults.Ok(new GetChatResponse(privateChats.ToPrivateChatResponse(), groupChats.ToGroupChatResponse()));
             })
             .RequireAuthorization();
     }

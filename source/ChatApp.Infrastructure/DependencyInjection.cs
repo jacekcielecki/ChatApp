@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IGroupChatRepository, GroupChatRepository>();
         services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IPrivateChatRepository, PrivateChatRepository>();
         return services;
     }
 }

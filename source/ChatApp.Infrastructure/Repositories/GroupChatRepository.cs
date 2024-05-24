@@ -117,7 +117,11 @@ internal class GroupChatRepository : IGroupChatRepository
         await using var connection = _connectionFactory.Create();
         connection.Open();
 
-        const string sql = "COPY group_chats_users (group_chat_id, user_id, created_at) FROM STDIN (FORMAT BINARY)";
+        const string sql =
+            """
+            COPY group_chats_users (group_chat_id, user_id, created_at)
+            FROM STDIN (FORMAT BINARY)
+            """;
 
         await using var writer = await connection.BeginBinaryImportAsync(sql);
 

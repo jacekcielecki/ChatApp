@@ -3,7 +3,7 @@ using ChatApp.Domain.Entities;
 
 namespace ChatApp.Application.Mapping;
 
-public static class ChatMapping
+public static class GroupChatMapping
 {
     public static GroupChatResponse ToGroupChatResponse(this GroupChat groupChat)
     {

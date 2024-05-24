@@ -11,17 +11,27 @@ namespace ChatApp.Application.Services;
 public class ChatService : IChatService
 {
     private readonly IGroupChatRepository _groupChatRepository;
+    private readonly IPrivateChatRepository _privateChatRepository;
     private readonly IUserService _userService;
 
-    public ChatService(IGroupChatRepository groupChatRepository, IUserService userService)
+    public ChatService(
+        IGroupChatRepository groupChatRepository,
+        IPrivateChatRepository privateChatRepository,
+        IUserService userService)
     {
         _groupChatRepository = groupChatRepository;
+        _privateChatRepository = privateChatRepository;
         _userService = userService;
     }
 
     public async Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId)
     {
         return await _groupChatRepository.Get(userId);
+    }
+
+    public async Task<IEnumerable<PrivateChat>> GetPrivateChats(Guid userId)
+    {
+        return await _privateChatRepository.Get(userId);
     }
 
     public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid creatorId)
