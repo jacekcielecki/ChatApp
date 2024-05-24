@@ -22,6 +22,7 @@ public static class DependencyInjection
         });
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IChatRepository, ChatRepository>();
+        services.AddTransient<IMessageRepository, MessageRepository>();
         return services;
     }
 }

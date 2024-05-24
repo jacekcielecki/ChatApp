@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IChatService, ChatService>();
+        services.AddTransient<IMessageService, MessageService>();
         return services;
     }
 }

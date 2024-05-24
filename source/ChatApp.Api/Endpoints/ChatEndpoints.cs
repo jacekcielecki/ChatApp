@@ -24,12 +24,13 @@ public static class ChatEndpoints
             })
             .RequireAuthorization();
 
-        chatEndpoints.MapGet("/group",
+        chatEndpoints.MapGet("/me",
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
                 var result = await chatService.GetGroupChats(user.Id);
 
+                //TODO: Add private chats
                 return TypedResults.Ok(result.ToGroupChatResponse());
             })
             .RequireAuthorization();

@@ -21,10 +21,13 @@ internal class ChatRepository : IChatRepository
 
         const string sql =
             """
-            SELECT gc.id, gc.name, gc.created_at, gc.created_by_id, u.id, u.email, u.created_at
+            SELECT gc.id, gc.name, gc.created_at, gc.created_by_id,
+             u.id, u.email, u.created_at,
+             me.id, me.chat_id, me.created_at, me.created_by_id, me.content
             FROM group_chats gc
             LEFT JOIN group_chats_users gcu ON gcu.group_chat_id = gc.id
             LEFT JOIN users u ON u.id = gcu.user_id
+            LEFT JOIN messages me ON me.chat_id = gc.id
             WHERE gc.id IN (
                 SELECT gcu_inner.group_chat_id
                 FROM group_chats_users gcu_inner
@@ -35,12 +38,17 @@ internal class ChatRepository : IChatRepository
 
         await using var connection = _connectionFactory.Create();
 
-        var groupChats = await connection.QueryAsync<GroupChat, User?, GroupChat>(sql, (groupChat, member) =>
+        var groupChats = await connection.QueryAsync<GroupChat, User?, Message?, GroupChat>(sql, (groupChat, member, message) =>
         {
             groupChat.Members = [];
+            groupChat.Messages = [];
             if (member != null)
             {
                 groupChat.Members.Add(member);
+            }
+            if (message != null)
+            {
+                groupChat.Messages.Add(message);
             }
             return groupChat;
         },new { UserId = userId }, splitOn: "Id", commandType: CommandType.Text);
@@ -51,6 +59,10 @@ internal class ChatRepository : IChatRepository
             if (single.Members.Count != 0)
             {
                 single.Members = y.Select(x => x.Members.Single()).ToList();
+            }
+            if (single.Messages.Count != 0)
+            {
+                single.Messages = y.Select(x => x.Messages.Single()).ToList();
             }
             return single;
         });
