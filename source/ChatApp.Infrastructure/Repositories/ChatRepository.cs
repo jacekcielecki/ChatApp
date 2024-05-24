@@ -58,6 +58,23 @@ internal class ChatRepository : IChatRepository
         return result;
     }
 
+    public async Task<GroupChat?> GetGroupChatById(Guid id)
+    {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+        const string sql =
+            """
+            SELECT id, name, created_at, created_by_id
+            FROM group_chats
+            WHERE group_chats.id = @id;
+            """;
+
+        await using var connection = _connectionFactory.Create();
+        var chat = await connection.QuerySingleOrDefaultAsync<GroupChat>(sql, new { id });
+
+        return chat;
+    }
+
     public async Task<Guid?> CreateGroup(string name, List<Guid> members, Guid creatorId)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
