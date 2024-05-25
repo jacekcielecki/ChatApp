@@ -7,9 +7,9 @@ public static class PrivateChatMapping
 {
     public static PrivateChatResponse ToPrivateChatResponse(this PrivateChat privateChat)
     {
-        //var messagesResponse = privateChat.Messages.Select(m => new MessageResponse(m.Id, m.Content, m.ChatId, m.CreatedAt, m.CreatedById)).ToList();
+        var messagesResponse = privateChat.Messages.Select(m => new MessageResponse(m.Id, m.Content, m.ChatId, m.CreatedAt, m.CreatedById)).ToList();
 
-        return new PrivateChatResponse(privateChat.Id, privateChat.CreatedAt, privateChat.FirstUserId, privateChat.SecondUserId);
+        return new PrivateChatResponse(privateChat.Id, privateChat.CreatedAt, privateChat.FirstUserId, privateChat.SecondUserId, messagesResponse);
     }
 
     public static List<PrivateChatResponse> ToPrivateChatResponse(this IEnumerable<PrivateChat> privateChat)

@@ -18,15 +18,36 @@ public class PrivateChatRepository : IPrivateChatRepository
     {
         const string sql =
             """
-            SELECT id, name, created_at, first_user_id, second_user_id
+            SELECT pc.id, pc.name, pc.created_at, pc.first_user_id, pc.second_user_id,
+             me.id, me.chat_id, me.created_at, me.created_by_id, me.content
             FROM private_chats pc
+            LEFT JOIN messages me ON me.chat_id = pc.id
             WHERE pc.first_user_id = @userId OR pc.second_user_id = @userId
+            ORDER BY pc.created_at DESC
             """;
 
         await using var connection = _dbConnectionFactory.Create();
-        var chats = await connection.QueryAsync<PrivateChat>(sql, new { userId });
+        var privateChats = await connection.QueryAsync<PrivateChat, Message?, PrivateChat>(sql, (chat, message) =>
+        {
+            chat.Messages = [];
+            if (message != null)
+            {
+                chat.Messages.Add(message);
+            }
+            return chat;
+        } ,new { userId });
 
-        return chats;
+        var result = privateChats.GroupBy(x => x.Id).Select(y =>
+        {
+            var single = y.First();
+            if (single.Messages.Count != 0)
+            {
+                single.Messages = y.Select(x => x.Messages.Single()).ToList();
+            }
+            return single;
+        });
+
+        return result;
     }
 
     public async Task<PrivateChat?> GetByUserId(Guid receiverId, Guid userId)
