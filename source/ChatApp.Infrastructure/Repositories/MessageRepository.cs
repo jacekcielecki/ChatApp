@@ -14,6 +14,21 @@ public class MessageRepository : IMessageRepository
         _connectionFactory = connectionFactory;
     }
 
+    public async Task<Message?> GetById(Guid id)
+    {
+        const string sql =
+            """
+            SELECT id, chat_id, created_at, created_by_id, content
+            FROM messages
+            WHERE id = @id
+            """;
+
+        await using var connection = _connectionFactory.Create();
+
+        var message = await connection.QueryFirstOrDefaultAsync<Message>(sql, new { id });
+        return message;
+    }
+
     public async Task Insert(Message message)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -34,5 +49,14 @@ public class MessageRepository : IMessageRepository
             created_by_id = message.CreatedById,
             content = message.Content
         });
+    }
+
+    public async Task Delete(Guid id)
+    {
+        const string sql = "DELETE FROM messages WHERE id = @id";
+
+        await using var connection = _connectionFactory.Create();
+
+        await connection.ExecuteAsync(sql, new { id });
     }
 }

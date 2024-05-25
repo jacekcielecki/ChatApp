@@ -25,17 +25,31 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-                async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, CreatePrivateMessageRequest request) =>
-                {
-                    var user = await loggedUserHelper.GetLoggedUser();
-                    var result = await messageService.CreatePrivate(request, user);
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, CreatePrivateMessageRequest request) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await messageService.CreatePrivate(request, user);
 
-                    return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
-                        _ => TypedResults.Ok(),
-                        validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
-                    );
+                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                    _ => TypedResults.Ok(),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
 
-                })
+            })
+            .RequireAuthorization();
+
+        messageEndpoints.MapDelete("/{id:guid}",
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, Guid id) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await messageService.Delete(id, user);
+
+                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                    _ => TypedResults.Ok(),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
+
+            })
             .RequireAuthorization();
     }
 }

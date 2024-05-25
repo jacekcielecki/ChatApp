@@ -99,4 +99,24 @@ public class MessageService : IMessageService
         await _messageRepository.Insert(message);
         return new Success();
     }
+
+    public async Task<OneOf<Success, ValidationErrors>> Delete(Guid id, User user)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        var message = await _messageRepository.GetById(id);
+        if (message == null)
+        {
+            validationErrors.Add("MessageId", ["Message with given id not found"]);
+            return new ValidationErrors(validationErrors);
+        }
+        if (message.CreatedById != user.Id)
+        {
+            validationErrors.Add("MessageId", ["User is not the author of the message"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        await _messageRepository.Delete(id);
+        return new Success();
+    }
 }
