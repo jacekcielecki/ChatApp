@@ -12,6 +12,17 @@ public static class ChatEndpoints
     {
         var chatEndpoints = app.MapGroup("/api/chats").WithTags("Chats");
 
+        chatEndpoints.MapGet("/me",
+            async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var groupChats = await chatService.GetGroupChats(user.Id);
+                var privateChats = await chatService.GetPrivateChats(user.Id);
+
+                return TypedResults.Ok(new GetChatResponse(privateChats.ToPrivateChatResponse(), groupChats.ToGroupChatResponse()));
+            })
+            .RequireAuthorization();
+
         chatEndpoints.MapPost("/group",
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, CreateGroupChatRequest request) =>
             {
@@ -25,14 +36,16 @@ public static class ChatEndpoints
             })
             .RequireAuthorization();
 
-        chatEndpoints.MapGet("/me",
-            async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
+        chatEndpoints.MapPost("/private",
+            async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, CreatePrivateChatRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var groupChats = await chatService.GetGroupChats(user.Id);
-                var privateChats = await chatService.GetPrivateChats(user.Id);
+                var result = await chatService.CreatePrivate(request, user.Id);
 
-                return TypedResults.Ok(new GetChatResponse(privateChats.ToPrivateChatResponse(), groupChats.ToGroupChatResponse()));
+                return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
+                    success => TypedResults.Ok(success.Value),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
             })
             .RequireAuthorization();
     }

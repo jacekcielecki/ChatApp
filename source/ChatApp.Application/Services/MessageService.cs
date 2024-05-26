@@ -13,18 +13,15 @@ public class MessageService : IMessageService
     private readonly IMessageRepository _messageRepository;
     private readonly IGroupChatRepository _groupChatRepository;
     private readonly IPrivateChatRepository _privateChatRepository;
-    private readonly IUserService _userService;
 
     public MessageService(
         IMessageRepository messageRepository,
         IGroupChatRepository groupChatRepository,
-        IPrivateChatRepository privateChatRepository,
-        IUserService userService)
+        IPrivateChatRepository privateChatRepository)
     {
         _messageRepository = messageRepository;
         _groupChatRepository = groupChatRepository;
         _privateChatRepository = privateChatRepository;
-        _userService = userService;
     }
 
     public async Task<OneOf<Success, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user)
@@ -55,42 +52,17 @@ public class MessageService : IMessageService
     {
         var validationErrors = new Dictionary<string, string[]>();
 
-        var receiver = await _userService.GetByEmail(request.ReceiverEmail);
-        if (receiver == null)
-        {
-            validationErrors.Add("ReceiverEmail", ["User with given email not found"]);
-            return new ValidationErrors(validationErrors);
-        }
-        if (receiver.Id == user.Id)
-        {
-            validationErrors.Add("ReceiverEmail", ["ReceiverId cannot be equal to SenderId"]);
-            return new ValidationErrors(validationErrors);
-        }
-
-        var chat = await _privateChatRepository.GetByUserId(receiver.Id, user.Id);
+        var chat = await _privateChatRepository.GetById(request.ChatId);
         if (chat == null)
         {
-            var privateChat = new PrivateChat
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
-                FirstUserId = user.Id,
-                SecondUserId = receiver.Id,
-                Messages = []
-            };
-
-            chat = await _privateChatRepository.Insert(privateChat);
-        }
-        if (chat == null)
-        {
-            validationErrors.Add("ReceiverEmail", ["Failed to create chat with given user"]);
+            validationErrors.Add("ChatId", ["Private chat with given id not found"]);
             return new ValidationErrors(validationErrors);
         }
 
         var message = new Message
         {
             Id = Guid.NewGuid(),
-            ChatId = chat.Id,
+            ChatId = request.ChatId,
             Content = request.Content,
             CreatedAt = DateTime.UtcNow,
             CreatedById = user.Id

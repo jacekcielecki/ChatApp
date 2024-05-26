@@ -1,3 +1,3 @@
 ﻿namespace ChatApp.Contracts.Request;
 
-public record CreatePrivateMessageRequest(string ReceiverEmail, string Content);
+public record CreatePrivateMessageRequest(Guid ChatId, string Content);

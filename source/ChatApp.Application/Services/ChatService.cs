@@ -36,7 +36,7 @@ public class ChatService : IChatService
 
     public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid creatorId)
     {
-        Dictionary<string, string[]> validationErrors = new();
+        var validationErrors = new Dictionary<string, string[]>();
         if (request.Name.Length < 5)
         {
             validationErrors.Add("Name", ["Chat name has to be at least 5 character long"]);
@@ -71,5 +71,41 @@ public class ChatService : IChatService
 
         await _groupChatRepository.Insert(groupChat);
         return new Success<Guid>(groupChat.Id);
+    }
+
+    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreatePrivate(CreatePrivateChatRequest request, Guid creatorId)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        var receiver = await _userService.GetById(request.ReceiverId);
+        if (receiver == null)
+        {
+            validationErrors.Add("ReceiverId", ["Message receiver with given id not found"]);
+            return new ValidationErrors(validationErrors);
+        }
+        if (receiver.Id == creatorId)
+        {
+            validationErrors.Add("ReceiverId", ["ReceiverId cannot be equal to CreatorId"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        var existingChat = await _privateChatRepository.GetByUserId(request.ReceiverId, creatorId);
+        if (existingChat != null)
+        {
+            validationErrors.Add("Chat", ["Chat between those two users already exists"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        var privateChat = new PrivateChat
+        {
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.UtcNow,
+            FirstUserId = creatorId,
+            SecondUserId = receiver.Id,
+            Messages = []
+        };
+
+        await _privateChatRepository.Insert(privateChat);
+        return new Success<Guid>(privateChat.Id);
     }
 }
