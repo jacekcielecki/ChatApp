@@ -6,5 +6,6 @@ public class PrivateChat
     public required DateTime CreatedAt { get; set; }
     public required Guid FirstUserId { get; set; }
     public required Guid SecondUserId { get; set; }
+    public User? Receiver { get; set; }
     public required List<Message> Messages { get; set; }
 }

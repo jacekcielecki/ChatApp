@@ -8,7 +8,7 @@ public static class GroupChatMapping
     public static GroupChatResponse ToGroupChatResponse(this GroupChat groupChat)
     {
         var membersResponse = groupChat.Members.Select(m => new UserResponse(m.Id, m.Email, m.CreatedAt)).ToList();
-        var messagesResponse = groupChat.Messages.Select(m => new MessageResponse(m.Id, m.Content, m.ChatId, m.CreatedAt, m.CreatedById)).ToList();
+        var messagesResponse = groupChat.Messages.Select(m => new MessageResponse(m.Id, m.Content, m.CreatedAt, m.CreatedById)).ToList();
 
         return new GroupChatResponse(groupChat.Id, groupChat.Name, groupChat.CreatedAt, groupChat.CreatedById, membersResponse, messagesResponse);
     }

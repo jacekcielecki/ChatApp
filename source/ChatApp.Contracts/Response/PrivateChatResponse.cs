@@ -1,3 +1,3 @@
 ﻿namespace ChatApp.Contracts.Response;
 
-public record PrivateChatResponse(Guid Id, DateTime CreatedAt, Guid FirstUserId, Guid SecondUserId, List<MessageResponse> Messages);
+public record PrivateChatResponse(Guid Id, DateTime CreatedAt, UserResponse? Receiver, List<MessageResponse> Messages);

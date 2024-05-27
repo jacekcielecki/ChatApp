@@ -29,7 +29,7 @@ public class MessageRepository : IMessageRepository
         return message;
     }
 
-    public async Task Insert(Message message)
+    public async Task<Guid?> Insert(Message message)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -37,11 +37,12 @@ public class MessageRepository : IMessageRepository
             """
             INSERT INTO messages (id, chat_id, created_at, created_by_id, content)
             VALUES (@id, @chat_id, @created_at, @created_by_id, @content)
+            RETURNING id
             """;
 
         await using var connection = _connectionFactory.Create();
 
-        await connection.ExecuteScalarAsync(sql, new
+        var messageId = await connection.QuerySingleOrDefaultAsync<Guid>(sql, new
         {
             id = message.Id,
             chat_id = message.ChatId,
@@ -49,6 +50,8 @@ public class MessageRepository : IMessageRepository
             created_by_id = message.CreatedById,
             content = message.Content
         });
+
+        return messageId;
     }
 
     public async Task Delete(Guid id)

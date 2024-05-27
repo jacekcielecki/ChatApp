@@ -55,8 +55,9 @@ public class UserRepository : IUserRepository
         const string sql =
             """
             SELECT email
-            FROM public.users as u
-            WHERE u.email LIKE @Phrase
+            FROM users as
+            WHERE email LIKE @Phrase
+            LIMIT 5;
             """;
 
         await using var connection = _connectionFactory.Create();

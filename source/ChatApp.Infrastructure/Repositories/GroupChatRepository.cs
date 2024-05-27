@@ -41,17 +41,17 @@ internal class GroupChatRepository : IGroupChatRepository
         var groupChats = await connection.QueryAsync<GroupChat, User?, Message?, GroupChat>(sql, (groupChat, member, message) =>
         {
             groupChat.Members = [];
-            groupChat.Messages = [];
             if (member != null)
             {
                 groupChat.Members.Add(member);
             }
+            groupChat.Messages = [];
             if (message != null)
             {
                 groupChat.Messages.Add(message);
             }
             return groupChat;
-        },new { UserId = userId }, splitOn: "Id", commandType: CommandType.Text);
+        },new { UserId = userId }, splitOn: "id", commandType: CommandType.Text);
 
         var result = groupChats.GroupBy(x => x.Id).Select(y =>
         {

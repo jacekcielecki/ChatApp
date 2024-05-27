@@ -33,7 +33,6 @@ CREATE TABLE "group_chats_users" (
 
 CREATE TABLE "private_chats" (
   "id" uuid UNIQUE PRIMARY KEY NOT NULL DEFAULT (uuid_generate_v4()),
-  "name" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "first_user_id" uuid NOT NULL,
   "second_user_id" uuid NOT NULL,
