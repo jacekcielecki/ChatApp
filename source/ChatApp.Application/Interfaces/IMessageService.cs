@@ -10,5 +10,6 @@ public interface IMessageService
 {
     Task<OneOf<Success, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user);
     Task<OneOf<Success, ValidationErrors>> CreatePrivate(CreatePrivateMessageRequest request, User user);
+    Task<OneOf<Success, ValidationErrors>> Update(UpdateMessageRequest request, User user);
     Task<OneOf<Success, ValidationErrors>> Delete(Guid id, User user);
 }

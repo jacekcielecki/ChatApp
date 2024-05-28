@@ -38,6 +38,20 @@ public static class MessageEndpoints
             })
             .RequireAuthorization();
 
+        messageEndpoints.MapPut("/",
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, UpdateMessageRequest request) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await messageService.Update(request, user);
+
+                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                    _ => TypedResults.Ok(),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
+
+            })
+            .RequireAuthorization();
+
         messageEndpoints.MapDelete("/{id:guid}",
             async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, Guid id) =>
             {

@@ -72,6 +72,23 @@ public class MessageService : IMessageService
         return new Success();
     }
 
+    public async Task<OneOf<Success, ValidationErrors>> Update(UpdateMessageRequest request, User user)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        var message = await _messageRepository.GetById(request.Id);
+        if (message == null)
+        {
+            validationErrors.Add("Id", ["Message with given id not found"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        message.Content = request.Content;
+
+        await _messageRepository.Update(message);
+        return new Success();
+    }
+
     public async Task<OneOf<Success, ValidationErrors>> Delete(Guid id, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();

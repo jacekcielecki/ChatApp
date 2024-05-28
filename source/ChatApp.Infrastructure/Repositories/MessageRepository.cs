@@ -54,6 +54,22 @@ public class MessageRepository : IMessageRepository
         return messageId;
     }
 
+    public async Task Update(Message message)
+    {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+        const string sql =
+            """
+            UPDATE messages
+            SET content = @content
+            WHERE id = @id
+            """;
+
+        await using var connection = _connectionFactory.Create();
+
+        await connection.ExecuteScalarAsync(sql, new { content = message.Content, id = message.Id });
+    }
+
     public async Task Delete(Guid id)
     {
         const string sql = "DELETE FROM messages WHERE id = @id";
