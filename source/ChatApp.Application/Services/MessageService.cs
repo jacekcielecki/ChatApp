@@ -82,6 +82,11 @@ public class MessageService : IMessageService
             validationErrors.Add("Id", ["Message with given id not found"]);
             return new ValidationErrors(validationErrors);
         }
+        if (message.CreatedById != user.Id)
+        {
+            validationErrors.Add("Id", ["Unable to update message: user is not message creator"]);
+            return new ValidationErrors(validationErrors);
+        }
 
         message.Content = request.Content;
 

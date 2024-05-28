@@ -48,5 +48,18 @@ public static class ChatEndpoints
                 );
             })
             .RequireAuthorization();
+
+        chatEndpoints.MapPut("/",
+            async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, UpdateGroupChatRequest request) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await chatService.UpdateGroup(request, user.Id);
+
+                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                    _ => TypedResults.Ok(),
+                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                );
+            })
+            .RequireAuthorization();
     }
 }

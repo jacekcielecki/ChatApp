@@ -108,4 +108,44 @@ public class ChatService : IChatService
         await _privateChatRepository.Insert(privateChat);
         return new Success<Guid>(privateChat.Id);
     }
+
+    public async Task<OneOf<Success, ValidationErrors>> UpdateGroup(UpdateGroupChatRequest request, Guid userId)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        var groupChat = await _groupChatRepository.GetById(request.Id);
+        if (groupChat == null)
+        {
+            validationErrors.Add("Id", ["Group chat with given id not found"]);
+            return new ValidationErrors(validationErrors);
+        }
+        if (groupChat.Members.All(x => x.Id != userId))
+        {
+            validationErrors.Add("Members", ["To update a group chat user has to be chat member"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        groupChat.Name = request.Name;
+        groupChat.Members = [];
+
+        var members = request.Members.Distinct().ToList();
+        foreach (var memberId in members)
+        {
+            var user = await _userService.GetById(memberId);
+            if (user == null)
+            {
+                validationErrors.Add("Members", [$"Chat member with id {memberId} not found"]);
+                break;
+            }
+            groupChat.Members.Add(user);
+        }
+
+        if (validationErrors.Any())
+        {
+            return new ValidationErrors(validationErrors);
+        }
+
+        await _groupChatRepository.Update(groupChat);
+        return new Success();
+    }
 }
