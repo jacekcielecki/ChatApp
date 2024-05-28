@@ -6,7 +6,7 @@ using System.Data;
 
 namespace ChatApp.Infrastructure.Repositories;
 
-internal class GroupChatRepository : IGroupChatRepository
+public class GroupChatRepository : IGroupChatRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
@@ -21,7 +21,8 @@ internal class GroupChatRepository : IGroupChatRepository
 
         const string sql =
             """
-            SELECT gc.id, gc.name, gc.created_at, gc.created_by_id,
+            SELECT
+             gc.id, gc.name, gc.created_at, gc.created_by_id,
              u.id, u.email, u.created_at,
              me.id, me.chat_id, me.created_at, me.created_by_id, me.content
             FROM group_chats gc
@@ -38,7 +39,8 @@ internal class GroupChatRepository : IGroupChatRepository
 
         await using var connection = _connectionFactory.Create();
 
-        var groupChats = await connection.QueryAsync<GroupChat, User?, Message?, GroupChat>(sql, (groupChat, member, message) =>
+        var groupChats = await connection.QueryAsync<GroupChat, User?, Message?, GroupChat>
+        (sql, (groupChat, member, message) =>
         {
             groupChat.Members = [];
             if (member != null)
@@ -51,20 +53,22 @@ internal class GroupChatRepository : IGroupChatRepository
                 groupChat.Messages.Add(message);
             }
             return groupChat;
-        },new { UserId = userId }, splitOn: "id", commandType: CommandType.Text);
+        },new { UserId = userId }, splitOn: "id,id", commandType: CommandType.Text);
 
         var result = groupChats.GroupBy(x => x.Id).Select(y =>
         {
-            var single = y.First();
-            if (single.Members.Count != 0)
+            var groupChat = y.First();
+            if (groupChat.Members.Count != 0)
             {
-                single.Members = y.Select(x => x.Members.Single()).ToList();
+                groupChat.Members = y.Select(x => x.Members.Single()).ToList();
             }
-            if (single.Messages.Count != 0)
+            if (groupChat.Messages.Count != 0)
             {
-                single.Messages = y.Select(x => x.Messages.Single()).ToList();
+                groupChat.Messages = y.Select(x => x.Messages.Single()).ToList();
             }
-            return single;
+            groupChat.Members = groupChat.Members.GroupBy(u => u.Id).Select(g => g.First()).ToList();
+            groupChat.Messages = groupChat.Messages.GroupBy(u => u.Id).Select(g => g.First()).ToList();
+            return groupChat;
         });
 
         return result;
