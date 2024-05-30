@@ -8,9 +8,9 @@ namespace ChatApp.Application.Interfaces;
 
 public interface IChatService
 {
-    Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId);
-    Task<IEnumerable<PrivateChat>> GetPrivateChats(Guid userId);
-    Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid creatorId);
-    Task<OneOf<Success<Guid>, ValidationErrors>> CreatePrivate(CreatePrivateChatRequest request, Guid creatorId);
-    Task<OneOf<Success, ValidationErrors>> UpdateGroup(UpdateGroupChatRequest request, Guid userId);
+    Task<IEnumerable<GroupChat>> GetGroupChats(User user);
+    Task<IEnumerable<PrivateChat>> GetPrivateChats(User user);
+    Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, User user);
+    Task<OneOf<Success<Guid>, ValidationErrors>> CreatePrivate(CreatePrivateChatRequest request, User user);
+    Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> UpdateGroup(UpdateGroupChatRequest request, User user);
 }

@@ -16,8 +16,8 @@ public static class ChatEndpoints
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var groupChats = await chatService.GetGroupChats(user.Id);
-                var privateChats = await chatService.GetPrivateChats(user.Id);
+                var groupChats = await chatService.GetGroupChats(user);
+                var privateChats = await chatService.GetPrivateChats(user);
 
                 return TypedResults.Ok(new GetChatResponse(privateChats.ToPrivateChatResponse(), groupChats.ToGroupChatResponse()));
             })
@@ -27,11 +27,11 @@ public static class ChatEndpoints
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, CreateGroupChatRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await chatService.CreateGroup(request, user.Id);
+                var result = await chatService.CreateGroup(request, user);
 
                 return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
             })
             .RequireAuthorization();
@@ -40,11 +40,11 @@ public static class ChatEndpoints
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, CreatePrivateChatRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await chatService.CreatePrivate(request, user.Id);
+                var result = await chatService.CreatePrivate(request, user);
 
                 return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
             })
             .RequireAuthorization();
@@ -53,11 +53,13 @@ public static class ChatEndpoints
             async (IChatService chatService, IGetLoggedUserHelper loggedUserHelper, UpdateGroupChatRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await chatService.UpdateGroup(request, user.Id);
+                var result = await chatService.UpdateGroup(request, user);
 
-                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    _ => TypedResults.NotFound(),
+                    _ => TypedResults.Forbid(),
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
             })
             .RequireAuthorization();

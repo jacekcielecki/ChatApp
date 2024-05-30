@@ -16,9 +16,10 @@ public static class MessageEndpoints
                 var user = await loggedUserHelper.GetLoggedUser();
                 var result = await messageService.CreateGroup(request, user);
 
-                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    _ => TypedResults.NotFound(),
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
 
             })
@@ -30,9 +31,10 @@ public static class MessageEndpoints
                 var user = await loggedUserHelper.GetLoggedUser();
                 var result = await messageService.CreatePrivate(request, user);
 
-                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    _ => TypedResults.NotFound(),
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
 
             })
@@ -44,9 +46,11 @@ public static class MessageEndpoints
                 var user = await loggedUserHelper.GetLoggedUser();
                 var result = await messageService.Update(request, user);
 
-                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    _ => TypedResults.NotFound(),
+                    _ => TypedResults.Forbid(),
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
 
             })
@@ -58,11 +62,11 @@ public static class MessageEndpoints
                 var user = await loggedUserHelper.GetLoggedUser();
                 var result = await messageService.Delete(id, user);
 
-                return result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
+                return result.Match<Results<Ok, NotFound, ForbidHttpResult>>(
                     _ => TypedResults.Ok(),
-                    validationErrors => TypedResults.BadRequest(new HttpValidationProblemDetails(validationErrors.Errors))
+                    _ => TypedResults.NotFound(),
+                    _ => TypedResults.Forbid()
                 );
-
             })
             .RequireAuthorization();
     }

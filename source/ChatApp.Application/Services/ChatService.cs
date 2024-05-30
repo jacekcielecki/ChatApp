@@ -24,17 +24,17 @@ public class ChatService : IChatService
         _userService = userService;
     }
 
-    public async Task<IEnumerable<GroupChat>> GetGroupChats(Guid userId)
+    public async Task<IEnumerable<GroupChat>> GetGroupChats(User user)
     {
-        return await _groupChatRepository.Get(userId);
+        return await _groupChatRepository.Get(user.Id);
     }
 
-    public async Task<IEnumerable<PrivateChat>> GetPrivateChats(Guid userId)
+    public async Task<IEnumerable<PrivateChat>> GetPrivateChats(User user)
     {
-        return await _privateChatRepository.Get(userId);
+        return await _privateChatRepository.Get(user.Id);
     }
 
-    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, Guid creatorId)
+    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreateGroup(CreateGroupChatRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
         if (request.Name.Length < 5)
@@ -47,21 +47,21 @@ public class ChatService : IChatService
             Id = Guid.NewGuid(),
             Name = request.Name,
             CreatedAt = DateTime.UtcNow,
-            CreatedById = creatorId,
+            CreatedById = user.Id,
             Members = [],
             Messages = []
         };
 
-        var members = request.Members.Append(creatorId).Distinct().ToList();
+        var members = request.Members.Append(user.Id).Distinct().ToList();
         foreach (var memberId in members)
         {
-            var user = await _userService.GetById(memberId);
-            if (user == null)
+            var member = await _userService.GetById(memberId);
+            if (member == null)
             {
                 validationErrors.Add("ReceiverId", [$"Chat member with id {memberId} not found"]);
                 break;
             }
-            groupChat.Members.Add(user);
+            groupChat.Members.Add(member);
         }
 
         if (validationErrors.Any())
@@ -73,7 +73,7 @@ public class ChatService : IChatService
         return new Success<Guid>(groupChat.Id);
     }
 
-    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreatePrivate(CreatePrivateChatRequest request, Guid creatorId)
+    public async Task<OneOf<Success<Guid>, ValidationErrors>> CreatePrivate(CreatePrivateChatRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
@@ -83,13 +83,13 @@ public class ChatService : IChatService
             validationErrors.Add("ReceiverId", ["Message receiver with given id not found"]);
             return new ValidationErrors(validationErrors);
         }
-        if (receiver.Id == creatorId)
+        if (receiver.Id == user.Id)
         {
             validationErrors.Add("ReceiverId", ["ReceiverId cannot be equal to CreatorId"]);
             return new ValidationErrors(validationErrors);
         }
 
-        var existingChat = await _privateChatRepository.GetByUserId(request.ReceiverId, creatorId);
+        var existingChat = await _privateChatRepository.GetByUserId(request.ReceiverId, user.Id);
         if (existingChat != null)
         {
             validationErrors.Add("Chat", ["Chat between those two users already exists"]);
@@ -100,7 +100,7 @@ public class ChatService : IChatService
         {
             Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow,
-            FirstUserId = creatorId,
+            FirstUserId = user.Id,
             SecondUserId = receiver.Id,
             Messages = []
         };
@@ -109,20 +109,18 @@ public class ChatService : IChatService
         return new Success<Guid>(privateChat.Id);
     }
 
-    public async Task<OneOf<Success, ValidationErrors>> UpdateGroup(UpdateGroupChatRequest request, Guid userId)
+    public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> UpdateGroup(UpdateGroupChatRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
         var groupChat = await _groupChatRepository.GetById(request.Id);
         if (groupChat == null)
         {
-            validationErrors.Add("Id", ["Group chat with given id not found"]);
-            return new ValidationErrors(validationErrors);
+            return new NotFound();
         }
-        if (groupChat.Members.All(x => x.Id != userId))
+        if (groupChat.Members.All(x => x.Id != user.Id))
         {
-            validationErrors.Add("Members", ["To update a group chat user has to be chat member"]);
-            return new ValidationErrors(validationErrors);
+            return new Forbidden();
         }
 
         groupChat.Name = request.Name;
@@ -131,13 +129,13 @@ public class ChatService : IChatService
         var members = request.Members.Distinct().ToList();
         foreach (var memberId in members)
         {
-            var user = await _userService.GetById(memberId);
-            if (user == null)
+            var member = await _userService.GetById(memberId);
+            if (member == null)
             {
                 validationErrors.Add("Members", [$"Chat member with id {memberId} not found"]);
                 break;
             }
-            groupChat.Members.Add(user);
+            groupChat.Members.Add(member);
         }
 
         if (validationErrors.Any())

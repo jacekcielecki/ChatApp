@@ -24,15 +24,19 @@ public class MessageService : IMessageService
         _privateChatRepository = privateChatRepository;
     }
 
-    public async Task<OneOf<Success, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user)
+    public async Task<OneOf<Success, NotFound, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
+        if (request.Content.Length > 2000)
+        {
+            validationErrors.Add("CreateGroupMessageRequest.Content", ["Message content maximum length is 2000 characters"]);
+            return new ValidationErrors(validationErrors);
+        }
 
         var chat = await _groupChatRepository.GetById(request.ChatId);
         if (chat == null)
         {
-            validationErrors.Add("ChatId", ["Group chat with given id not found"]);
-            return new ValidationErrors(validationErrors);
+            return new NotFound();
         }
 
         var message = new Message
@@ -48,15 +52,19 @@ public class MessageService : IMessageService
         return new Success();
     }
 
-    public async Task<OneOf<Success, ValidationErrors>> CreatePrivate(CreatePrivateMessageRequest request, User user)
+    public async Task<OneOf<Success, NotFound, ValidationErrors>> CreatePrivate(CreatePrivateMessageRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
+        if (request.Content.Length > 2000)
+        {
+            validationErrors.Add("CreateGroupMessageRequest.Content", ["Message content maximum length is 2000 characters"]);
+            return new ValidationErrors(validationErrors);
+        }
 
         var chat = await _privateChatRepository.GetById(request.ChatId);
         if (chat == null)
         {
-            validationErrors.Add("ChatId", ["Private chat with given id not found"]);
-            return new ValidationErrors(validationErrors);
+            return new NotFound();
         }
 
         var message = new Message
@@ -72,20 +80,23 @@ public class MessageService : IMessageService
         return new Success();
     }
 
-    public async Task<OneOf<Success, ValidationErrors>> Update(UpdateMessageRequest request, User user)
+    public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> Update(UpdateMessageRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();
+        if (request.Content.Length > 2000)
+        {
+            validationErrors.Add("UpdateMessageRequest.Content", ["Message content maximum length is 2000 characters"]);
+            return new ValidationErrors(validationErrors);
+        }
 
         var message = await _messageRepository.GetById(request.Id);
         if (message == null)
         {
-            validationErrors.Add("Id", ["Message with given id not found"]);
-            return new ValidationErrors(validationErrors);
+            return new NotFound();
         }
         if (message.CreatedById != user.Id)
         {
-            validationErrors.Add("Id", ["Unable to update message: user is not message creator"]);
-            return new ValidationErrors(validationErrors);
+            return new Forbidden();
         }
 
         message.Content = request.Content;
@@ -94,20 +105,16 @@ public class MessageService : IMessageService
         return new Success();
     }
 
-    public async Task<OneOf<Success, ValidationErrors>> Delete(Guid id, User user)
+    public async Task<OneOf<Success, NotFound, Forbidden>> Delete(Guid id, User user)
     {
-        var validationErrors = new Dictionary<string, string[]>();
-
         var message = await _messageRepository.GetById(id);
         if (message == null)
-        {
-            validationErrors.Add("MessageId", ["Message with given id not found"]);
-            return new ValidationErrors(validationErrors);
+        { 
+            return new NotFound();
         }
         if (message.CreatedById != user.Id)
         {
-            validationErrors.Add("MessageId", ["User is not the author of the message"]);
-            return new ValidationErrors(validationErrors);
+            return new Forbidden();
         }
 
         await _messageRepository.Delete(id);
