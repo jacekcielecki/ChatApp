@@ -24,6 +24,43 @@ public class MessageService : IMessageService
         _privateChatRepository = privateChatRepository;
     }
 
+    public async Task<OneOf<Success<(IEnumerable<Message>, int)>, NotFound, Forbidden, ValidationErrors>> GetPaged(GetPagedMessagesRequest request, User user)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+        if (request.PageSize > 200)
+        {
+            validationErrors.Add("GetPagedMessagesRequest.PageSize", ["Max page size is equal 200 messages"]);
+            return new ValidationErrors(validationErrors);
+        }
+
+        var groupChat = await _groupChatRepository.GetById(request.ChatId);
+        if (groupChat != null)
+        {
+            if (groupChat.Members.All(x => x.Id != user.Id))
+            {
+                return new Forbidden();
+            }
+        }
+        else
+        {
+            var privateChat = await _privateChatRepository.GetById(request.ChatId);
+            if (privateChat != null)
+            {
+                if (privateChat.FirstUserId != user.Id && privateChat.SecondUserId != user.Id)
+                {
+                    return new Forbidden();
+                }
+            }
+            else
+            {
+                return new NotFound();
+            }
+        }
+
+        var messages = await _messageRepository.GetPaged(request.ChatId, request.PageSize * (request.PageNumber - 1), request.PageSize);
+        return new Success<(IEnumerable<Message>, int)>(messages);
+    }
+
     public async Task<OneOf<Success, NotFound, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user)
     {
         var validationErrors = new Dictionary<string, string[]>();

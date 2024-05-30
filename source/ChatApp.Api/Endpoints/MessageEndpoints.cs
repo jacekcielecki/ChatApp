@@ -1,6 +1,10 @@
 ﻿using ChatApp.Application.Interfaces;
+using ChatApp.Application.Mapping;
 using ChatApp.Contracts.Request;
+using ChatApp.Contracts.Response;
+using ChatApp.Domain.Common;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -9,6 +13,22 @@ public static class MessageEndpoints
     public static void MapMessageEndpoints(this WebApplication app)
     {
         var messageEndpoints = app.MapGroup("/api/messages").WithTags("Messages");
+
+        messageEndpoints.MapGet("/paged",
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, [FromBody] GetPagedMessagesRequest request) =>
+            {
+                var user = await loggedUserHelper.GetLoggedUser();
+                var result = await messageService.GetPaged(request, user);
+
+                return result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                    res => TypedResults.Ok(new PagedResult<MessageResponse>(
+                        res.Value.Item1.ToMessageResponse(), (uint)res.Value.Item2, request.PageSize, request.PageNumber)),
+                    _ => TypedResults.NotFound(),
+                    _ => TypedResults.Forbid(),
+                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
+                );
+            })
+            .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
             async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, CreateGroupMessageRequest request) =>
@@ -21,7 +41,6 @@ public static class MessageEndpoints
                     _ => TypedResults.NotFound(),
                     err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
-
             })
             .RequireAuthorization();
 
@@ -36,7 +55,6 @@ public static class MessageEndpoints
                     _ => TypedResults.NotFound(),
                     err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
-
             })
             .RequireAuthorization();
 
@@ -52,7 +70,6 @@ public static class MessageEndpoints
                     _ => TypedResults.Forbid(),
                     err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
-
             })
             .RequireAuthorization();
 

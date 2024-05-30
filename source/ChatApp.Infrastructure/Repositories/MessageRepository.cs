@@ -14,6 +14,33 @@ public class MessageRepository : IMessageRepository
         _connectionFactory = connectionFactory;
     }
 
+    public async Task<(IEnumerable<Message>, int)> GetPaged(Guid chatId, uint skip, uint take)
+    {
+        const string sql =
+            """
+            SELECT id, chat_id, created_at, created_by_id, content
+            FROM messages
+            WHERE chat_id = @chatId
+            ORDER BY created_at DESC
+            OFFSET @skip ROWS
+            FETCH NEXT @take ROWS ONLY;
+            """;
+
+        const string countSql =
+            """
+            SELECT COUNT(*)
+            FROM messages
+            WHERE chat_id = @chatId;
+            """;
+
+        await using var connection = _connectionFactory.Create();
+
+        var messages = await connection.QueryAsync<Message>(sql, new { chatId, skip = (int)skip, take = (int)take });
+        var messagesCount = await connection.QuerySingleOrDefaultAsync<int>(countSql, new { chatId });
+
+        return (messages, messagesCount);
+    }
+
     public async Task<Message?> GetById(Guid id)
     {
         const string sql =

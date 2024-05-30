@@ -10,8 +10,8 @@ public static class MessageMapping
         return new MessageResponse(message.Id, message.Content, message.CreatedAt, message.CreatedById);
     }
 
-    public static List<MessageResponse> ToMessageResponse(this IEnumerable<Message> messages)
+    public static IEnumerable<MessageResponse> ToMessageResponse(this IEnumerable<Message> messages)
     {
-        return messages.Select(gc => gc.ToMessageResponse()).ToList();
+        return messages.Select(gc => gc.ToMessageResponse());
     }
 }
