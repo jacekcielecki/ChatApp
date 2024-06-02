@@ -16,7 +16,7 @@ namespace ChatApp.IntegrationTests.Tools;
 internal sealed class TestApiFixture : WebApplicationFactory<Program>
 {
     private readonly PostgreSqlFixture _postgreFixture;
-    private const string TestUserEmail = "testUser@mail.com";
+    public const string TestUserEmail = "testUser@mail.com";
     private const string TestAuthSchemeName = "testAuthScheme";
 
     public TestApiFixture(PostgreSqlFixture postgreFixture)
@@ -32,7 +32,7 @@ internal sealed class TestApiFixture : WebApplicationFactory<Program>
             services.RemoveAll<IHostedService>();
             services.AddAuthentication(TestAuthSchemeName)
                 .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-                    TestAuthSchemeName, options => { }
+                    TestAuthSchemeName, _ => { }
                 );
             services.RemoveAll<IDbConnectionFactory>();
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>(_ =>

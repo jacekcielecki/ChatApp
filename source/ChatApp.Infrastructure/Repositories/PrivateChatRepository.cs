@@ -78,14 +78,13 @@ public class PrivateChatRepository : IPrivateChatRepository
         const string sql =
             """
             SELECT id, created_at, first_user_id, second_user_id
-            u.id, u.email, u.created_at
-            FROM private_chats pc
-            WHERE (pc.first_user_id = @userId OR pc.second_user_id = @userId)
-            AND (pc.first_user_id = @receiverId OR pc.second_user_id = @receiverId)
+            FROM private_chats
+            WHERE (first_user_id = @userId OR second_user_id = @userId)
+            AND (first_user_id = @receiverId OR second_user_id = @receiverId)
             """;
 
         await using var connection = _dbConnectionFactory.Create();
-        var chat = await connection.QuerySingleOrDefaultAsync<PrivateChat>(sql, new { receiverId, userId });
+        var chat = await connection.QuerySingleOrDefaultAsync<PrivateChat>(sql, new {receiverId, userId});
 
         return chat;
     }
