@@ -50,18 +50,18 @@ public class UserRepository : IUserRepository
 
     public async Task<string[]> GetEmailsBySearchPhrase(string searchPhrase)
     {
-        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         const string sql =
             """
             SELECT email
-            FROM users as
+            FROM users
             WHERE email LIKE @Phrase
             LIMIT 5;
             """;
 
         await using var connection = _connectionFactory.Create();
-        var emails = await connection.QueryAsync<string>(sql, new { Phrase = $"%{searchPhrase}%" });
+        var emails = await connection.QueryAsync<string>(sql, new {Phrase = $"%{searchPhrase}%"});
 
         return emails.ToArray();
     }

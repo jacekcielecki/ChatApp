@@ -1,5 +1,4 @@
 ﻿using ChatApp.Infrastructure.Database.DbConnectionFactory;
-using ChatApp.IntegrationTests.Tools;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,15 +11,15 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-namespace ChatApp.IntegrationTests.Endpoints;
+namespace ChatApp.IntegrationTests.Tools;
 
-internal sealed class UserEndpointsFixture : WebApplicationFactory<Program>
+internal sealed class TestApiFixture : WebApplicationFactory<Program>
 {
     private readonly PostgreSqlFixture _postgreFixture;
     private const string TestUserEmail = "testUser@mail.com";
     private const string TestAuthSchemeName = "testAuthScheme";
 
-    public UserEndpointsFixture(PostgreSqlFixture postgreFixture)
+    public TestApiFixture(PostgreSqlFixture postgreFixture)
     {
         _postgreFixture = postgreFixture;
     }

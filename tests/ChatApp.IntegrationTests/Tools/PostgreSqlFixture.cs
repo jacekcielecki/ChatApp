@@ -12,7 +12,7 @@ public class PostgreSqlFixture : IAsyncLifetime
     {
         PostgreSqlContainer = new PostgreSqlBuilder()
             .WithImage("postgres:15-alpine")
-            .WithName("test-db")
+            .WithName($"test-db-{Guid.NewGuid()}")
             .Build();
 
         await PostgreSqlContainer.StartAsync();
