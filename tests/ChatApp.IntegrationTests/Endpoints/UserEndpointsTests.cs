@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 namespace ChatApp.IntegrationTests.Endpoints;
 
 [Collection("PostgreSql collection")]
-public sealed class UserEndpointsTests
+public sealed class UserEndpointsTests : IAsyncLifetime
 {
     private readonly PostgreSqlFixture _postgreFixture;
 
@@ -44,4 +44,9 @@ public sealed class UserEndpointsTests
         var content = await result.Content.ReadFromJsonAsync<string[]>();
         content.Should().NotBeNull();
     }
+
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync() =>
+        await _postgreFixture.ResetDatabase();
 }
