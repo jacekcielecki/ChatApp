@@ -7,7 +7,7 @@ public static class MessageMapping
 {
     public static MessageResponse ToMessageResponse(this Message message)
     {
-        return new MessageResponse(message.Id, message.Content, message.CreatedAt, message.CreatedById);
+        return new MessageResponse(message.Id, message.Content, message.ChatId, message.CreatedAt, message.CreatedById);
     }
 
     public static IEnumerable<MessageResponse> ToMessageResponse(this IEnumerable<Message> messages)

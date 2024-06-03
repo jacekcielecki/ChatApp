@@ -16,4 +16,9 @@ public class PagedResult<T>
         ItemsTo = ItemsFrom + pageSize - 1;
         TotalPages = (uint)Math.Ceiling(totalItemsCount / (double)pageSize);
     }
+
+    // Parameterless constructor for deserialization
+#pragma warning disable CS8618
+    public PagedResult() {}
+#pragma warning restore CS8618
 }

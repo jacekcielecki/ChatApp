@@ -4,7 +4,6 @@ using ChatApp.Contracts.Request;
 using ChatApp.Contracts.Response;
 using ChatApp.Domain.Common;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -14,10 +13,11 @@ public static class MessageEndpoints
     {
         var messageEndpoints = app.MapGroup("/api/messages").WithTags("Messages");
 
-        messageEndpoints.MapGet("/paged",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, [FromBody] GetPagedMessagesRequest request) =>
+        messageEndpoints.MapGet("/paged/ChatId={chatId:Guid}&PageSize={pageSize:int}&PageNumber={pageNumber:int}",
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, Guid chatId, uint pageSize, uint pageNumber) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
+                var request = new GetPagedMessagesRequest(chatId, pageSize, pageNumber);
                 var result = await messageService.GetPaged(request, user);
 
                 return result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
