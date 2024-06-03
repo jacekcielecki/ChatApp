@@ -6,7 +6,7 @@ using OneOf.Types;
 
 namespace ChatApp.Application.Interfaces;
 
-public interface IChatService
+public interface IChatHandler
 {
     Task<IEnumerable<GroupChat>> GetGroupChats(User user);
     Task<IEnumerable<PrivateChat>> GetPrivateChats(User user);

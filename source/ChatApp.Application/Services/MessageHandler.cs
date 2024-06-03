@@ -8,13 +8,13 @@ using OneOf.Types;
 
 namespace ChatApp.Application.Services;
 
-public class MessageService : IMessageService
+public class MessageHandler : IMessageHandler
 {
     private readonly IMessageRepository _messageRepository;
     private readonly IGroupChatRepository _groupChatRepository;
     private readonly IPrivateChatRepository _privateChatRepository;
 
-    public MessageService(
+    public MessageHandler(
         IMessageRepository messageRepository,
         IGroupChatRepository groupChatRepository,
         IPrivateChatRepository privateChatRepository)

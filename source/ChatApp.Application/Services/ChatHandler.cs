@@ -8,20 +8,20 @@ using OneOf.Types;
 
 namespace ChatApp.Application.Services;
 
-public class ChatService : IChatService
+public class ChatHandler : IChatHandler
 {
     private readonly IGroupChatRepository _groupChatRepository;
     private readonly IPrivateChatRepository _privateChatRepository;
-    private readonly IUserService _userService;
+    private readonly IUserRepository _userRepository;
 
-    public ChatService(
+    public ChatHandler(
         IGroupChatRepository groupChatRepository,
         IPrivateChatRepository privateChatRepository,
-        IUserService userService)
+        IUserRepository userRepository)
     {
         _groupChatRepository = groupChatRepository;
         _privateChatRepository = privateChatRepository;
-        _userService = userService;
+        _userRepository = userRepository;
     }
 
     public async Task<IEnumerable<GroupChat>> GetGroupChats(User user)
@@ -55,7 +55,7 @@ public class ChatService : IChatService
         var members = request.Members.Append(user.Id).Distinct().ToList();
         foreach (var memberId in members)
         {
-            var member = await _userService.GetById(memberId);
+            var member = await _userRepository.GetById(memberId);
             if (member == null)
             {
                 validationErrors.Add("ReceiverId", [$"Chat member with id {memberId} not found"]);
@@ -77,7 +77,7 @@ public class ChatService : IChatService
     {
         var validationErrors = new Dictionary<string, string[]>();
 
-        var receiver = await _userService.GetById(request.ReceiverId);
+        var receiver = await _userRepository.GetById(request.ReceiverId);
         if (receiver == null)
         {
             validationErrors.Add("ReceiverId", ["Message receiver with given id not found"]);
@@ -129,7 +129,7 @@ public class ChatService : IChatService
         var members = request.Members.Distinct().ToList();
         foreach (var memberId in members)
         {
-            var member = await _userService.GetById(memberId);
+            var member = await _userRepository.GetById(memberId);
             if (member == null)
             {
                 validationErrors.Add("Members", [$"Chat member with id {memberId} not found"]);

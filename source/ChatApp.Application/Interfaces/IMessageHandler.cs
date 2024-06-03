@@ -6,7 +6,7 @@ using OneOf.Types;
 
 namespace ChatApp.Application.Interfaces;
 
-public interface IMessageService
+public interface IMessageHandler
 {
     Task<OneOf<Success<(IEnumerable<Message>, int)>, NotFound, Forbidden, ValidationErrors>> GetPaged(GetPagedMessagesRequest request, User user);
     Task<OneOf<Success, NotFound, ValidationErrors>> CreateGroup(CreateGroupMessageRequest request, User user);

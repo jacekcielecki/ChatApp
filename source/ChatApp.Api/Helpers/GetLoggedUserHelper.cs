@@ -12,12 +12,12 @@ namespace ChatApp.Api.Helpers;
 public class GetLoggedUserHelper : IGetLoggedUserHelper
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IUserService _userService;
+    private readonly IUserHandler _userHandler;
 
-    public GetLoggedUserHelper(IHttpContextAccessor httpContextAccessor, IUserService userService)
+    public GetLoggedUserHelper(IHttpContextAccessor httpContextAccessor, IUserHandler userHandler)
     {
         _httpContextAccessor = httpContextAccessor;
-        _userService = userService;
+        _userHandler = userHandler;
     }
 
     public async Task<User> GetLoggedUser()
@@ -26,16 +26,16 @@ public class GetLoggedUserHelper : IGetLoggedUserHelper
 
         if (email != null)
         {
-            var user = await _userService.GetByEmail(email);
+            var user = await _userHandler.GetByEmail(email);
             if (user != null)
             {
                 return user;
             }
 
-            var userId = await _userService.Create(new CreateUserRequest(email));
+            var userId = await _userHandler.Create(new CreateUserRequest(email));
             if (userId != null)
             {
-                return await _userService.GetById((Guid)userId) ?? throw new Exception("Something went wrong, user was not created");
+                return await _userHandler.GetById((Guid)userId) ?? throw new Exception("Something went wrong, user was not created");
             }
         }
 

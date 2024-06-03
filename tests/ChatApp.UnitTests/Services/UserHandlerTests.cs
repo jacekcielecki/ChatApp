@@ -7,7 +7,7 @@ using ChatApp.Infrastructure.Repositories;
 
 namespace ChatApp.UnitTests.Services;
 
-public sealed class UserServiceTests : IAsyncLifetime
+public sealed class UserHandlerTests : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
         .WithImage("postgres:15-alpine")
@@ -18,7 +18,7 @@ public sealed class UserServiceTests : IAsyncLifetime
     {
         // Arrange
         var email = "johny@mail.com";
-        var userService = new UserService(new UserRepository(new DbConnectionFactory(_postgres.GetConnectionString())));
+        var userService = new UserHandler(new UserRepository(new DbConnectionFactory(_postgres.GetConnectionString())));
         await userService.Create(new CreateUserRequest(email));
 
         // Act

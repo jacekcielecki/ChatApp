@@ -18,9 +18,9 @@ public static class UserEndpoints
             .RequireAuthorization();
 
         userEndpoints.MapGet("/search/{searchPhrase}",
-            async (IUserService userService, string searchPhrase) =>
+            async (IUserHandler userHandler, string searchPhrase) =>
             {
-                var emails = await userService.GetEmailsBySearchPhrase(searchPhrase);
+                var emails = await userHandler.GetEmailsBySearchPhrase(searchPhrase);
                 return TypedResults.Ok(emails);
             })
             .RequireAuthorization();

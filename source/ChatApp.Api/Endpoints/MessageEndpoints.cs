@@ -14,11 +14,11 @@ public static class MessageEndpoints
         var messageEndpoints = app.MapGroup("/api/messages").WithTags("Messages");
 
         messageEndpoints.MapGet("/paged/ChatId={chatId:Guid}&PageSize={pageSize:int}&PageNumber={pageNumber:int}",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, Guid chatId, uint pageSize, uint pageNumber) =>
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, Guid chatId, uint pageSize, uint pageNumber) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
                 var request = new GetPagedMessagesRequest(chatId, pageSize, pageNumber);
-                var result = await messageService.GetPaged(request, user);
+                var result = await messageHandler.GetPaged(request, user);
 
                 return result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     res => TypedResults.Ok(new PagedResult<MessageResponse>(
@@ -31,10 +31,10 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, CreateGroupMessageRequest request) =>
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, CreateGroupMessageRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await messageService.CreateGroup(request, user);
+                var result = await messageHandler.CreateGroup(request, user);
 
                 return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
@@ -45,10 +45,10 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, CreatePrivateMessageRequest request) =>
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, CreatePrivateMessageRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await messageService.CreatePrivate(request, user);
+                var result = await messageHandler.CreatePrivate(request, user);
 
                 return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
@@ -59,10 +59,10 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPut("/",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, UpdateMessageRequest request) =>
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, UpdateMessageRequest request) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await messageService.Update(request, user);
+                var result = await messageHandler.Update(request, user);
 
                 return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
@@ -74,10 +74,10 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapDelete("/{id:guid}",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageService messageService, Guid id) =>
+            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, Guid id) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var result = await messageService.Delete(id, user);
+                var result = await messageHandler.Delete(id, user);
 
                 return result.Match<Results<Ok, NotFound, ForbidHttpResult>>(
                     _ => TypedResults.Ok(),

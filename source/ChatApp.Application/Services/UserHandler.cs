@@ -5,11 +5,11 @@ using ChatApp.Domain.Interfaces.Repositories;
 
 namespace ChatApp.Application.Services;
 
-public class UserService : IUserService
+public class UserHandler : IUserHandler
 {
     private readonly IUserRepository _userRepository;
 
-    public UserService(IUserRepository userRepository)
+    public UserHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
