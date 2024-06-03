@@ -6,7 +6,7 @@ using ChatApp.Domain.ResultTypes;
 using OneOf;
 using OneOf.Types;
 
-namespace ChatApp.Application.Services;
+namespace ChatApp.Application.Handlers;
 
 public class MessageHandler : IMessageHandler
 {

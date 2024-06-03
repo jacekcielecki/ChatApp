@@ -3,7 +3,7 @@ using ChatApp.Contracts.Request;
 using ChatApp.Domain.Entities;
 using ChatApp.Domain.Interfaces.Repositories;
 
-namespace ChatApp.Application.Services;
+namespace ChatApp.Application.Handlers;
 
 public class UserHandler : IUserHandler
 {

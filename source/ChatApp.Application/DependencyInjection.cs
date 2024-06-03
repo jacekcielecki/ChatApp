@@ -1,5 +1,5 @@
-﻿using ChatApp.Application.Interfaces;
-using ChatApp.Application.Services;
+﻿using ChatApp.Application.Handlers;
+using ChatApp.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatApp.Application;
