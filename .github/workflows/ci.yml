@@ -21,10 +21,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install dependencies 📂
-        run: dotnet restore ChatApp.Api
+        run: dotnet restore tests/ChatApp.IntegrationTests
 
       - name: Build 🧱
-        run: dotnet build ChatApp.Api --configuration Release --no-restore
+        run: dotnet build tests/ChatApp.IntegrationTests --configuration Release --no-restore
 
       - name: Test 🧪
-        run: dotnet test ChatApp.Api --configuration Release --no-build
+        run: dotnet test tests/ChatApp.IntegrationTests --configuration Release --no-build
