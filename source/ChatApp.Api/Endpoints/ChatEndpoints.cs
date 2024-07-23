@@ -16,10 +16,17 @@ public static class ChatEndpoints
             async (IChatHandler chatHandler, IGetLoggedUserHelper loggedUserHelper) =>
             {
                 var user = await loggedUserHelper.GetLoggedUser();
-                var groupChats = await chatHandler.GetGroupChats(user);
-                var privateChats = await chatHandler.GetPrivateChats(user);
+                var groupChats = chatHandler.GetGroupChats(user);
+                var privateChats = chatHandler.GetPrivateChats(user);
 
-                return TypedResults.Ok(new GetChatResponse(privateChats.ToPrivateChatResponse(), groupChats.ToGroupChatResponse()));
+                var fetchData = new Task[] { groupChats, privateChats };
+                await Task.WhenAll(fetchData);
+
+                return TypedResults.Ok(
+                    new GetChatResponse(
+                        privateChats.Result.ToPrivateChatResponse(),
+                        groupChats.Result.ToGroupChatResponse())
+                    );
             })
             .RequireAuthorization();
 
