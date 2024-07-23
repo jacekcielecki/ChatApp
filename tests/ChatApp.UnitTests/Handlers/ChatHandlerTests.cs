@@ -8,14 +8,14 @@ namespace ChatApp.UnitTests.Handlers;
 
 public sealed class ChatHandlerTests
 {
-    private readonly IGroupChatRepository _groupChatRepository = Substitute.For<IGroupChatRepository>();
-    private readonly IPrivateChatRepository _privateChatRepository = Substitute.For<IPrivateChatRepository>();
+    private readonly IGroupChatRepository _groupChatRepositoryMock = Substitute.For<IGroupChatRepository>();
+    private readonly IPrivateChatRepository _privateChatRepositoryMock = Substitute.For<IPrivateChatRepository>();
     private readonly IUserRepository _userRepositoryMock = Substitute.For<IUserRepository>();
     private readonly ChatHandler _chatHandler;
 
     public ChatHandlerTests()
     {
-        _chatHandler = new ChatHandler(_groupChatRepository, _privateChatRepository, _userRepositoryMock);
+        _chatHandler = new ChatHandler(_groupChatRepositoryMock, _privateChatRepositoryMock, _userRepositoryMock);
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public sealed class ChatHandlerTests
             new() { Id = Guid.NewGuid(), Name = "Group chat 1", CreatedAt = DateTime.UtcNow, CreatedById = user.Id, Members = [user], Messages = [] },
             new() { Id = Guid.NewGuid(), Name = "Group chat 2", CreatedAt = DateTime.UtcNow, CreatedById = user.Id, Members = [user], Messages = [] }
         };
-        _groupChatRepository.Get(user.Id).Returns(expectedResult);
+        _groupChatRepositoryMock.Get(user.Id).Returns(expectedResult);
 
         // Act
         var result = await _chatHandler.GetGroupChats(user);
@@ -47,7 +47,7 @@ public sealed class ChatHandlerTests
             new() { Id = Guid.NewGuid(), CreatedAt = DateTime.UtcNow, FirstUserId = user.Id, SecondUserId = Guid.NewGuid(), Messages = [] },
             new() { Id = Guid.NewGuid(), CreatedAt = DateTime.UtcNow, FirstUserId = user.Id, SecondUserId = Guid.NewGuid(), Messages = [] },
         };
-        _privateChatRepository.Get(user.Id).Returns(expectedResult);
+        _privateChatRepositoryMock.Get(user.Id).Returns(expectedResult);
 
         // Act
         var result = await _chatHandler.GetPrivateChats(user);
@@ -112,7 +112,7 @@ public sealed class ChatHandlerTests
         _userRepositoryMock.GetById(user.Id).Returns(user);
         _userRepositoryMock.GetById(member1.Id).Returns(member1);
         _userRepositoryMock.GetById(member2.Id).Returns(member2);
-        _groupChatRepository.GetById(existingGroupChat.Id).Returns(existingGroupChat);
+        _groupChatRepositoryMock.GetById(existingGroupChat.Id).Returns(existingGroupChat);
 
         // Act
         var result = await _chatHandler.UpdateGroup(request, user);
