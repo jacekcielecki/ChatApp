@@ -13,6 +13,7 @@ public class VersionService : IVersionService
 
     public async Task<string?> Get()
     {
-        return await _httpClient.GetStringAsync("/api/version");
+        return await Task.FromResult("23-09-2024 v1");
+        //return await _httpClient.GetStringAsync("/api/version");
     }
 }
