@@ -30,26 +30,3 @@ jobs:
 
     - name: Log out from Docker
       run: docker logout ${{ secrets.ACR_LOGIN_SERVER }}
-
-
-
-# on:
-#   workflow_dispatch:
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         shell: bash
-#         working-directory: source
-#     steps:
-#     - uses: actions/checkout@v2
-#     - uses: azure/docker-login@v1
-#       with:
-#         login-server: chatappcontainerregistry.azurecr.io
-#         username: ${{ secrets.REGISTRY_USERNAME }}
-#         password: ${{ secrets.REGISTRY_PASSWORD }}
-#     - run: |
-#         docker build -f ./ChatApp.Web/Dockerfile . -t chatappcontainerregistry.azurecr.io/chatappui:latest
-#         docker push chatappcontainerregistry.azurecr.io/chatappui:${{ github.sha }}
