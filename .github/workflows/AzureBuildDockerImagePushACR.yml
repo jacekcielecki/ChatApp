@@ -25,7 +25,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ secrets.IMAGE_NAME }}:latest ./source/ChatApp.Web
+        docker build -f source\ChatApp.Web\Dockerfile -t worker1:try4 .
+        # docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ secrets.IMAGE_NAME }}:latest ./source/ChatApp.Web
         docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ secrets.IMAGE_NAME }}:latest
 
     - name: Log out from Docker
