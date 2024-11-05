@@ -1,8 +1,6 @@
-﻿using ChatApp.Web.Interfaces.Services;
+﻿namespace ChatApp.Web.Services;
 
-namespace ChatApp.Web.Services;
-
-public class VersionService : IVersionService
+public class VersionService 
 {
     private readonly HttpClient _httpClient;
 
@@ -13,7 +11,7 @@ public class VersionService : IVersionService
 
     public async Task<string?> Get()
     {
-        return await Task.FromResult("23-09-2024 v3");
+        return await Task.FromResult("11-05-2024 v3");
         //return await _httpClient.GetStringAsync("/api/version");
     }
 }

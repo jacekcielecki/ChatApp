@@ -1,5 +1,4 @@
 using ChatApp.Web.Components;
-using ChatApp.Web.Interfaces.Services;
 using ChatApp.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +14,7 @@ builder.Services.AddHttpClient("ChatAppApi", (_, client) =>
     client.Timeout = new TimeSpan(0, 0, 60);
     client.BaseAddress = new Uri(apiUrl!);
 });
-builder.Services.AddTransient<IVersionService, VersionService>();
+builder.Services.AddTransient<VersionService>();
 
 var app = builder.Build();
 
