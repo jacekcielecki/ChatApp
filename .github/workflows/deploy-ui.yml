@@ -1,11 +1,41 @@
-name: Build and Deploy
+﻿name: ChatApp.Web | Continuous Deployment
  
 on:
   push:
     branches:
       - main
+
+env:
+  DOTNET_VERSION: '8.0.x'
  
 jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: |
+            dotnet restore tests/ChatApp.IntegrationTests
+            dotnet restore tests/ChatApp.UnitTests
+
+      - name: Build
+        run: |
+            dotnet build tests/ChatApp.IntegrationTests --configuration Release --no-restore
+            dotnet build tests/ChatApp.UnitTests --configuration Release --no-restore
+
+      - name: Test
+        run: |
+            dotnet test tests/ChatApp.IntegrationTests --configuration Release --no-build
+            dotnet test tests/ChatApp.UnitTests --configuration Release --no-build
+
   az-registry:
     name: Publish | Azure Container Registry
     runs-on: ubuntu-latest
