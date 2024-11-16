@@ -11,7 +11,7 @@ public class VersionService
 
     public async Task<string?> Get()
     {
-        return await Task.FromResult("11-05-2024 v3");
+        return await Task.FromResult("11-05-2024 v4");
         //return await _httpClient.GetStringAsync("/api/version");
     }
 }
