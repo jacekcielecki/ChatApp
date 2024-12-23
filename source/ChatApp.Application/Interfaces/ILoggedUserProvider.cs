@@ -2,7 +2,7 @@
 
 namespace ChatApp.Application.Interfaces;
 
-public interface IGetLoggedUserHelper
+public interface ILoggedUserProvider
 {
-    Task<User> GetLoggedUser();
+    Task<User> Get();
 }

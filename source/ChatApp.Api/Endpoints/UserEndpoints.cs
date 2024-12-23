@@ -10,9 +10,9 @@ public static class UserEndpoints
         var userEndpoints = app.MapGroup("/api/users").WithTags("Users");
 
         userEndpoints.MapGet("/me",
-            async (IGetLoggedUserHelper userHelper) =>
+            async (ILoggedUserProvider loggedUserProvider) =>
             {
-                var user = await userHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 return TypedResults.Ok(user.ToUserResponse());
             })
             .RequireAuthorization();

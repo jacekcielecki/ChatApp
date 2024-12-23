@@ -14,9 +14,9 @@ public static class MessageEndpoints
         var messageEndpoints = app.MapGroup("/api/messages").WithTags("Messages");
 
         messageEndpoints.MapGet("/paged/ChatId={chatId:Guid}&PageSize={pageSize:int}&PageNumber={pageNumber:int}",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, Guid chatId, uint pageSize, uint pageNumber) =>
+            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, Guid chatId, uint pageSize, uint pageNumber) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var request = new GetPagedMessagesRequest(chatId, pageSize, pageNumber);
                 var result = await messageHandler.GetPaged(request, user);
 
@@ -31,9 +31,9 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, CreateGroupMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, CreateGroupMessageRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await messageHandler.CreateGroup(request, user);
 
                 return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
@@ -45,9 +45,9 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, CreatePrivateMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, CreatePrivateMessageRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await messageHandler.CreatePrivate(request, user);
 
                 return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
@@ -59,9 +59,9 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPut("/",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, UpdateMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, UpdateMessageRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await messageHandler.Update(request, user);
 
                 return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
@@ -74,9 +74,9 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapDelete("/{id:guid}",
-            async (IGetLoggedUserHelper loggedUserHelper, IMessageHandler messageHandler, Guid id) =>
+            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, Guid id) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await messageHandler.Delete(id, user);
 
                 return result.Match<Results<Ok, NotFound, ForbidHttpResult>>(

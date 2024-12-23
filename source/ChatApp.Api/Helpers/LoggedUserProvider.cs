@@ -6,21 +6,21 @@ using System.Security.Claims;
 namespace ChatApp.Api.Helpers;
 
 /// <summary>
-/// Returns user matching user email present in claims from keycloak token <br/>
+/// Returns user matching user email present in claims from auth token <br/>
 /// Should only be used on authorized endpoints
 /// </summary>
-public class GetLoggedUserHelper : IGetLoggedUserHelper
+public class LoggedUserProvider : ILoggedUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserHandler _userHandler;
 
-    public GetLoggedUserHelper(IHttpContextAccessor httpContextAccessor, IUserHandler userHandler)
+    public LoggedUserProvider(IHttpContextAccessor httpContextAccessor, IUserHandler userHandler)
     {
         _httpContextAccessor = httpContextAccessor;
         _userHandler = userHandler;
     }
 
-    public async Task<User> GetLoggedUser()
+    public async Task<User> Get()
     {
         var email = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 

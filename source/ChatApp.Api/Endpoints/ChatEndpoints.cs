@@ -13,9 +13,9 @@ public static class ChatEndpoints
         var chatEndpoints = app.MapGroup("/api/chats").WithTags("Chats");
 
         chatEndpoints.MapGet("/me",
-            async (IChatHandler chatHandler, IGetLoggedUserHelper loggedUserHelper) =>
+            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var groupChats = chatHandler.GetGroupChats(user);
                 var privateChats = chatHandler.GetPrivateChats(user);
 
@@ -31,9 +31,9 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/group",
-            async (IChatHandler chatHandler, IGetLoggedUserHelper loggedUserHelper, CreateGroupChatRequest request) =>
+            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, CreateGroupChatRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await chatHandler.CreateGroup(request, user);
 
                 return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
@@ -44,9 +44,9 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/private",
-            async (IChatHandler chatHandler, IGetLoggedUserHelper loggedUserHelper, CreatePrivateChatRequest request) =>
+            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, CreatePrivateChatRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await chatHandler.CreatePrivate(request, user);
 
                 return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
@@ -57,9 +57,9 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPut("/",
-            async (IChatHandler chatHandler, IGetLoggedUserHelper loggedUserHelper, UpdateGroupChatRequest request) =>
+            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, UpdateGroupChatRequest request) =>
             {
-                var user = await loggedUserHelper.GetLoggedUser();
+                var user = await loggedUserProvider.Get();
                 var result = await chatHandler.UpdateGroup(request, user);
 
                 return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
