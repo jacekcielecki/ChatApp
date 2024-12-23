@@ -1,5 +1,0 @@
-@ChatApp.Api_HostAddress = https://localhost:7086
-
-GET {{ChatApp.Api_HostAddress}}/api/users/Johny
-
-###
