@@ -1,0 +1,11 @@
+﻿@page "/error"
+@using System.Data
+<h3>ErrorTest</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        throw new NotSupportedException(nameof(ErrorTest), new NoNullAllowedException("This is for testing App insights"));
+    }
+
+}
