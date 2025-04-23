@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'source/ChatApp.Functions' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './source/ChatApp.Functions' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '9.0.x' # set this to the dotnet version to use
 
 jobs:
@@ -16,6 +16,9 @@ jobs:
     name: Build and Deploy
     
     steps:
+      - name: Debug folder structure
+        run: ls -R
+
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
@@ -38,4 +41,4 @@ jobs:
           app-name: 'chatapp-func'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2AE9EB12A3424D2AB2D2EE677C449DAC }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONS_PUBLISH_PROFILE }}
