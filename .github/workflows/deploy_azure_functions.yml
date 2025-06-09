@@ -7,18 +7,17 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'source/ChatApp.Functions' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '9.0.x' # set this to the dotnet version to use
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy
-    
-    steps:
-      - name: Debug folder structure
-        run: ls -R
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
 
+    steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
@@ -34,6 +33,13 @@ jobs:
           dotnet build --configuration Release --output ./output
           popd
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2E1EC70C34FE4C2D8090BD7CEBBEB46D }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F9411994571E49D78E5CB6387C513F96 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_CA234EABC7554A3A86CA57B6A057772B }}
+
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa
@@ -41,4 +47,4 @@ jobs:
           app-name: 'chatapp-func'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZURE_FUNCTIONS_PUBLISH_PROFILE }}
+          
