@@ -18,7 +18,7 @@ namespace ChatApp.Functions
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions upd!");
+            return new OkObjectResult("Welcome to Azure Functions updated jacek!");
         }
     }
 }
