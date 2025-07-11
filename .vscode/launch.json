@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ChatApp.Web",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/source/ChatApp.Web/ChatApp.Web.csproj"
+        },
+        {
+            "name": "ChatApp.Functions",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/source/ChatApp.Functions/ChatApp.Functions.csproj"
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Multiple Targets",
+            "configurations": ["ChatApp.Web", "ChatApp.Functions"]
+        }
+    ]
+}
