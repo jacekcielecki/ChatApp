@@ -5,20 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace ChatApp.Functions
 {
-    public class Function1
+    public class Ping
     {
-        private readonly ILogger<Function1> _logger;
+        private readonly ILogger<Ping> _logger;
 
-        public Function1(ILogger<Function1> logger)
+        public Ping(ILogger<Ping> logger)
         {
             _logger = logger;
         }
 
-        [Function("Function1")]
+        [Function("Ping")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions updated jacek!");
+            _logger.LogInformation("Ping has been triggered");
+            return new OkObjectResult("Welcome to Dashboard.");
         }
     }
 }
