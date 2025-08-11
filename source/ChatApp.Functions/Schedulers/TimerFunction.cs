@@ -1,7 +1,7 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace ChatApp.Functions;
+namespace ChatApp.Functions.Schedulers;
 
 public class TimerFunction
 {
