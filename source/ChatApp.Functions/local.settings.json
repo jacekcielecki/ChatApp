@@ -5,5 +5,8 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
     "Cron_TimerFunction": "0 */10 * * * *"
+  },
+  "Host": {
+    "CORS": "http://localhost:5173"
   }
 }

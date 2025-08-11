@@ -9,6 +9,6 @@ public class GetWelcomeMsg
     [Function(nameof(GetWelcomeMsg))]
     public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
     {
-        return new OkObjectResult("Welcome to ChatApp!");
+       return new OkObjectResult("Welcome to Dashboard!");
     }
 }
