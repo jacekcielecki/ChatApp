@@ -72,13 +72,13 @@ public class CreatePrivateChatMessage
         var chat = await _getPrivateChatByIdRepository.Get(request.ChatId);
         if (chat is null)
         {
-            errors.Add(nameof(chat), ["Private chat with specified id not found"]);
+            errors.Add(nameof(CreatePrivateChatMessageRequest.ChatId), ["Private chat with specified id not found"]);
             return errors;
         }
 
         if (userId != chat.FirstUserId && userId != chat.SecondUserId)
         {
-            errors.Add(nameof(chat), ["This user is not a member of specified chat"]);
+            errors.Add(nameof(CreatePrivateChatMessageRequest.ChatId), ["This user is not a member of specified chat"]);
             return errors;
         }
 

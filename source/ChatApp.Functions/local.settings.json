@@ -6,7 +6,9 @@
 
     "DatabaseConnectionString": "Host=localhost;Port=5432;Database=chatappdb;Username=postgres;Password=36X9kJCsr&Rw5eieRw;",
 
-    "Cron_TimerFunction": "0 */10 * * * *"
+    "Cron_TimerFunction": "0 */10 * * * *",
+
+    "Version": "1.0.0"
   },
   "Host": {
     "CORS": "http://localhost:5173"
