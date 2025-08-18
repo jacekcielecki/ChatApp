@@ -4,6 +4,8 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
+    "DatabaseConnectionString": "Host=localhost;Port=5432;Database=chatappdb;Username=postgres;Password=36X9kJCsr&Rw5eieRw;",
+
     "Cron_TimerFunction": "0 */10 * * * *"
   },
   "Host": {
