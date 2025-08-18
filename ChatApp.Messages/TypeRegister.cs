@@ -26,6 +26,7 @@ public static class TypeRegister
         services.AddTransient<DeleteMessageById>();
         services.AddTransient<DeleteMessageByIdRepository>();
         services.AddTransient<GetMessageByIdRepository>();
+        services.AddTransient<CreateGroupChatMessage>();
 
         return services;
     }
