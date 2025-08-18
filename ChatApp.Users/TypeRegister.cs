@@ -1,7 +1,8 @@
 ﻿using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using ChatApp.Users.Core.Details;
-using ChatApp.Users.Core.Search;
+using ChatApp.Users.Core.Summary;
+using ChatApp.Users.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatApp.Users;
@@ -19,11 +20,11 @@ public static class TypeRegister
             return new DbConnectionFactory(dbConnectionString);
         });
 
-        services.AddTransient<ILoggedUserProvider, DummyLoggedUserProvider>();
-        services.AddTransient<GetUserByEmail>();
+        services.AddTransient<ILoggedUserProvider, GetDummyLoggedUserProvider>();
         services.AddTransient<GetUserByEmailRepository>();
         services.AddTransient<GetUsersBySearchPhrase>();
         services.AddTransient<GetUsersBySearchPhraseRepository>();
+        services.AddTransient<GetUser>();
 
         return services;
     }

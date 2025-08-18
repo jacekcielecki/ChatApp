@@ -2,18 +2,25 @@
 
 namespace ChatApp.Users.Core.Details;
 
-public class GetUserByEmail
+public class GetDummyLoggedUserProvider : ILoggedUserProvider
 {
     private readonly GetUserByEmailRepository _getUserByEmailRepository;
 
-    public GetUserByEmail(GetUserByEmailRepository getUserByEmailRepository)
+    public GetDummyLoggedUserProvider(GetUserByEmailRepository getUserByEmailRepository)
     {
         _getUserByEmailRepository = getUserByEmailRepository;
     }
 
-    public async Task<User?> GetByEmail(string email)
+    public async Task<User> Get()
     {
+        var email = "david@example.com";
+
         var user = await _getUserByEmailRepository.Get(email);
+        if (user is null)
+        {
+            throw new KeyNotFoundException(email);
+        }
+
         return user;
     }
 }

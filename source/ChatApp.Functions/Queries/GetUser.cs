@@ -1,24 +1,23 @@
-using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using Core = ChatApp.Users.Queries;
 
 namespace ChatApp.Functions.Queries;
 
 public class GetUser
 {
-    private readonly ILoggedUserProvider _loggedUserProvider;
+    private readonly Core.GetUser _getUser;
 
-    public GetUser(ILoggedUserProvider loggedUserProvider)
+    public GetUser(Core.GetUser getUser)
     {
-        _loggedUserProvider = loggedUserProvider;
+        _getUser = getUser;
     }
 
     [Function(nameof(GetUser))]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
     {
-        var user = await _loggedUserProvider.Get();
-
-        return new OkObjectResult(user.ToResponse());
+        var user = await _getUser.Get();
+        return new OkObjectResult(user);
     }
 }

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Core = ChatApp.Users.Core.Search;
+using Core = ChatApp.Users.Queries;
 
 namespace ChatApp.Functions.Queries;
 

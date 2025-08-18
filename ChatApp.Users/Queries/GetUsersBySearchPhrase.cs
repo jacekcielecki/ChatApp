@@ -1,4 +1,6 @@
-﻿namespace ChatApp.Users.Core.Search;
+﻿using ChatApp.Users.Core.Summary;
+
+namespace ChatApp.Users.Queries;
 
 public class GetUsersBySearchPhrase
 {

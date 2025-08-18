@@ -1,7 +1,7 @@
 ﻿using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using Dapper;
 
-namespace ChatApp.Users.Core.Search;
+namespace ChatApp.Users.Core.Summary;
 
 public class GetUsersBySearchPhraseRepository
 {
