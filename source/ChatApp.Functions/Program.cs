@@ -1,4 +1,5 @@
 using ChatApp.Chats;
+using ChatApp.Messages;
 using ChatApp.Users;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +10,8 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services
     .RegisterUsersCore()
-    .RegisterChatsCore();
+    .RegisterChatsCore()
+    .RegisterMessagesCore();
 
 // Application Insights isn't enabled by default. See https://aka.ms/AAt8mw4.
 // builder.Services
