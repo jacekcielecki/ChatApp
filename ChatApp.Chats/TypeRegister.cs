@@ -23,6 +23,7 @@ public static class TypeRegister
         services.AddTransient<GetChats>();
         services.AddTransient<GetPrivateChatsRepository>();
         services.AddTransient<GetGroupChatsRepository>();
+        services.AddTransient<GetGroupChatByIdRepository>();
 
         return services;
     }
