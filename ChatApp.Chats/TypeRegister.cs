@@ -1,4 +1,6 @@
-﻿using ChatApp.Chats.Core.Group;
+﻿using ChatApp.Chats.Commands;
+using ChatApp.Chats.Core.Group;
+using ChatApp.Chats.Core.Members;
 using ChatApp.Chats.Core.Private;
 using ChatApp.Chats.Queries;
 using ChatApp.Shared.Data;
@@ -25,6 +27,10 @@ public static class TypeRegister
         services.AddTransient<GetGroupChatsRepository>();
         services.AddTransient<GetGroupChatByIdRepository>();
         services.AddTransient<GetPrivateChatByIdRepository>();
+        services.AddTransient<GetUserByIdRepository>();
+        services.AddTransient<CreateGroupChat>();
+        services.AddTransient<CreateGroupChatRepository>();
+        services.AddTransient<AddUsersToGroupChatRepository>();
 
         return services;
     }

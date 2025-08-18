@@ -2,7 +2,7 @@
 
 public class User
 {
-    public required Guid Id { get; set; }
-    public required string Email { get; set; }
-    public required DateTime CreatedAt { get; set; }
+    public Guid Id { get; set; }
+    public string? Email { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
