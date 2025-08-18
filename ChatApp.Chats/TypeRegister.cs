@@ -1,14 +1,15 @@
-﻿using ChatApp.Shared.Data;
+﻿using ChatApp.Chats.Core.Group;
+using ChatApp.Chats.Core.Private;
+using ChatApp.Chats.Queries;
+using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
-using ChatApp.Users.Core.Details;
-using ChatApp.Users.Core.Search;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ChatApp.Users;
+namespace ChatApp.Chats;
 
 public static class TypeRegister
 {
-    public static IServiceCollection RegisterUsersCore(this IServiceCollection services)
+    public static IServiceCollection RegisterChatsCore(this IServiceCollection services)
     {
         var dbConnectionString = Environment.GetEnvironmentVariable(Envars.DatabaseConnectionString);
         services.AddTransient<IDbConnectionFactory, DbConnectionFactory>(_ =>
@@ -19,11 +20,9 @@ public static class TypeRegister
             return new DbConnectionFactory(dbConnectionString);
         });
 
-        services.AddTransient<ILoggedUserProvider, DummyLoggedUserProvider>();
-        services.AddTransient<GetUserByEmail>();
-        services.AddTransient<GetUserByEmailRepository>();
-        services.AddTransient<GetUsersBySearchPhrase>();
-        services.AddTransient<GetUsersBySearchPhraseRepository>();
+        services.AddTransient<GetChats>();
+        services.AddTransient<GetPrivateChatsRepository>();
+        services.AddTransient<GetGroupChatsRepository>();
 
         return services;
     }
