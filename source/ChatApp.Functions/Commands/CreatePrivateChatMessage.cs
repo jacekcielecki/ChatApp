@@ -31,8 +31,7 @@ public class CreatePrivateChatMessage
         var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
             success => TypedResults.Ok(),
             forbidden => TypedResults.Forbid(),
-            errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors))
-        );
+            errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
 
         return response;
     }

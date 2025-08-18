@@ -1,5 +1,7 @@
 ﻿using ChatApp.Messages.Commands;
 using ChatApp.Messages.Core.Create;
+using ChatApp.Messages.Core.Delete;
+using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,9 @@ public static class TypeRegister
 
         services.AddTransient<CreateMessageRepository>();
         services.AddTransient<CreatePrivateChatMessage>();
+        services.AddTransient<DeleteMessageById>();
+        services.AddTransient<DeleteMessageByIdRepository>();
+        services.AddTransient<GetMessageByIdRepository>();
 
         return services;
     }
