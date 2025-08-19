@@ -2,6 +2,7 @@
 using ChatApp.Messages.Core.Create;
 using ChatApp.Messages.Core.Delete;
 using ChatApp.Messages.Core.Details;
+using ChatApp.Messages.Core.Update;
 using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,8 @@ public static class TypeRegister
         services.AddTransient<DeleteMessageByIdRepository>();
         services.AddTransient<GetMessageByIdRepository>();
         services.AddTransient<CreateGroupChatMessage>();
+        services.AddTransient<UpdateMessage>();
+        services.AddTransient<UpdateMessageRepository>();
 
         return services;
     }
