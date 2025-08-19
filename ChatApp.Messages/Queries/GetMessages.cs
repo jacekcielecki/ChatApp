@@ -1,6 +1,7 @@
 ﻿using ChatApp.Chats.Core.Group;
 using ChatApp.Chats.Core.Private;
-using ChatApp.Messages.Core;
+using ChatApp.Messages.Core.Details;
+using ChatApp.Messages.Core.Summary;
 using ChatApp.Shared.Model.Chats;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;

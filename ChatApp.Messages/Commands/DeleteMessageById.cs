@@ -1,5 +1,4 @@
-﻿using ChatApp.Messages.Core.Delete;
-using ChatApp.Messages.Core.Details;
+﻿using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.ValueObjects;
 using OneOf;

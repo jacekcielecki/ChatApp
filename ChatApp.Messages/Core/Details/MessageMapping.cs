@@ -1,7 +1,7 @@
 ﻿using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Messages;
 
-namespace ChatApp.Messages.Core;
+namespace ChatApp.Messages.Core.Details;
 
 public static class MessageMapping
 {

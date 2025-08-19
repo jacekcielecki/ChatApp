@@ -1,5 +1,5 @@
-﻿using ChatApp.Messages.Core.Details;
-using ChatApp.Messages.Core.Update;
+﻿using ChatApp.Messages.Core;
+using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
 using OneOf;

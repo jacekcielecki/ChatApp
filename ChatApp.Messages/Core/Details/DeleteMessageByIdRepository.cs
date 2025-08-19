@@ -1,7 +1,7 @@
 ﻿using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using Dapper;
 
-namespace ChatApp.Messages.Core.Delete;
+namespace ChatApp.Messages.Core.Details;
 
 public class DeleteMessageByIdRepository
 {

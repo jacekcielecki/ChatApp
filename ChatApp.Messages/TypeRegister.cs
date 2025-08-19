@@ -1,9 +1,7 @@
 ﻿using ChatApp.Messages.Commands;
 using ChatApp.Messages.Core;
-using ChatApp.Messages.Core.Create;
-using ChatApp.Messages.Core.Delete;
 using ChatApp.Messages.Core.Details;
-using ChatApp.Messages.Core.Update;
+using ChatApp.Messages.Core.Summary;
 using ChatApp.Messages.Queries;
 using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;

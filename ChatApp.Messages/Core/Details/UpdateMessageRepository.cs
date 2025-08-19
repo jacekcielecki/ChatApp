@@ -2,7 +2,7 @@
 using ChatApp.Shared.Data.Adapters.Entities;
 using Dapper;
 
-namespace ChatApp.Messages.Core.Update;
+namespace ChatApp.Messages.Core.Details;
 
 public class UpdateMessageRepository
 {

@@ -2,7 +2,7 @@
 using ChatApp.Shared.Data.Adapters.Entities;
 using Dapper;
 
-namespace ChatApp.Messages.Core;
+namespace ChatApp.Messages.Core.Summary;
 
 public class GetMessagesRepository
 {
