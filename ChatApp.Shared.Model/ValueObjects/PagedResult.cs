@@ -3,18 +3,18 @@
 public struct PagedResult<T>
 {
     public IEnumerable<T> Items { get; set; }
-    public uint TotalPages { get; set; }
-    public uint ItemsFrom { get; set; }
-    public uint ItemsTo { get; set; }
-    public uint TotalItemsCount { get; set; }
+    public int TotalPages { get; set; }
+    public int ItemsFrom { get; set; }
+    public int ItemsTo { get; set; }
+    public int TotalItemsCount { get; set; }
 
-    public PagedResult(IEnumerable<T> items, uint totalItemsCount, uint pageSize, uint pageNumber)
+    public PagedResult(IEnumerable<T> items, int totalItemsCount, int pageSize, int pageNumber)
     {
         Items = items;
         TotalItemsCount = totalItemsCount;
         ItemsFrom = pageSize * (pageNumber - 1) + 1;
         ItemsTo = ItemsFrom + pageSize - 1;
-        TotalPages = (uint)Math.Ceiling(totalItemsCount / (double)pageSize);
+        TotalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize);
     }
 
     // Parameterless constructor for deserialization

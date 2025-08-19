@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 
-namespace ChatApp.Functions.Commands;
+namespace ChatApp.Functions.Queries;
 
 public class GetWelcomeMsg
 {
