@@ -1,0 +1,87 @@
+﻿using ChatApp.Chats.Core.Group;
+using ChatApp.Chats.Core.Members;
+using ChatApp.Shared.Data.Adapters.Entities;
+using ChatApp.Shared.Model.Chats;
+using ChatApp.Shared.Model.ValueObjects;
+using OneOf;
+using OneOf.Types;
+
+namespace ChatApp.Chats.Commands;
+
+public class UpdateGroupChat
+{
+    private readonly GetGroupChatByIdRepository _getGroupChatByIdRepository;
+    private readonly GetUserByIdRepository _getUserByIdRepository;
+    private readonly UpdateGroupChatRepository _updateGroupChatRepository;
+
+    public UpdateGroupChat(
+        GetGroupChatByIdRepository getGroupChatByIdRepository,
+        GetUserByIdRepository getUserByIdRepository,
+        UpdateGroupChatRepository updateGroupChatRepository)
+    {
+        _getGroupChatByIdRepository = getGroupChatByIdRepository;
+        _getUserByIdRepository = getUserByIdRepository;
+        _updateGroupChatRepository = updateGroupChatRepository;
+    }
+
+    public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> Update(UpdateGroupChatRequest request, Guid userId)
+    {
+        var chat = await _getGroupChatByIdRepository.Get(request.Id);
+        if (chat is null)
+        {
+            return new NotFound();
+        }
+
+        var validationErrors = await ValidateRequest(request);
+        if (validationErrors.Any())
+        {
+            return new ValidationErrors(validationErrors);
+        }
+
+        var authorizationErrors = Authorize(chat, userId);
+        if (authorizationErrors.Any())
+        {
+            return new Forbidden(authorizationErrors);
+        }
+
+        var members = request.Members
+            .Append(userId)
+            .Distinct()
+            .Select(x => new User { Id = x })
+            .ToList();
+
+        chat.Name = request.Name;
+        chat.Members = members;
+
+        await _updateGroupChatRepository.Update(chat);
+        return new Success();
+    }
+
+    private async Task<Dictionary<string, string[]>> ValidateRequest(UpdateGroupChatRequest request)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        foreach (var memberId in request.Members)
+        {
+            var member = await _getUserByIdRepository.Get(memberId);
+            if (member is null)
+            {
+                validationErrors.Add(nameof(UpdateGroupChatRequest.Members), [$"User with id {memberId} not found"]);
+            }
+        }
+
+        return validationErrors;
+    }
+
+    private Dictionary<string, string[]> Authorize(GroupChat chat, Guid userId)
+    {
+        var authorizationErrors = new Dictionary<string, string[]>();
+
+        if (chat.Members.All(x => x.Id != userId))
+        {
+            authorizationErrors.Add(nameof(GroupChat.Members), ["User cannot update specified chat"]);
+        }
+
+        return authorizationErrors;
+    }
+}

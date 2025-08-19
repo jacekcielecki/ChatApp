@@ -1,0 +1,38 @@
+using ChatApp.Shared.Model.Chats;
+using ChatApp.Users.Core.Details;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Core = ChatApp.Chats.Commands;
+
+namespace ChatApp.Functions.Commands;
+
+public class UpdateGroupChat
+{
+   private readonly ILoggedUserProvider _loggedUserProvider;
+   private readonly Core.UpdateGroupChat _updateGroupChat;
+
+   public UpdateGroupChat(ILoggedUserProvider loggedUserProvider, Core.UpdateGroupChat updateGroupChat)
+   {
+       _loggedUserProvider = loggedUserProvider;
+       _updateGroupChat = updateGroupChat;
+   }
+
+    [Function(nameof(UpdateGroupChat))]
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req, [FromBody] UpdateGroupChatRequest request)
+    {
+        var user = await _loggedUserProvider.Get();
+
+        var result = await _updateGroupChat.Update(request, user.Id);
+
+        var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+            _ => TypedResults.Ok(),
+            _ => TypedResults.NotFound(),
+            _ => TypedResults.Forbid(),
+            err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
+        );
+
+        return response;
+    }
+}

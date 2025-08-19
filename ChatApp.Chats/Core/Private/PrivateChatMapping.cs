@@ -10,8 +10,8 @@ public static class PrivateChatMapping
     public static PrivateChatResponse ToResponse(this PrivateChat chat)
     {
        var receiver = new UserResponse(
-           chat.Receiver.Id,
-           chat.Receiver.Email,
+           chat.Receiver!.Id,
+           chat.Receiver.Email!,
            chat.Receiver.CreatedAt);
        
        var response = new PrivateChatResponse(
