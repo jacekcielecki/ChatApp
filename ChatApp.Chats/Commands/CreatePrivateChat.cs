@@ -1,0 +1,74 @@
+﻿using ChatApp.Chats.Core.Members;
+using ChatApp.Chats.Core.Private;
+using ChatApp.Shared.Data.Adapters.Entities;
+using ChatApp.Shared.Model.Chats;
+using ChatApp.Shared.Model.ValueObjects;
+using OneOf;
+using OneOf.Types;
+
+namespace ChatApp.Chats.Commands;
+
+public class CreatePrivateChat
+{
+    private readonly GetUserByIdRepository _getUserByIdRepository;
+    private readonly CreatePrivateChatRepository _createPrivateChatRepository;
+    private readonly GetPrivateChatByIdRepository _getPrivateChatByIdRepository;
+
+    public CreatePrivateChat(GetUserByIdRepository getUserByIdRepository,
+        CreatePrivateChatRepository createPrivateChatRepository,
+        GetPrivateChatByIdRepository getPrivateChatByIdRepository)
+    {
+        _getUserByIdRepository = getUserByIdRepository;
+        _createPrivateChatRepository = createPrivateChatRepository;
+        _getPrivateChatByIdRepository = getPrivateChatByIdRepository;
+    }
+
+    public async Task<OneOf<Success<Guid?>, ValidationErrors>> Create(CreatePrivateChatRequest request, Guid userId)
+    {
+        var validationErrors = await ValidateRequest(request, userId);
+        if (validationErrors.Any())
+        {
+            return new ValidationErrors(validationErrors);
+        }
+
+        var chat = new PrivateChat
+        {
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.UtcNow,
+            FirstUserId = userId,
+            SecondUserId = request.ReceiverId,
+            Messages = []
+        };
+
+        var id = await _createPrivateChatRepository.Create(chat);
+        return new Success<Guid?>(id);
+    }
+
+    private async Task<Dictionary<string, string[]>> ValidateRequest(CreatePrivateChatRequest? request, Guid userId)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+
+        if (request is null)
+        {
+            validationErrors.Add(nameof(CreatePrivateChatRequest), ["Request body not set"]);
+            return validationErrors;
+        }
+        var receiver = await _getUserByIdRepository.Get(request.ReceiverId);
+        if (receiver is null)
+        {
+            validationErrors.Add(nameof(CreatePrivateChatRequest.ReceiverId), ["Message receiver with given id not found"]);
+            return validationErrors;
+        }
+        if (receiver.Id == userId)
+        {
+            validationErrors.Add(nameof(CreatePrivateChatRequest.ReceiverId), ["ReceiverId cannot be equal to CreatorId"]);
+        }
+        var existingChat = await _getPrivateChatByIdRepository.GetByUserId(request.ReceiverId, userId);
+        if (existingChat is not null)
+        {
+            validationErrors.Add(nameof(PrivateChat.Receiver), ["Chat between those two users already exists"]);
+        }
+
+        return validationErrors;
+    }
+}

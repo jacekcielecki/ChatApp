@@ -31,6 +31,8 @@ public static class TypeRegister
         services.AddTransient<CreateGroupChat>();
         services.AddTransient<CreateGroupChatRepository>();
         services.AddTransient<AddUsersToGroupChatRepository>();
+        services.AddTransient<CreatePrivateChatRepository>();
+        services.AddTransient<CreatePrivateChat>();
 
         return services;
     }

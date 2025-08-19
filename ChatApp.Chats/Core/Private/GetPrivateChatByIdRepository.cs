@@ -27,4 +27,20 @@ public class GetPrivateChatByIdRepository
 
         return chat;
     }
+
+    public async Task<PrivateChat?> GetByUserId(Guid receiverId, Guid userId)
+    {
+        const string sql =
+            """
+            SELECT id, created_at, first_user_id, second_user_id
+            FROM private_chats
+            WHERE (first_user_id = @userId OR second_user_id = @userId)
+            AND (first_user_id = @receiverId OR second_user_id = @receiverId)
+            """;
+
+        await using var connection = _dbConnectionFactory.Create();
+        var chat = await connection.QuerySingleOrDefaultAsync<PrivateChat>(sql, new { receiverId, userId });
+
+        return chat;
+    }
 }
