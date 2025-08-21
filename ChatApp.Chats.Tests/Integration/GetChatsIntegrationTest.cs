@@ -1,5 +1,5 @@
 ﻿using ChatApp.Chats.Queries;
-using ChatApp.Chats.Tests.Setup;
+using ChatApp.Shared.Tests.Setup;
 
 namespace ChatApp.Chats.Tests.Integration;
 

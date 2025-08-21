@@ -1,11 +1,13 @@
-﻿using ChatApp.Messages;
+﻿using ChatApp.Chats;
+using ChatApp.Messages;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using ChatApp.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Testcontainers.PostgreSql;
+using Xunit;
 
-namespace ChatApp.Chats.Tests.Setup;
+namespace ChatApp.Shared.Tests.Setup;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -16,7 +18,7 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         _postgreSqlContainer = new PostgreSqlBuilder()
             .WithImage("postgres:15-alpine")
-            .WithName($"{nameof(ChatApp)}-Test-Db")
+            .WithName($"{nameof(ChatApp)}-Test-Db-{Guid.NewGuid()}")
             .Build();
     }
 
