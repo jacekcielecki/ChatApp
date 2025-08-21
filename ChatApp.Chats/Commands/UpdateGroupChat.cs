@@ -77,7 +77,7 @@ public class UpdateGroupChat
     {
         var authorizationErrors = new Dictionary<string, string[]>();
 
-        if (chat.Members.All(x => x.Id != userId))
+        if (chat.Members.All(x => x.Id != userId) && chat.CreatedById != userId)
         {
             authorizationErrors.Add(nameof(GroupChat.Members), ["User cannot update specified chat"]);
         }
