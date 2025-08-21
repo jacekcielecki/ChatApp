@@ -35,6 +35,9 @@
     <None Update="Setup\Database\003 - Create test chats.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Setup\Database\004 - Create test messages.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

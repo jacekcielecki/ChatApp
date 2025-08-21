@@ -1,5 +1,4 @@
 ﻿using ChatApp.Chats.Core.Private;
-using ChatApp.Messages.Core;
 using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Messages;

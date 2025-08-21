@@ -54,7 +54,7 @@ public class GetMessages
             {
                 return new NotFound();
             }
-            if (groupChat.Members.All(x => x.Id != userId))
+            if (groupChat.Members.All(x => x.Id != userId) && groupChat.CreatedById != userId)
             {
                 return new Forbidden();
             }

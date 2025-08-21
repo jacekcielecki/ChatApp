@@ -15,6 +15,8 @@ public class GetMessageByIdRepository
 
     public async Task<Message?> Get(Guid id)
     {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql =
             """
             SELECT id, chat_id, created_at, created_by_id, content
@@ -24,7 +26,7 @@ public class GetMessageByIdRepository
 
         await using var connection = _dbConnectionFactory.Create();
 
-        var message = await connection.QueryFirstOrDefaultAsync<Message>(sql, new { id });
+        var message = await connection.QuerySingleOrDefaultAsync<Message?>(sql, new { id });
         return message;
     }
 }

@@ -27,7 +27,6 @@ public class UpdateGroupChatIntegrationTests : IClassFixture<IntegrationTestFixt
 
         var result = await updateGroupChat.Update(createPrivateChatRequest, existingUserId);
 
-        Assert.Equal(result.Value.GetType(), typeof(Success));
+        Assert.Equal(typeof(Success), result.Value.GetType());
     }
-
 }
