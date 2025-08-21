@@ -1,8 +1,8 @@
-﻿using ChatApp.Application.Interfaces;
-using ChatApp.Application.Mapping;
-using ChatApp.Contracts.Request;
-using ChatApp.Contracts.Response;
-using ChatApp.Domain.Common;
+﻿using ChatApp.Messages.Commands;
+using ChatApp.Messages.Queries;
+using ChatApp.Shared.Model.Messages;
+using ChatApp.Shared.Model.ValueObjects;
+using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatApp.Api.Endpoints;
@@ -11,65 +11,74 @@ public static class MessageEndpoints
 {
     public static void MapMessageEndpoints(this WebApplication app)
     {
-        var messageEndpoints = app.MapGroup("/api/messages").WithTags("Messages");
+        var messageEndpoints = app
+            .MapGroup("/api/messages")
+            .WithTags("Messages");
 
-        messageEndpoints.MapGet("/paged/ChatId={chatId:Guid}&PageSize={pageSize:int}&PageNumber={pageNumber:int}",
-            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, Guid chatId, uint pageSize, uint pageNumber) =>
+        messageEndpoints.MapPost("/",
+            async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var request = new GetPagedMessagesRequest(chatId, pageSize, pageNumber);
-                var result = await messageHandler.GetPaged(request, user);
 
-                return result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    res => TypedResults.Ok(new PagedResult<MessageResponse>(
-                        res.Value.Item1.ToMessageResponse(), (uint)res.Value.Item2, request.PageSize, request.PageNumber)),
+                var result = await getMessages.Get(request, user.Id);
+
+                var response = result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                    success => TypedResults.Ok(success.Value),
                     _ => TypedResults.NotFound(),
                     _ => TypedResults.Forbid(),
                     err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
+
+                return response;
             })
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
-            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, CreateGroupMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, CreateGroupChatMessage createGroupChat, CreateGroupChatMessageRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await messageHandler.CreateGroup(request, user);
 
-                return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.NotFound(),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
-                );
+                var result = await createGroupChat.Create(request, user.Id);
+
+                var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                    success => TypedResults.Ok(),
+                    forbidden => TypedResults.Forbid(),
+                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+
+                return response;
             })
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, CreatePrivateMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, CreatePrivateChatMessage createPrivateChatMessage, CreatePrivateChatMessageRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await messageHandler.CreatePrivate(request, user);
 
-                return result.Match<Results<Ok, NotFound, BadRequest<HttpValidationProblemDetails>>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.NotFound(),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
-                );
+                var result = await createPrivateChatMessage.Create(request, user.Id);
+
+                var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                    success => TypedResults.Ok(),
+                    forbidden => TypedResults.Forbid(),
+                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+
+                return response;
             })
             .RequireAuthorization();
 
         messageEndpoints.MapPut("/",
-            async (ILoggedUserProvider loggedUserProvider, IMessageHandler messageHandler, UpdateMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, UpdateMessage updateMessage, UpdateMessageRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await messageHandler.Update(request, user);
 
-                return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                var result = await updateMessage.Update(request, user.Id);
+
+                var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
                     _ => TypedResults.NotFound(),
                     _ => TypedResults.Forbid(),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
-                );
+                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+
+                return response;
             })
             .RequireAuthorization();
 

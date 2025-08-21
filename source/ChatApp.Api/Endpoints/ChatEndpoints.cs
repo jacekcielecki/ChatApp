@@ -1,7 +1,7 @@
-﻿using ChatApp.Application.Interfaces;
-using ChatApp.Application.Mapping;
-using ChatApp.Contracts.Request;
-using ChatApp.Contracts.Response;
+﻿using ChatApp.Chats.Commands;
+using ChatApp.Chats.Queries;
+using ChatApp.Shared.Model.Chats;
+using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatApp.Api.Endpoints;
@@ -10,64 +10,66 @@ public static class ChatEndpoints
 {
     public static void MapChatEndpoints(this WebApplication app)
     {
-        var chatEndpoints = app.MapGroup("/api/chats").WithTags("Chats");
+        var chatEndpoints = app
+            .MapGroup("/api/chats")
+            .WithTags("Chats");
 
         chatEndpoints.MapGet("/me",
-            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider) =>
+            async (GetChats getChats, ILoggedUserProvider loggedUserProvider) =>
             {
                 var user = await loggedUserProvider.Get();
-                var groupChats = chatHandler.GetGroupChats(user);
-                var privateChats = chatHandler.GetPrivateChats(user);
+                var chats = await getChats.Get(user.Id);
 
-                var fetchData = new Task[] { groupChats, privateChats };
-                await Task.WhenAll(fetchData);
-
-                return TypedResults.Ok(
-                    new GetChatResponse(
-                        privateChats.Result.ToPrivateChatResponse(),
-                        groupChats.Result.ToGroupChatResponse())
-                    );
+                return Results.Ok(chats);
             })
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/group",
-            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, CreateGroupChatRequest request) =>
+            async (CreateGroupChat createGroupChat, ILoggedUserProvider loggedUserProvider, CreateGroupChatRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await chatHandler.CreateGroup(request, user);
 
-                return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
+                var result = await createGroupChat.Create(request, user.Id);
+
+                var response = result.Match<Results<Ok<Guid?>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
+                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors))
                 );
+
+                return response;
             })
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/private",
-            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, CreatePrivateChatRequest request) =>
+            async (CreatePrivateChat createPrivateChat, ILoggedUserProvider loggedUserProvider, CreatePrivateChatRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await chatHandler.CreatePrivate(request, user);
 
-                return result.Match<Results<Ok<Guid>, BadRequest<HttpValidationProblemDetails>>>(
+                var result = await createPrivateChat.Create(request, user.Id);
+
+                var response = result.Match<Results<Ok<Guid?>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
-                );
+                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+
+                return response;
             })
             .RequireAuthorization();
 
         chatEndpoints.MapPut("/",
-            async (IChatHandler chatHandler, ILoggedUserProvider loggedUserProvider, UpdateGroupChatRequest request) =>
+            async (UpdateGroupChat updateGroupChat, ILoggedUserProvider loggedUserProvider, UpdateGroupChatRequest request) =>
             {
                 var user = await loggedUserProvider.Get();
-                var result = await chatHandler.UpdateGroup(request, user);
 
-                return result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                var result = await updateGroupChat.Update(request, user.Id);
+
+                var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
                     _ => TypedResults.NotFound(),
                     _ => TypedResults.Forbid(),
                     err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
                 );
+
+                return response;
             })
             .RequireAuthorization();
     }

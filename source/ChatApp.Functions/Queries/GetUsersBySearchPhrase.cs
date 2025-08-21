@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Core = ChatApp.Users.Queries;
 
@@ -15,12 +14,12 @@ public class GetUsersBySearchPhrase
     }
 
     [Function(nameof(GetUsersBySearchPhrase))]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get",
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "get",
         Route = "GetUsersBySearchPhrase/{searchPhrase}")]
         HttpRequest req,
         string searchPhrase)
     {
         var users = await _getUsersBySearchPhrase.Get(searchPhrase);
-        return new OkObjectResult(users);
+        return Results.Ok(users);
     }
 }

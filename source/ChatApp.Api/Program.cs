@@ -1,8 +1,7 @@
-using ChatApp.Api;
 using ChatApp.Api.Endpoints;
-using ChatApp.Application;
-using ChatApp.DbUp;
-using ChatApp.Infrastructure;
+using ChatApp.Chats;
+using ChatApp.Messages;
+using ChatApp.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.CompilerServices;
@@ -11,11 +10,12 @@ using System.Security.Claims;
 [assembly: InternalsVisibleTo("ChatApp.IntegrationTests")]
 
 var builder = WebApplication.CreateBuilder(args);
-var dbConnectionString = builder.Configuration.GetValue<string>("Database:ConnectionString");
 var keyCloakRealm = builder.Configuration.GetValue<string>("KeyCloak:RealmUrl");
 
-// Add services to the container.
-builder.Services.AddInfrastructure(builder.Configuration).AddApplication().AddApi();
+builder.Services.RegisterChatsCore();
+builder.Services.RegisterMessagesCore();
+builder.Services.RegisterUsersCore();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
@@ -47,9 +47,6 @@ builder.Services
     });
 builder.Services.AddAuthorization();
 
-var dbUp = new DatabaseUpdater(dbConnectionString!);
-dbUp.UpdateDatabase();
-
 var app = builder.Build();
 
 if (!app.Environment.IsProduction())
@@ -57,8 +54,6 @@ if (!app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 

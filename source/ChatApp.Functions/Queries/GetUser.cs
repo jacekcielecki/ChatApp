@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Core = ChatApp.Users.Queries;
 
@@ -15,9 +14,9 @@ public class GetUser
     }
 
     [Function(nameof(GetUser))]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
     {
         var user = await _getUser.Get();
-        return new OkObjectResult(user);
+        return Results.Ok(user);
     }
 }
