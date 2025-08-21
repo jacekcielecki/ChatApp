@@ -3,29 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Api", "source\ChatApp.Api\ChatApp.Api.csproj", "{C94356F5-F194-4AAE-8DC5-3160CA5B314A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Api", "source\App\ChatApp.Api\ChatApp.Api.csproj", "{C94356F5-F194-4AAE-8DC5-3160CA5B314A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Infrastructure", "source\ChatApp.Infrastructure\ChatApp.Infrastructure.csproj", "{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web", "source\App\ChatApp.Web\ChatApp.Web.csproj", "{29B0E4C3-B739-43C6-A206-9576B7B80197}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Domain", "source\ChatApp.Domain\ChatApp.Domain.csproj", "{B20ACB76-4364-4A42-BCB4-10F57AB06A22}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Application", "source\ChatApp.Application\ChatApp.Application.csproj", "{E1387675-75F4-4CB6-8D0F-3A4F403270E1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.IntegrationTests", "tests\ChatApp.IntegrationTests\ChatApp.IntegrationTests.csproj", "{AE2BB131-F6D0-486C-93DA-00089D982D98}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.DbUp", "source\ChatApp.DbUp\ChatApp.DbUp.csproj", "{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.UnitTests", "tests\ChatApp.UnitTests\ChatApp.UnitTests.csproj", "{5ACFF410-D015-42DD-99CB-931FDF0BF6EC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Contracts", "source\ChatApp.Contracts\ChatApp.Contracts.csproj", "{DFB587F2-5135-4356-9A40-6992B03A9545}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{044E4B54-2BE8-4C26-86AF-6FAE43BCDB77}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{F9D039E2-36C4-4235-9EF7-2688120AF31B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web", "source\ChatApp.Web\ChatApp.Web.csproj", "{29B0E4C3-B739-43C6-A206-9576B7B80197}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Functions", "source\ChatApp.Functions\ChatApp.Functions.csproj", "{F560D2A7-F208-3AA1-C9D2-8BF5684A66BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Functions", "source\App\ChatApp.Functions\ChatApp.Functions.csproj", "{F560D2A7-F208-3AA1-C9D2-8BF5684A66BF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -33,27 +15,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{5EADD5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{A1525764-5817-436D-9769-091BC8341B59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Users", "ChatApp.Users\ChatApp.Users.csproj", "{24E000B9-CD95-4557-A107-D965C659D2A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Users", "source\Users\ChatApp.Users\ChatApp.Users.csproj", "{24E000B9-CD95-4557-A107-D965C659D2A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Data", "ChatApp.Shared.Data\ChatApp.Shared.Data.csproj", "{04855CD9-50AD-484D-B79A-46D1BD0E81FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Data", "source\Shared\ChatApp.Shared.Data\ChatApp.Shared.Data.csproj", "{04855CD9-50AD-484D-B79A-46D1BD0E81FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Model", "ChatApp.Shared.Model\ChatApp.Shared.Model.csproj", "{B3D8A25A-795D-43A1-9A21-57854B09244F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Model", "source\Shared\ChatApp.Shared.Model\ChatApp.Shared.Model.csproj", "{B3D8A25A-795D-43A1-9A21-57854B09244F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chats", "Chats", "{677D467C-9A31-4A45-B9B4-458AAF98B6F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Chats", "ChatApp.Chats\ChatApp.Chats.csproj", "{CCEFA09A-B97C-407C-8538-4A2F30FE1F39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Chats", "source\Chats\ChatApp.Chats\ChatApp.Chats.csproj", "{CCEFA09A-B97C-407C-8538-4A2F30FE1F39}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{33493620-BB79-45F3-B2AE-241E67012347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Messages", "ChatApp.Messages\ChatApp.Messages.csproj", "{B284CFCF-E856-4866-ABB6-A508620B4D34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Messages", "source\Messages\ChatApp.Messages\ChatApp.Messages.csproj", "{B284CFCF-E856-4866-ABB6-A508620B4D34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Chats.Tests", "ChatApp.Chats.Tests\ChatApp.Chats.Tests.csproj", "{9912AB24-823E-4371-843A-74CAFAE7D7A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Chats.Tests", "source\Chats\ChatApp.Chats.Tests\ChatApp.Chats.Tests.csproj", "{9912AB24-823E-4371-843A-74CAFAE7D7A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Users.Tests", "ChatApp.Users.Tests\ChatApp.Users.Tests.csproj", "{8A00C7FA-D774-4137-904F-923D42606BCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Users.Tests", "source\Users\ChatApp.Users.Tests\ChatApp.Users.Tests.csproj", "{8A00C7FA-D774-4137-904F-923D42606BCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Tests", "ChatApp.Shared.Tests\ChatApp.Shared.Tests.csproj", "{650AD3ED-F60D-4F98-8BF4-A447C6306B1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Shared.Tests", "source\Shared\ChatApp.Shared.Tests\ChatApp.Shared.Tests.csproj", "{650AD3ED-F60D-4F98-8BF4-A447C6306B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Messages.Tests", "ChatApp.Messages.Tests\ChatApp.Messages.Tests.csproj", "{4F5004DE-D739-49D6-9F5A-AE8D05E2D566}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Messages.Tests", "source\Messages\ChatApp.Messages.Tests\ChatApp.Messages.Tests.csproj", "{4F5004DE-D739-49D6-9F5A-AE8D05E2D566}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,34 +47,6 @@ Global
 		{C94356F5-F194-4AAE-8DC5-3160CA5B314A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C94356F5-F194-4AAE-8DC5-3160CA5B314A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C94356F5-F194-4AAE-8DC5-3160CA5B314A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{234C80F5-58C4-4B67-AB3D-9AF7625D4B67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B20ACB76-4364-4A42-BCB4-10F57AB06A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B20ACB76-4364-4A42-BCB4-10F57AB06A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B20ACB76-4364-4A42-BCB4-10F57AB06A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B20ACB76-4364-4A42-BCB4-10F57AB06A22}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1387675-75F4-4CB6-8D0F-3A4F403270E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE2BB131-F6D0-486C-93DA-00089D982D98}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ACFF410-D015-42DD-99CB-931FDF0BF6EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ACFF410-D015-42DD-99CB-931FDF0BF6EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ACFF410-D015-42DD-99CB-931FDF0BF6EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ACFF410-D015-42DD-99CB-931FDF0BF6EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFB587F2-5135-4356-9A40-6992B03A9545}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFB587F2-5135-4356-9A40-6992B03A9545}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFB587F2-5135-4356-9A40-6992B03A9545}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFB587F2-5135-4356-9A40-6992B03A9545}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29B0E4C3-B739-43C6-A206-9576B7B80197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29B0E4C3-B739-43C6-A206-9576B7B80197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29B0E4C3-B739-43C6-A206-9576B7B80197}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -143,13 +97,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C94356F5-F194-4AAE-8DC5-3160CA5B314A} = {A1525764-5817-436D-9769-091BC8341B59}
-		{234C80F5-58C4-4B67-AB3D-9AF7625D4B67} = {F9D039E2-36C4-4235-9EF7-2688120AF31B}
-		{B20ACB76-4364-4A42-BCB4-10F57AB06A22} = {F9D039E2-36C4-4235-9EF7-2688120AF31B}
-		{E1387675-75F4-4CB6-8D0F-3A4F403270E1} = {F9D039E2-36C4-4235-9EF7-2688120AF31B}
-		{AE2BB131-F6D0-486C-93DA-00089D982D98} = {044E4B54-2BE8-4C26-86AF-6FAE43BCDB77}
-		{A5A220F4-F1E0-4B45-BB8E-25B54DB752BA} = {F9D039E2-36C4-4235-9EF7-2688120AF31B}
-		{5ACFF410-D015-42DD-99CB-931FDF0BF6EC} = {044E4B54-2BE8-4C26-86AF-6FAE43BCDB77}
-		{DFB587F2-5135-4356-9A40-6992B03A9545} = {F9D039E2-36C4-4235-9EF7-2688120AF31B}
 		{29B0E4C3-B739-43C6-A206-9576B7B80197} = {A1525764-5817-436D-9769-091BC8341B59}
 		{F560D2A7-F208-3AA1-C9D2-8BF5684A66BF} = {A1525764-5817-436D-9769-091BC8341B59}
 		{24E000B9-CD95-4557-A107-D965C659D2A7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}

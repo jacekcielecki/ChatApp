@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <UserSecretsId>2756cb64-aa12-4362-9828-411252b6e6c4</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+	  <PackageReference Include="Microsoft.Identity.Web" Version="3.5.0" />
+	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+	  <PackageReference Include="OneOf" Version="3.0.271" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Chats\ChatApp.Chats\ChatApp.Chats.csproj" />
+    <ProjectReference Include="..\..\Messages\ChatApp.Messages\ChatApp.Messages.csproj" />
+    <ProjectReference Include="..\..\Shared\ChatApp.Shared.Model\ChatApp.Shared.Model.csproj" />
+    <ProjectReference Include="..\..\Users\ChatApp.Users\ChatApp.Users.csproj" />
+  </ItemGroup>	
+
+</Project>
