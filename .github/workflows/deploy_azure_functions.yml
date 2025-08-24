@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: "./source/App/ChatApp.Functions"
+  APP_LOCATION: "./source/App/ChatApp.Functions"
   DOTNET_VERSION: "9.0.x"
 
 jobs:
@@ -29,16 +29,16 @@ jobs:
       - name: "Resolve Project Dependencies Using Dotnet"
         shell: bash
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          pushd './${{ env.APP_LOCATION }}'
           dotnet build --configuration Release --output ./output
           popd
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2E1EC70C34FE4C2D8090BD7CEBBEB46D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F9411994571E49D78E5CB6387C513F96 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_CA234EABC7554A3A86CA57B6A057772B }}
+          client-id: ${{ secrets.AZURE_FUNCTIONS_CLIENTID }}
+          tenant-id: ${{ secrets.AZURE_FUNCTIONS_TENANTID }}
+          subscription-id: ${{ secrets.AZURE_FUNCTIONS_SUBSCRIPTIONID }}
 
       - name: "Run Azure Functions Action"
         uses: Azure/functions-action@v1
@@ -46,4 +46,4 @@ jobs:
         with:
           app-name: "chatapp-func"
           slot-name: "Production"
-          package: "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output"
+          package: "${{ env.APP_LOCATION }}/output"
