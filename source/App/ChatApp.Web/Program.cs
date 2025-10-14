@@ -8,13 +8,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-var accessTokenScopeUri = builder.Configuration["AccessTokenScopeUri"] ?? "";
-
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
     options.ProviderOptions.LoginMode = "redirect";
-    options.ProviderOptions.DefaultAccessTokenScopes.Add(accessTokenScopeUri);
+    options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration["AzureAdB2C:ClientId"]!);
 });
 
 await builder.Build().RunAsync();
