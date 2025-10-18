@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
+  <script>
+    const errorDiv = document.querySelector('#api .error');
+    if (errorDiv) {
+      if (!errorDiv.textContent.trim()) {
+        errorDiv.style.display = 'none';
+      } else {
+        errorDiv.style.display = 'block';
+      }
+    }
+  </script>
 
   <style>
     :root {
@@ -146,12 +156,6 @@
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
-
-    /* Hide .error elements if they are empty */
-#api .error:empty {
-  display: none !important;
-}
-
 
     #api .helpLink,
     #api .verificationControl,
