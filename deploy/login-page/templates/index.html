@@ -64,6 +64,11 @@
       box-sizing: border-box;
     }
 
+    /* Hide default B2C page title text ("Sign in") */
+    #api h1 {
+      display: none !important;
+    }
+
     #api input[type="text"],
     #api input[type="email"],
     #api input[type="password"] {
@@ -141,6 +146,12 @@
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
+
+    /* Hide .error elements if they are empty */
+#api .error:empty {
+  display: none !important;
+}
+
 
     #api .helpLink,
     #api .verificationControl,
