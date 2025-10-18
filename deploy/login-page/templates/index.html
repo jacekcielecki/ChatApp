@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
+
+  <!-- Import default Azure AD B2C CSS -->
+  <link rel="stylesheet" href="https://login.microsoftonline.com/static/tenant/default/styles.css" />
+
   <style>
     :root {
-      --color-primary: #09B09E;
-      --color-secondary: #053D3A;
+      --color-primary: #09b09e;
+      --color-secondary: #053d3a;
       --font-family-base: "Geist", system-ui, Avenir, Helvetica, Arial, sans-serif;
     }
 
@@ -21,6 +25,7 @@
       height: 100vh;
       display: flex;
       font-family: var(--font-family-base);
+      background-color: #f5f5f5;
     }
 
     .logo-container {
@@ -38,20 +43,26 @@
 
     .login-container {
       background: white;
-      background: linear-gradient(135deg, #09B09E, #053D3A);
       width: 50%;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 2rem;
+      overflow-y: auto;
     }
 
     #api {
       width: 100%;
       max-width: 400px;
+      background: white;
       text-align: center;
-      background-color: #053D3A;
+    }
+
+    /* Reset some potential conflicting styles from your own CSS */
+    #api * {
+      all: revert;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     @media (max-width: 768px) {
@@ -67,13 +78,18 @@
     }
   </style>
 </head>
+
 <body>
   <div class="logo-container">
-    <img src="https://raw.githubusercontent.com/jacekcielecki/ChatApp/refs/heads/dev/deploy/logo.jpeg" alt="chatapp-logo" />
+    <img
+      src="https://raw.githubusercontent.com/jacekcielecki/ChatApp/refs/heads/dev/deploy/logo.jpeg"
+      alt="chatapp-logo"
+    />
   </div>
+
   <div class="login-container">
     <div id="api">
-      <!-- B2C -->
+      <!-- Azure AD B2C injects login form here -->
     </div>
   </div>
 </body>
