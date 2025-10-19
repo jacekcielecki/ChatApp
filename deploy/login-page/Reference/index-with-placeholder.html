@@ -8,8 +8,6 @@
       href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
       rel="stylesheet"
     />
-    <script></script>
-
     <style>
       :root {
         --color-primary: #09b09e;
@@ -62,17 +60,9 @@
         text-align: center;
       }
 
-      /* --- B2C Form Styling --- */
       #api * {
-        all: unset;
         font-family: var(--font-family-base);
-        box-sizing: border-box;
       }
-
-      /* Hide default B2C page title text ("Sign in") */
-      /* #api h1 {
-      display: none !important;
-    } */
 
       #api input[type="text"],
       #api input[type="email"],
@@ -135,12 +125,26 @@
         text-decoration: underline;
       }
 
-      #api h1,
+      #api h1 {
+        display: block;
+        font-size: 2em;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+      }
+
       #api h2 {
         color: var(--color-secondary);
-        margin-bottom: 1rem;
+        margin-bottom: 2.4rem;
         font-weight: 700;
-        font-size: 1.6rem;
+        font-size: 1.4rem;
+      }
+
+      #api .error:has(p:not(:empty)) {
+        display: none;
       }
 
       #api .error {
@@ -151,12 +155,13 @@
         font-size: 0.9rem;
         margin-bottom: 1rem;
       }
+      /* 
 
       #api .helpLink,
       #api .verificationControl,
       #api .claims-provider-list {
         all: revert;
-      }
+      } */
 
       /* Responsive */
       @media (max-width: 768px) {
