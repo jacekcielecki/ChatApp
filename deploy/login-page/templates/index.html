@@ -8,38 +8,6 @@
       href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
       rel="stylesheet"
     />
-
-    <script>
-      const errorDivs = document.querySelectorAll("#api .error");
-      console.log("Error divs found: " + errorDivs.length);
-
-      function toggleParagraphsWithText() {
-        if (!errorDivs) return;
-
-        errorDivs.forEach((div) => {
-          const p = div.querySelector("p");
-          const hasText = p.textContent.trim().length > 0;
-
-          if (!hasText) {
-            console.log("Hiding a div " + errorDivs.length);
-            div.style.display = "none";
-          } else {
-            div.style.display = "";
-          }
-        });
-      }
-
-      toggleParagraphsWithText();
-
-      errorDivs.forEach((div) => {
-        new MutationObserver(toggleParagraphsWithText).observe(div, {
-          childList: true,
-          subtree: true,
-          characterData: true,
-        });
-      });
-    </script>
-
     <style>
       :root {
         --color-primary: #09b09e;
@@ -177,7 +145,6 @@
 
       #api .error {
         color: #d32f2f;
-        background: #fbe9e7;
         padding: 8px;
         border-radius: 6px;
         font-size: 0.9rem;
