@@ -16,6 +16,9 @@ public static class MessageEndpoints
             .MapGroup("/api/messages")
             .WithTags("Messages");
 
+        messageEndpoints.Map("/GetWelcomeMsg",
+            () => Task.FromResult(TypedResults.Ok("This is a secure area only for authenticated users.")));
+
         messageEndpoints.MapPost("/",
             async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesRequest request) =>
             {
