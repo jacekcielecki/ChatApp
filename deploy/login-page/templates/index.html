@@ -10,34 +10,32 @@
     />
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const errorDivs = document.querySelectorAll("#api .error");
-        console.log("Error divs found: " + errorDivs.length);
+      const errorDivs = document.querySelectorAll("#api .error");
+      console.log("Error divs found: " + errorDivs.length);
 
-        function toggleParagraphsWithText() {
-          if (!errorDivs) return;
-
-          errorDivs.forEach((div) => {
-            const p = div.querySelector("p");
-            const hasText = p.textContent.trim().length > 0;
-
-            if (!hasText) {
-              console.log("Hiding a div " + errorDivs.length);
-              div.style.display = "none";
-            } else {
-              div.style.display = "";
-            }
-          });
-        }
-
-        toggleParagraphsWithText();
+      function toggleParagraphsWithText() {
+        if (!errorDivs) return;
 
         errorDivs.forEach((div) => {
-          new MutationObserver(toggleParagraphsWithText).observe(div, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          });
+          const p = div.querySelector("p");
+          const hasText = p.textContent.trim().length > 0;
+
+          if (!hasText) {
+            console.log("Hiding a div " + errorDivs.length);
+            div.style.display = "none";
+          } else {
+            div.style.display = "";
+          }
+        });
+      }
+
+      toggleParagraphsWithText();
+
+      errorDivs.forEach((div) => {
+        new MutationObserver(toggleParagraphsWithText).observe(div, {
+          childList: true,
+          subtree: true,
+          characterData: true,
         });
       });
     </script>
