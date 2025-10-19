@@ -1,187 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
-  <script>
-  </script>
-
-  <style>
-    :root {
-      --color-primary: #09b09e;
-      --color-secondary: #053d3a;
-      --font-family-base: "Geist", system-ui, Avenir, Helvetica, Arial, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      font-family: var(--font-family-base);
-      background-color: #f5f5f5;
-    }
-
-    /* --- Layout --- */
-    .logo-container {
-      position: relative;
-      width: 50%;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .login-container {
-      background: white;
-      width: 50%;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    #api {
-      width: 100%;
-      max-width: 400px;
-      background: white;
-      text-align: center;
-    }
-
-    /* --- B2C Form Styling --- */
-    #api * {
-      all: unset;
-      font-family: var(--font-family-base);
-      box-sizing: border-box;
-    }
-
-    /* Hide default B2C page title text ("Sign in") */
-    /* #api h1 {
-      display: none !important;
-    } */
-
-    #api input[type="text"],
-    #api input[type="email"],
-    #api input[type="password"] {
-      all: revert;
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      font-size: 1rem;
-      font-family: var(--font-family-base);
-      transition: all 0.2s ease;
-    }
-
-    #api input:focus {
-      border-color: var(--color-primary);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(9, 176, 158, 0.2);
-    }
-
-    #api label {
-      display: block;
-      text-align: left;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: var(--color-secondary);
-      font-size: 0.9rem;
-    }
-
-    #api button,
-    #api input[type="submit"] {
-      all: revert;
-      width: 100%;
-      background-color: var(--color-primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.25s ease;
-    }
-
-    #api button:hover,
-    #api input[type="submit"]:hover {
-      background-color: var(--color-secondary);
-    }
-
-    #api a {
-      color: var(--color-primary);
-      text-decoration: none;
-      font-size: 0.9rem;
-      display: inline-block;
-      margin-top: 10px;
-    }
-
-    #api a:hover {
-      text-decoration: underline;
-    }
-
-    #api h1,
-    #api h2 {
-      color: var(--color-secondary);
-      margin-bottom: 1rem;
-      font-weight: 700;
-      font-size: 1.6rem;
-    }
-
-    #api .error {
-      color: #d32f2f;
-      background: #fbe9e7;
-      padding: 8px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    #api .helpLink,
-    #api .verificationControl,
-    #api .claims-provider-list {
-      all: revert;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .logo-container,
-      .login-container {
-        width: 100%;
-        height: 50vh;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="logo-container">
-    <img
-      src="https://raw.githubusercontent.com/jacekcielecki/ChatApp/refs/heads/dev/deploy/logo.jpeg"
-      alt="chatapp-logo"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
     />
-  </div>
 
-  <div class="login-container">
-    <div id="api">
-      <!-- Azure AD B2C will inject the login form here -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const errorDivs = document.querySelectorAll("#api .error");
+        console.log("Error divs found: " + errorDivs.length);
+
+        function toggleParagraphsWithText() {
+          if (!errorDivs) return;
+
+          errorDivs.forEach((div) => {
+            const p = div.querySelector("p");
+            const hasText = p.textContent.trim().length > 0;
+
+            if (!hasText) {
+              console.log("Hiding a div " + errorDivs.length);
+              div.style.display = "none";
+            } else {
+              div.style.display = "";
+            }
+          });
+        }
+
+        toggleParagraphsWithText();
+
+        errorDivs.forEach((div) => {
+          new MutationObserver(toggleParagraphsWithText).observe(div, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+          });
+        });
+      });
+    </script>
+
+    <style>
+      :root {
+        --color-primary: #09b09e;
+        --color-secondary: #053d3a;
+        --font-family-base: "Geist", system-ui, Avenir, Helvetica, Arial,
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        font-family: var(--font-family-base);
+        background-color: #f5f5f5;
+      }
+
+      /* --- Layout --- */
+      .logo-container {
+        position: relative;
+        width: 50%;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .logo-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .login-container {
+        background: white;
+        width: 50%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      #api {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        text-align: center;
+      }
+
+      #api * {
+        font-family: var(--font-family-base);
+      }
+
+      #api input[type="text"],
+      #api input[type="email"],
+      #api input[type="password"] {
+        all: revert;
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        font-size: 1rem;
+        font-family: var(--font-family-base);
+        transition: all 0.2s ease;
+      }
+
+      #api input:focus {
+        border-color: var(--color-primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(9, 176, 158, 0.2);
+      }
+
+      #api label {
+        display: block;
+        text-align: left;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: var(--color-secondary);
+        font-size: 0.9rem;
+      }
+
+      #api button,
+      #api input[type="submit"] {
+        all: revert;
+        width: 100%;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.25s ease;
+      }
+
+      #api button:hover,
+      #api input[type="submit"]:hover {
+        background-color: var(--color-secondary);
+      }
+
+      #api a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      #api a:hover {
+        text-decoration: underline;
+      }
+
+      #api h1 {
+        display: block;
+        font-size: 2em;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+      }
+
+      #api h2 {
+        color: var(--color-secondary);
+        margin-bottom: 2.4rem;
+        font-weight: 700;
+        font-size: 1.4rem;
+      }
+
+      #api .error {
+        color: #d32f2f;
+        background: #fbe9e7;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      /* 
+
+      #api .helpLink,
+      #api .verificationControl,
+      #api .claims-provider-list {
+        all: revert;
+      } */
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .logo-container,
+        .login-container {
+          width: 100%;
+          height: 50vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="logo-container">
+      <img
+        src="https://raw.githubusercontent.com/jacekcielecki/ChatApp/refs/heads/dev/deploy/logo.jpeg"
+        alt="chatapp-logo"
+      />
     </div>
-  </div>
-</body>
+
+    <div class="login-container">
+      <div id="api" data-name="Unified">
+        <div class="heading">
+          <h1 role="heading">Sign in</h1>
+        </div>
+        <form
+          id="localAccountForm"
+          class="localAccount"
+          aria-label="Sign in with your email address"
+        >
+          <div class="intro">
+            <h2>Sign in with your email address</h2>
+          </div>
+          <div class="error pageLevel" aria-hidden="true" role="alert">
+            <p></p>
+          </div>
+          <div class="entry">
+            <div class="entry-item">
+              <label for="email">Email Address</label>
+              <div class="error itemLevel" aria-hidden="true" role="alert">
+                <p></p>
+              </div>
+              <input
+                type="email"
+                id="email"
+                name="Email Address"
+                title="Please enter a valid email address"
+                pattern="^[a-zA-Z0-9!#$%&amp;&#39;+^_`{}~-]+(?:\.[a-zA-Z0-9!#$%&amp;&#39;+^_`{}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$"
+                autofocus=""
+                placeholder="Email Address"
+                aria-label="Email Address"
+              />
+            </div>
+            <div class="entry-item">
+              <div class="password-label">
+                <label for="password">Password</label>
+                <a
+                  id="forgotPassword"
+                  href="https://chatapp1.b2clogin.com/chatapp1.onmicrosoft.com/B2C_1_ReactSignInSignUp/api/CombinedSigninAndSignup/forgotPassword?csrf_token=aURMWENyUHRIMGVFNjJGdjlhcnpSZXYyenp3bHF2WWNpUitMeGRxOUtIVVdUWDBGckNNVS9ZMkhoNWZZMzI0RzlaSExDNmdXc1FnWVlqeXJnQUlRU2c9PTsyMDI1LTEwLTE5VDE0OjU0OjE5LjYzMDM5NTRaO0YyMmpPUEhEQzFHTHhBcm5JREdIdkE9PTt7Ik9yY2hlc3RyYXRpb25TdGVwIjoxfQ==&amp;tx=StateProperties=eyJUSUQiOiIxMTAxNzgyOS05NDI4LTQ3MzQtODA5YS04OWYyYTQzMmM5OTcifQ&amp;p=B2C_1_ReactSignInSignUp"
+                  >Forgot your password?</a
+                >
+              </div>
+              <div class="error itemLevel" aria-hidden="true">
+                <p role="alert"></p>
+              </div>
+              <input
+                type="password"
+                id="password"
+                name="Password"
+                placeholder="Password"
+                aria-label="Password"
+                autocomplete="current-password"
+                aria-required="true"
+              />
+            </div>
+
+            <div class="working"></div>
+
+            <div class="buttons">
+              <button id="next" type="submit" form="localAccountForm">
+                Sign in
+              </button>
+            </div>
+          </div>
+          <div class="divider">
+            <h2>OR</h2>
+          </div>
+          <div class="create">
+            <p>
+              Don't have an account?<a
+                id="createAccount"
+                href="https://chatapp1.b2clogin.com/chatapp1.onmicrosoft.com/B2C_1_ReactSignInSignUp/api/CombinedSigninAndSignup/unified?local=signup&amp;csrf_token=aURMWENyUHRIMGVFNjJGdjlhcnpSZXYyenp3bHF2WWNpUitMeGRxOUtIVVdUWDBGckNNVS9ZMkhoNWZZMzI0RzlaSExDNmdXc1FnWVlqeXJnQUlRU2c9PTsyMDI1LTEwLTE5VDE0OjU0OjE5LjYzMDM5NTRaO0YyMmpPUEhEQzFHTHhBcm5JREdIdkE9PTt7Ik9yY2hlc3RyYXRpb25TdGVwIjoxfQ==&amp;tx=StateProperties=eyJUSUQiOiIxMTAxNzgyOS05NDI4LTQ3MzQtODA5YS04OWYyYTQzMmM5OTcifQ&amp;p=B2C_1_ReactSignInSignUp"
+                >Sign up now</a
+              >
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
