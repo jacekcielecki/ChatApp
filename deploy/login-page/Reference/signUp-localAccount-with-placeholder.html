@@ -175,7 +175,7 @@
     }
 
     #api li {
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
     #api {
@@ -188,7 +188,25 @@
       justify-content: center;
       gap: 1rem;
       margin-top: 1rem;
+      flex-direction: row-reverse;
     }
+
+    #api button#cancel {
+      background-color: var(--color-white) !important;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    #api button#cancel:hover {
+      background-color: var(--color-secondary) !important;
+      color: var(--color-white);
+      border: 2px solid var(--color-white);
+    }
+
+    #api .sendCode {
+      margin-bottom: 20px;
+    }
+
 
     /* Responsive */
     @media (max-width: 768px) {
