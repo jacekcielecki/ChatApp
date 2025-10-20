@@ -48,14 +48,13 @@
         height: 100vh;
         display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 2rem;
+        padding: 1rem;
         overflow-y: auto;
       }
 
       #api {
         width: 100%;
-        max-width: 400px;
+        max-width: 500px;
         background: var(--color-white);
         text-align: center;
       }
@@ -165,6 +164,32 @@
         align-items: baseline;
         justify-content: space-between;
         margin-top: 0.4rem;
+      }
+
+      #api a.helpLink {
+        display: none;
+      }
+
+      #api ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #api li {
+        margin-top: 8px;
+      }
+
+      #api {
+        transform: scale(0.8);
+        transform-origin: top center;
+      }
+
+      #api form .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
       }
 
       /* Responsive */
