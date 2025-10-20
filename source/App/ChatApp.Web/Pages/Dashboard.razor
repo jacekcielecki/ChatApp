@@ -23,9 +23,16 @@
 
 		accessTokenResult.TryGetToken(out var accessToken);
 
-		_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken?.Value);
-		var response = await _httpClient.GetAsync("api/messages/getWelcomeMsg");
+		 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken?.Value);
 
-		_welcomeMsg = await response.Content.ReadAsStringAsync();
+         try
+         {
+             var response = await _httpClient.GetAsync("api/messages/getWelcomeMsg");
+             _welcomeMsg = await response.Content.ReadAsStringAsync();
+         }
+         catch (AccessTokenNotAvailableException ex)
+         {
+             ex.Redirect();
+         }
 	}
 }

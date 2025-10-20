@@ -2,11 +2,18 @@ using ChatApp.Api.Endpoints;
 using ChatApp.Chats;
 using ChatApp.Messages;
 using ChatApp.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("ChatApp.IntegrationTests")]
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
+
+builder.Services.AddAuthorization();
 
 builder.Services.RegisterChatsCore();
 builder.Services.RegisterMessagesCore();
@@ -15,25 +22,6 @@ builder.Services.RegisterUsersCore();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowBlazorClient",
-    policy =>
-    {
-        policy
-            .WithOrigins("https://localhost:7206")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-    options.AddPolicy("AllowReactClient",
-        policy =>
-        {
-            policy
-                .WithOrigins("http://localhost:5173/")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
 
 var app = builder.Build();
 
@@ -43,10 +31,16 @@ if (!app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowBlazorClient");
-app.UseCors("AllowReactClient");
+app.UseCors(policy => policy
+    .WithOrigins("https://localhost:7206", "http://localhost:5173")
+    .AllowAnyHeader()
+    .AllowAnyMethod());
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapUserEndpoints();
 app.MapChatEndpoints();
 app.MapVersionEndpoints();
