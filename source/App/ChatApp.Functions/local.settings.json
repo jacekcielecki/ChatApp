@@ -1,10 +1,16 @@
 {
   "IsEncrypted": false,
   "Values": {
+    "AzureAdB2C__Tenant": "chatapp1",
+    "AzureAdB2C__TenantId": "8f75e62f-5158-4d7d-86a0-9584206ea9b9",
+    "AzureAdB2C__ClientId": "ccd4b0a2-a0ba-4c63-8f50-1d81cdc77b06",
+    "AzureAdB2C__Audience": "dbb20fb6-078f-47ab-b7e3-ad51e35871c1",
+    "AzureAdB2C__Policy": "B2C_1_ReactSignInSignUp",
+
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
-    "DatabaseConnectionString": "Host=localhost;Port=5432;Database=chatappdb;Username=postgres;Password=36X9kJCsr&Rw5eieRw;",
+    "DatabaseConnectionString": "",
 
     "Cron_TimerFunction": "0 */10 * * * *",
     "AzureWebJobs.TimerFunction.Disabled": "true",
