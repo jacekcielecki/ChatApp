@@ -1,6 +1,5 @@
 ﻿using ChatApp.Messages.Commands;
 using ChatApp.Messages.Queries;
-using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
 using ChatApp.Users.Core.Details;
@@ -17,7 +16,7 @@ public static class MessageEndpoints
             .WithTags("Messages");
 
         messageEndpoints.Map("/GetWelcomeMsg",
-            () => Task.FromResult(TypedResults.Ok("This is a secure area only for authenticated users.")))
+            () => Task.FromResult(TypedResults.Ok("Web Api status: green.")))
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/",

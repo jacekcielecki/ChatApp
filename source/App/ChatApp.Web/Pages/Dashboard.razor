@@ -1,38 +1,21 @@
 ﻿@page "/dashboard"
 @attribute [Authorize]
-@inject IAccessTokenProvider _accessTokenProvider
-@inject HttpClient _httpClient
+@inject IHttpClientFactory _httpClientFactory
 
-<h1>@_welcomeMsg</h1>
+<h1>@_apiResponse</h1>
+<h1>@_functionsResponse</h1>
 
 @code  {
-	[CascadingParameter]
-	private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
-
-	private string _welcomeMsg = "Welcome to dashboard!";
+	private string _functionsResponse = "";
+	private string _apiResponse = "";
 
 	protected override async Task OnInitializedAsync()
 	{
-		await GetWelcomeMsg();
-	}
+		var apiClient = _httpClientFactory.CreateClient(HttpClients.ApiClient);
 
-	private async Task GetWelcomeMsg()
-	{
-		var authState = await AuthenticationState;
-		var accessTokenResult = await _accessTokenProvider.RequestAccessToken();
+		var apiCall = await apiClient.GetAsync("api/messages/getWelcomeMsg");
+		apiCall.EnsureSuccessStatusCode();
 
-		accessTokenResult.TryGetToken(out var accessToken);
-
-		 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken?.Value);
-
-         try
-         {
-             var response = await _httpClient.GetAsync("api/messages/getWelcomeMsg");
-             _welcomeMsg = await response.Content.ReadAsStringAsync();
-         }
-         catch (AccessTokenNotAvailableException ex)
-         {
-             ex.Redirect();
-         }
+		_apiResponse = await apiCall.Content.ReadAsStringAsync();
 	}
 }

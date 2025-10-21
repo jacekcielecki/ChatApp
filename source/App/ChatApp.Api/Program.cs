@@ -15,6 +15,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors();
+
 builder.Services.RegisterChatsCore();
 builder.Services.RegisterMessagesCore();
 builder.Services.RegisterUsersCore();
