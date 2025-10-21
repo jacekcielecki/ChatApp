@@ -1,6 +1,7 @@
 using ChatApp.Api.Endpoints;
 using ChatApp.Chats;
 using ChatApp.Messages;
+using ChatApp.Shared.Data;
 using ChatApp.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -14,6 +15,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
 
 builder.Services.AddAuthorization();
+
+var dbConnectionString = builder.Configuration[Envars.DatabaseConnectionString];
+Environment.SetEnvironmentVariable(Envars.DatabaseConnectionString, dbConnectionString);
 
 builder.Services.AddCors();
 
