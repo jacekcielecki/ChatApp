@@ -1,21 +1,28 @@
 ﻿@page "/dashboard"
 @attribute [Authorize]
 @inject IHttpClientFactory _httpClientFactory
+@inject IConfiguration _configuration
 
 <h1>@_apiResponse</h1>
 <h1>@_functionsResponse</h1>
 
 @code  {
-	private string _functionsResponse = "";
-	private string _apiResponse = "";
+    private string _functionsResponse = "";
+    private string _apiResponse = "";
 
-	protected override async Task OnInitializedAsync()
-	{
-		var apiClient = _httpClientFactory.CreateClient(HttpClients.ApiClient);
+    protected override async Task OnInitializedAsync()
+    {
+        var apiClient = _httpClientFactory.CreateClient(HttpClients.ApiClient);
+        var apiCall = await apiClient.GetAsync("api/messages/getWelcomeMsg");
+        apiCall.EnsureSuccessStatusCode();
 
-		var apiCall = await apiClient.GetAsync("api/messages/getWelcomeMsg");
-		apiCall.EnsureSuccessStatusCode();
+        _apiResponse = await apiCall.Content.ReadAsStringAsync();
 
-		_apiResponse = await apiCall.Content.ReadAsStringAsync();
-	}
+        var functionsClient = new HttpClient();
+        var url = _configuration["Functions:GetWelcomeMessageUrl"];
+        var functionsCall = await functionsClient.GetAsync(url);
+        functionsCall.EnsureSuccessStatusCode();
+
+        _functionsResponse = await functionsCall.Content.ReadAsStringAsync();
+    }
 }

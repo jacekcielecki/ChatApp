@@ -16,7 +16,7 @@ public static class MessageEndpoints
             .WithTags("Messages");
 
         messageEndpoints.Map("/GetWelcomeMsg",
-            () => Task.FromResult(TypedResults.Ok("Web Api status: green.")))
+            () => Task.FromResult(TypedResults.Text("Web Api status: green.")))
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/",
