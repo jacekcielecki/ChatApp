@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ChatApp.Shared.Data.Adapters.Entities;
+using ChatApp.Users.Core.Details;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker.Middleware;
@@ -13,6 +14,15 @@ namespace ChatApp.Functions.Authorization;
 
 public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
 {
+    private readonly GetUserByEmailRepository _getUserByEmailRepository;
+    private readonly CreateUserRepository _createUserRepository;
+
+    public AuthorizationMiddleware(GetUserByEmailRepository getUserByEmailRepository, CreateUserRepository createUserRepository)
+    {
+        _getUserByEmailRepository = getUserByEmailRepository;
+        _createUserRepository = createUserRepository;
+    }
+
     public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
     {
         var httpRequest = context.GetHttpContext()?.Request;
@@ -23,13 +33,13 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         if (string.IsNullOrWhiteSpace(authorizationToken))
         {
             await ReturnResponse(context, HttpStatusCode.Unauthorized, new { Error = "Authorization token not found." });
-            await next(context);
             return;
         }
 
         var authorizationResult = Authorize(authorizationToken);
-        if (authorizationResult.isAuthorized)
+        if (authorizationResult.IsAuthorized)
         {
+            await EnrichFunctionContext(context, authorizationResult.Claims.ToList());
             await next(context);
             return;
         }
@@ -48,7 +58,7 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         }
     }
 
-    private (bool isAuthorized, IEnumerable<Claim> claims) Authorize(string authorizationToken)
+    private (bool IsAuthorized, IEnumerable<Claim> Claims) Authorize(string authorizationToken)
     {
         var tenantId = Environment.GetEnvironmentVariable("AzureAdB2C__TenantId");
         var audience = Environment.GetEnvironmentVariable("AzureAdB2C__Audience");
@@ -85,5 +95,30 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         }
 
         return new (false, []);
+    }
+
+    private async Task EnrichFunctionContext(FunctionContext context, List<Claim> claims)
+    {
+        var email = claims.First(x => x.Type == "emails").Value;
+
+        var user = await _getUserByEmailRepository.Get(email);
+        if (user is null)
+        {
+            user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                GivenName = claims.First(x => x.Type == ClaimTypes.GivenName).Value,
+                FamilyName = claims.First(x => x.Type == ClaimTypes.Surname).Value,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _createUserRepository.Create(user);
+        }
+
+        user = await _getUserByEmailRepository.Get(email);
+        if (user is not null)
+        {
+            context.Items[nameof(User)] = user;
+        }
     }
 }
