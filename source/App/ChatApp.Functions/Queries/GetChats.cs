@@ -15,7 +15,7 @@ public class GetChats
     }
 
     [Function(nameof(GetChats))]
-    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
     {
         var chats = await _getChats.Get(req.User().Id);
         return Results.Ok(chats);

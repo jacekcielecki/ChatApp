@@ -14,7 +14,7 @@ public class GetUsersBySearchPhrase
     }
 
     [Function(nameof(GetUsersBySearchPhrase))]
-    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "get",
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get",
         Route = "GetUsersBySearchPhrase/{searchPhrase}")]
         HttpRequest req,
         string searchPhrase)

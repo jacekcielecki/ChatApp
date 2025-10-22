@@ -7,7 +7,7 @@ namespace ChatApp.Functions.Queries;
 public class GetUser
 {
     [Function(nameof(GetUser))]
-    public IResult Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
     {
         var user = req.User();
         return Results.Ok(user);

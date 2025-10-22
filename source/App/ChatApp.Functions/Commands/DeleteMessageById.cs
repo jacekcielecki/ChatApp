@@ -17,7 +17,7 @@ public class DeleteMessageById
 
     [Function(nameof(DeleteMessageById))]
     public async Task<Results<Ok, NotFound, ForbidHttpResult>> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "DeleteMessageById/{messageId}")] HttpRequest req, Guid messageId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "DeleteMessageById/{messageId}")] HttpRequest req, Guid messageId)
     {
         var result = await _deleteMessageById.Delete(messageId, req.User().Id);
 

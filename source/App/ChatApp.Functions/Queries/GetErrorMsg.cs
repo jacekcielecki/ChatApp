@@ -6,7 +6,7 @@ namespace ChatApp.Functions.Queries;
 public class GetErrorMsg
 {
     [Function(nameof(GetErrorMsg))]
-    public IResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
         throw new ArgumentOutOfRangeException(nameof(req), "There was an error when processing your request.");
     }
