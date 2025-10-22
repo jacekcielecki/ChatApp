@@ -3,6 +3,7 @@ using ChatApp.Chats.Queries;
 using ChatApp.Shared.Model.Chats;
 using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -15,7 +16,7 @@ public static class ChatEndpoints
             .WithTags("Chats");
 
         chatEndpoints.MapGet("/me",
-            async (GetChats getChats, ILoggedUserProvider loggedUserProvider) =>
+            async ([FromServices] GetChats getChats, [FromServices] ILoggedUserProvider loggedUserProvider) =>
             {
                 var user = await loggedUserProvider.Get();
                 var chats = await getChats.Get(user.Id);
@@ -25,7 +26,7 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/group",
-            async (CreateGroupChat createGroupChat, ILoggedUserProvider loggedUserProvider, GroupChatCreateApiDto dto) =>
+            async ([FromServices] CreateGroupChat createGroupChat, [FromServices] ILoggedUserProvider loggedUserProvider, [FromBody] GroupChatCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -41,7 +42,7 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/private",
-            async (CreatePrivateChat createPrivateChat, ILoggedUserProvider loggedUserProvider, PrivateChatCreateApiDto dto) =>
+            async ([FromServices] CreatePrivateChat createPrivateChat, [FromServices] ILoggedUserProvider loggedUserProvider, [FromBody] PrivateChatCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -56,7 +57,7 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPut("/group",
-            async (UpdateGroupChat updateGroupChat, ILoggedUserProvider loggedUserProvider, GroupChatUpdateApiDto dto) =>
+            async ([FromServices] UpdateGroupChat updateGroupChat, [FromServices] ILoggedUserProvider loggedUserProvider, [FromBody] GroupChatUpdateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 

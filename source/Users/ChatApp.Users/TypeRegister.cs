@@ -20,7 +20,6 @@ public static class TypeRegister
             return new DbConnectionFactory(dbConnectionString);
         });
 
-        services.AddTransient<ILoggedUserProvider, GetDummyLoggedUserProvider>();
         services.AddTransient<GetUserByEmailRepository>();
         services.AddTransient<GetUserByIdRepository>();
         services.AddTransient<GetUsersBySearchPhrase>();

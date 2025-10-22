@@ -1,8 +1,10 @@
+using ChatApp.Api;
 using ChatApp.Api.Endpoints;
 using ChatApp.Chats;
 using ChatApp.Messages;
 using ChatApp.Shared.Data;
 using ChatApp.Users;
+using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using System.Runtime.CompilerServices;
@@ -28,6 +30,7 @@ builder.Services.RegisterUsersCore();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ILoggedUserProvider, LoggedUserProvider>();
 
 var app = builder.Build();
 

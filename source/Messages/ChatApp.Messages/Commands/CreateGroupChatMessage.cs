@@ -19,7 +19,7 @@ public class CreateGroupChatMessage
         _createMessageRepository = createMessageRepository;
     }
 
-    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(GroupChatMessageCreateApiDto dto, Guid userId)
+    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(MessageCreateApiDto dto, Guid userId)
     {
         var validationErrors = ValidateRequest(dto);
         if (validationErrors.Any())
@@ -46,33 +46,33 @@ public class CreateGroupChatMessage
         return new Success<Guid?>(id);
     }
 
-    private Dictionary<string, string[]> ValidateRequest(GroupChatMessageCreateApiDto? request)
+    private Dictionary<string, string[]> ValidateRequest(MessageCreateApiDto? request)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
         if (request is null)
         {
-            validationErrors.Add(nameof(GroupChatMessageCreateApiDto), ["Request body not set"]);
+            validationErrors.Add(nameof(MessageCreateApiDto), ["Request body not set"]);
             return validationErrors;
         }
 
         var maxContentLength = 2000;
         if (request.Content.Length > maxContentLength)
         {
-            validationErrors.Add(nameof(GroupChatMessageCreateApiDto.Content), ["Message content maximum length is 2000 characters"]);
+            validationErrors.Add(nameof(MessageCreateApiDto.Content), ["Message content maximum length is 2000 characters"]);
         }
 
         return validationErrors;
     }
 
-    private async Task<Dictionary<string, string[]>> Authorize(GroupChatMessageCreateApiDto request, Guid userId)
+    private async Task<Dictionary<string, string[]>> Authorize(MessageCreateApiDto dto, Guid userId)
     {
         var errors = new Dictionary<string, string[]>();
 
-        var chat = await _getGroupChatByIdRepository.Get(request.ChatId);
+        var chat = await _getGroupChatByIdRepository.Get(dto.ChatId);
         if (chat is null)
         {
-            errors.Add(nameof(GroupChatMessageCreateApiDto.ChatId), ["Group chat with specified id not found"]);
+            errors.Add(nameof(MessageCreateApiDto.ChatId), ["Group chat with specified id not found"]);
             return errors;
         }
 

@@ -1,8 +1,8 @@
-﻿using ChatApp.Shared.Data.Adapters.Entities;
+﻿using ChatApp.Shared.Model.Users;
 
 namespace ChatApp.Users.Core.Details;
 
 public interface ILoggedUserProvider
 {
-    Task<User> Get();
+    Task<UserDto> Get();
 }

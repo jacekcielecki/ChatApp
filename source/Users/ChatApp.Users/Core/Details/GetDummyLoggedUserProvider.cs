@@ -1,4 +1,4 @@
-﻿using ChatApp.Shared.Data.Adapters.Entities;
+﻿using ChatApp.Shared.Model.Users;
 
 namespace ChatApp.Users.Core.Details;
 
@@ -11,7 +11,7 @@ public class GetDummyLoggedUserProvider : ILoggedUserProvider
         _getUserByEmailRepository = getUserByEmailRepository;
     }
 
-    public async Task<User> Get()
+    public async Task<UserDto> Get()
     {
         var email = "david@example.com";
 
@@ -21,6 +21,6 @@ public class GetDummyLoggedUserProvider : ILoggedUserProvider
             throw new KeyNotFoundException(email);
         }
 
-        return user;
+        return user.ToDto();
     }
 }

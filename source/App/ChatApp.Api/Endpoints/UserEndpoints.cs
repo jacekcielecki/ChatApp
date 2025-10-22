@@ -1,4 +1,5 @@
 ﻿using ChatApp.Users.Queries;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -11,7 +12,7 @@ public static class UserEndpoints
             .WithTags("Users");
 
         userEndpoints.MapGet("/me",
-            async (GetUser getUser) =>
+            async ([FromServices] GetUser getUser) =>
             {
                 var user = await getUser.Get();
                 return Results.Ok(user);
@@ -19,7 +20,7 @@ public static class UserEndpoints
             .RequireAuthorization();
 
         userEndpoints.MapGet("/search/{searchPhrase}",
-            async (GetUsersBySearchPhrase getUsers, string searchPhrase) =>
+            async ([FromServices] GetUsersBySearchPhrase getUsers, string searchPhrase) =>
             {
                 var users = await getUsers.Get(searchPhrase);
                 return Results.Ok(users);

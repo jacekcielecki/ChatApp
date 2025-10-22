@@ -4,6 +4,7 @@ using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
 using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
 
@@ -20,7 +21,7 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapGet("/",
-            async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesParamsDto paramsDto) =>
+            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] GetMessages getMessages, [FromBody] GetMessagesParamsDto paramsDto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -38,7 +39,7 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
-            async (ILoggedUserProvider loggedUserProvider, CreateGroupChatMessage createGroupChat, GroupChatMessageCreateApiDto dto) =>
+            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] CreateGroupChatMessage createGroupChat, [FromBody] MessageCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -54,7 +55,7 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-            async (ILoggedUserProvider loggedUserProvider, CreatePrivateChatMessage createPrivateChatMessage, PrivateChatCreateApiDto dto) =>
+            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] CreatePrivateChatMessage createPrivateChatMessage, [FromBody] MessageCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -70,7 +71,7 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPut("/",
-            async (ILoggedUserProvider loggedUserProvider, UpdateMessage updateMessage, MessageUpdateApiDto dto) =>
+            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] UpdateMessage updateMessage, [FromBody] MessageUpdateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
@@ -87,7 +88,7 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapDelete("/{id:guid}",
-            async (ILoggedUserProvider loggedUserProvider, DeleteMessageById deleteMessageById, Guid id) =>
+            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] DeleteMessageById deleteMessageById, Guid id) =>
             {
                 var user = await loggedUserProvider.Get();
 
