@@ -21,7 +21,7 @@ public class CreatePrivateChatIntegrationTests : IClassFixture<IntegrationTestFi
 
         var authenticatedUserId = Guid.Parse("98778b84-6108-45c0-b4b9-a7ac71059ce5");
         var existingUserId = Guid.Parse("ff32d4d0-86ca-41be-9157-9a2ce3d5bcd4");
-        var createPrivateChatRequest = new CreatePrivateChatRequest(existingUserId);
+        var createPrivateChatRequest = new PrivateChatCreateApiDto(existingUserId);
 
         var result = await createPrivateChat.Create(createPrivateChatRequest, authenticatedUserId);
 

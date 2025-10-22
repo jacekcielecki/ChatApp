@@ -21,11 +21,11 @@ public class GetMessages
     [Function(nameof(GetMessages))]
     public async Task<IResult> Run(
         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
-        [FromBody] GetMessagesRequest request)
+        [FromBody] GetMessagesParamsDto paramsDto)
     {
-        var result = await _getMessages.Get(request, req.User().Id);
+        var result = await _getMessages.Get(paramsDto, req.User().Id);
 
-        var response = result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+        var response = result.Match<Results<Ok<PagedResult<MessageDto>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
             success => TypedResults.Ok(success.Value),
             _ => TypedResults.NotFound(),
             _ => TypedResults.Forbid(),

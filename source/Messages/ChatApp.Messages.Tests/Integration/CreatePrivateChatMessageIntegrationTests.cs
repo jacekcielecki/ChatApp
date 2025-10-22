@@ -23,7 +23,7 @@ public class CreatePrivateChatMessageIntegrationTests : IClassFixture<Integratio
         var existingPrivateChatId = Guid.Parse("4398407C-7AAB-40AA-A88A-618B7E4F5701");
         var messageContent = "Hi, how are you?";
 
-        var request = new CreatePrivateChatMessageRequest(existingPrivateChatId, messageContent);
+        var request = new PrivateChatCreateApiDto(existingPrivateChatId, messageContent);
 
         var result = await createPrivateChatMessage.Create(request, authenticatedUserId);
 

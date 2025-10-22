@@ -24,15 +24,15 @@ public class UpdateGroupChat
         _updateGroupChatRepository = updateGroupChatRepository;
     }
 
-    public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> Update(UpdateGroupChatRequest request, Guid userId)
+    public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> Update(GroupChatUpdateApiDto dto, Guid userId)
     {
-        var chat = await _getGroupChatByIdRepository.Get(request.Id);
+        var chat = await _getGroupChatByIdRepository.Get(dto.Id);
         if (chat is null)
         {
             return new NotFound();
         }
 
-        var validationErrors = await ValidateRequest(request);
+        var validationErrors = await ValidateRequest(dto);
         if (validationErrors.Any())
         {
             return new ValidationErrors(validationErrors);
@@ -44,20 +44,26 @@ public class UpdateGroupChat
             return new Forbidden(authorizationErrors);
         }
 
-        var members = request.Members
+        var members = dto.Members
             .Append(userId)
             .Distinct()
-            .Select(x => new User { Id = x })
+            .Select(x => new User
+            {
+                Id = x,
+                Email = "",
+                GivenName = "",
+                FamilyName = ""
+            })
             .ToList();
 
-        chat.Name = request.Name;
+        chat.Name = dto.Name;
         chat.Members = members;
 
         await _updateGroupChatRepository.Update(chat);
         return new Success();
     }
 
-    private async Task<Dictionary<string, string[]>> ValidateRequest(UpdateGroupChatRequest request)
+    private async Task<Dictionary<string, string[]>> ValidateRequest(GroupChatUpdateApiDto request)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
@@ -66,7 +72,7 @@ public class UpdateGroupChat
             var member = await _getUserByIdRepository.Get(memberId);
             if (member is null)
             {
-                validationErrors.Add(nameof(UpdateGroupChatRequest.Members), [$"User with id {memberId} not found"]);
+                validationErrors.Add(nameof(GroupChatUpdateApiDto.Members), [$"User with id {memberId} not found"]);
             }
         }
 

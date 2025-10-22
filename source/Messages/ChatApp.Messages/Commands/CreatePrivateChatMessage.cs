@@ -19,15 +19,15 @@ public class CreatePrivateChatMessage
         _createMessageRepository = createMessageRepository;
     }
 
-    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(CreatePrivateChatMessageRequest request, Guid userId)
+    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(PrivateChatCreateApiDto dto, Guid userId)
     {
-        var validationErrors = ValidateRequest(request);
+        var validationErrors = ValidateRequest(dto);
         if (validationErrors.Any())
         {
             return new ValidationErrors(validationErrors);
         }
 
-        var authorizationErrors = await Authorize(request, userId);
+        var authorizationErrors = await Authorize(dto, userId);
         if (authorizationErrors.Any())
         {
             return new Forbidden(authorizationErrors);
@@ -36,8 +36,8 @@ public class CreatePrivateChatMessage
         var message = new Message
         {
             Id = Guid.NewGuid(),
-            ChatId = request.ChatId,
-            Content = request.Content,
+            ChatId = dto.ChatId,
+            Content = dto.Content,
             CreatedAt = DateTime.UtcNow,
             CreatedById = userId
         };
@@ -46,39 +46,39 @@ public class CreatePrivateChatMessage
         return new Success<Guid?>(id);
     }
 
-    private Dictionary<string, string[]> ValidateRequest(CreatePrivateChatMessageRequest? request)
+    private Dictionary<string, string[]> ValidateRequest(PrivateChatCreateApiDto? request)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
         if (request is null)
         {
-            validationErrors.Add(nameof(CreatePrivateChatMessageRequest), ["Request body not set"]);
+            validationErrors.Add(nameof(PrivateChatCreateApiDto), ["Request body not set"]);
             return validationErrors;
         }
 
         var maxContentLength = 2000;
         if (request.Content.Length > maxContentLength)
         {
-            validationErrors.Add(nameof(CreatePrivateChatMessageRequest.Content), ["Message content maximum length is 2000 characters"]);
+            validationErrors.Add(nameof(PrivateChatCreateApiDto.Content), ["Message content maximum length is 2000 characters"]);
         }
 
         return validationErrors;
     }
 
-    private async Task<Dictionary<string, string[]>> Authorize(CreatePrivateChatMessageRequest request, Guid userId)
+    private async Task<Dictionary<string, string[]>> Authorize(PrivateChatCreateApiDto request, Guid userId)
     {
         var errors = new Dictionary<string, string[]>();
 
         var chat = await _getPrivateChatByIdRepository.Get(request.ChatId);
         if (chat is null)
         {
-            errors.Add(nameof(CreatePrivateChatMessageRequest.ChatId), ["Private chat with specified id not found"]);
+            errors.Add(nameof(PrivateChatCreateApiDto.ChatId), ["Private chat with specified id not found"]);
             return errors;
         }
 
         if (userId != chat.FirstUserId && userId != chat.SecondUserId)
         {
-            errors.Add(nameof(CreatePrivateChatMessageRequest.ChatId), ["This user is not a member of specified chat"]);
+            errors.Add(nameof(PrivateChatCreateApiDto.ChatId), ["This user is not a member of specified chat"]);
             return errors;
         }
 

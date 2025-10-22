@@ -20,13 +20,13 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/",
-            async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesParamsDto paramsDto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await getMessages.Get(request, user.Id);
+                var result = await getMessages.Get(paramsDto, user.Id);
 
-                var response = result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
+                var response = result.Match<Results<Ok<PagedResult<MessageDto>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
                     _ => TypedResults.NotFound(),
                     _ => TypedResults.Forbid(),
@@ -38,15 +38,15 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/group",
-            async (ILoggedUserProvider loggedUserProvider, CreateGroupChatMessage createGroupChat, CreateGroupChatMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, CreateGroupChatMessage createGroupChat, GroupChatMessageCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await createGroupChat.Create(request, user.Id);
+                var result = await createGroupChat.Create(dto, user.Id);
 
                 var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    success => TypedResults.Ok(),
-                    forbidden => TypedResults.Forbid(),
+                    _ => TypedResults.Ok(),
+                    _ => TypedResults.Forbid(),
                     errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
 
                 return response;
@@ -54,15 +54,15 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPost("/private",
-            async (ILoggedUserProvider loggedUserProvider, CreatePrivateChatMessage createPrivateChatMessage, CreatePrivateChatMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, CreatePrivateChatMessage createPrivateChatMessage, PrivateChatCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await createPrivateChatMessage.Create(request, user.Id);
+                var result = await createPrivateChatMessage.Create(dto, user.Id);
 
                 var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    success => TypedResults.Ok(),
-                    forbidden => TypedResults.Forbid(),
+                    _ => TypedResults.Ok(),
+                    _ => TypedResults.Forbid(),
                     errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
 
                 return response;
@@ -70,11 +70,11 @@ public static class MessageEndpoints
             .RequireAuthorization();
 
         messageEndpoints.MapPut("/",
-            async (ILoggedUserProvider loggedUserProvider, UpdateMessage updateMessage, UpdateMessageRequest request) =>
+            async (ILoggedUserProvider loggedUserProvider, UpdateMessage updateMessage, MessageUpdateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await updateMessage.Update(request, user.Id);
+                var result = await updateMessage.Update(dto, user.Id);
 
                 var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),
@@ -94,9 +94,9 @@ public static class MessageEndpoints
                 var result = await deleteMessageById.Delete(id, user.Id);
 
                 var response = result.Match<Results<Ok, NotFound, ForbidHttpResult>>(
-                    success => TypedResults.Ok(),
-                    notFound => TypedResults.NotFound(),
-                    forbidden => TypedResults.Forbid());
+                    _ => TypedResults.Ok(),
+                    _ => TypedResults.NotFound(),
+                    _ => TypedResults.Forbid());
 
                 return response;
             })

@@ -26,17 +26,17 @@ public class GetMessages
         _getMessagesRepository = getMessagesRepository;
     }
 
-    public async Task<OneOf<Success<PagedResult<MessageResponse>>, NotFound, Forbidden, ValidationErrors>> Get(GetMessagesRequest request, Guid userId)
+    public async Task<OneOf<Success<PagedResult<MessageDto>>, NotFound, Forbidden, ValidationErrors>> Get(GetMessagesParamsDto paramsDto, Guid userId)
     {
-        var validationErrors = ValidateRequest(request);
+        var validationErrors = ValidateRequest(paramsDto);
         if (validationErrors.Any())
         {
             return new ValidationErrors(validationErrors);
         }
 
-        if (request.ChatType is ChatType.Private)
+        if (paramsDto.ChatType is ChatType.Private)
         {
-            var privateChat = await _getPrivateChatByIdRepository.Get(request.ChatId);
+            var privateChat = await _getPrivateChatByIdRepository.Get(paramsDto.ChatId);
             if (privateChat is null)
             {
                 return new NotFound();
@@ -47,9 +47,9 @@ public class GetMessages
             }
         }
 
-        if (request.ChatType is ChatType.Group)
+        if (paramsDto.ChatType is ChatType.Group)
         {
-            var groupChat = await _getGroupChatByIdRepository.Get(request.ChatId);
+            var groupChat = await _getGroupChatByIdRepository.Get(paramsDto.ChatId);
             if (groupChat is null)
             {
                 return new NotFound();
@@ -60,29 +60,29 @@ public class GetMessages
             }
         }
 
-        var skip = request.PageSize * (request.PageNumber - 1);
-        var take = request.PageSize;
+        var skip = paramsDto.PageSize * (paramsDto.PageNumber - 1);
+        var take = paramsDto.PageSize;
 
-        var messages = await _getMessagesRepository.Get(request.ChatId, skip, take);
+        var messages = await _getMessagesRepository.Get(paramsDto.ChatId, skip, take);
 
-        var messagesPaged = new PagedResult<MessageResponse>(
-            messages.Items.Select(x => x.ToResponse()),
+        var messagesPaged = new PagedResult<MessageDto>(
+            messages.Items.Select(x => x.ToDto()),
             messages.TotalMessagesCount,
-            request.PageSize,
-            request.PageNumber);
+            paramsDto.PageSize,
+            paramsDto.PageNumber);
 
-        var result = new Success<PagedResult<MessageResponse>>(messagesPaged);
+        var result = new Success<PagedResult<MessageDto>>(messagesPaged);
         return result;
     }
 
-    private Dictionary<string, string[]> ValidateRequest(GetMessagesRequest request)
+    private Dictionary<string, string[]> ValidateRequest(GetMessagesParamsDto paramsDto)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
         const int maxPageSize = 200;
-        if (request.PageSize > maxPageSize)
+        if (paramsDto.PageSize > maxPageSize)
         {
-            validationErrors.Add(nameof(GetMessagesRequest.PageSize), ["Max page size is equal 200 messages"]);
+            validationErrors.Add(nameof(GetMessagesParamsDto.PageSize), ["Max page size is equal 200 messages"]);
         }
 
         return validationErrors;

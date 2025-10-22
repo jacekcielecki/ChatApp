@@ -18,9 +18,9 @@ public class UpdateGroupChat
     }
 
     [Function(nameof(UpdateGroupChat))]
-    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req, [FromBody] UpdateGroupChatRequest request)
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req, [FromBody] GroupChatUpdateApiDto dto)
     {
-        var result = await _updateGroupChat.Update(request, req.User().Id);
+        var result = await _updateGroupChat.Update(dto, req.User().Id);
 
         var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
             _ => TypedResults.Ok(),

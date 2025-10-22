@@ -23,7 +23,7 @@ public class CreateGroupChatMessageIntegrationTests : IClassFixture<IntegrationT
         var existingUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
         var messageContent = "Hi Guys!";
         
-        var request = new CreateGroupChatMessageRequest(existingGroupChatId, messageContent);
+        var request = new GroupChatMessageCreateApiDto(existingGroupChatId, messageContent);
 
         var result = await createGroupChatMessage.Create(request, existingUserId);
 

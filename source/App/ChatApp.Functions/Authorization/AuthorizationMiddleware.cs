@@ -121,7 +121,7 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
             throw new Exception("User context not found in Function context.");
         }
 
-        context.Items.Add(new KeyValuePair<object, object>("User", user.ToResponse()));
-        context.GetHttpContext()?.Items.Add(new KeyValuePair<object, object?>("User", user.ToResponse()));
+        context.Items.Add(new KeyValuePair<object, object>("User", user.ToDto()));
+        context.GetHttpContext()?.Items.Add(new KeyValuePair<object, object?>("User", user.ToDto()));
     }
 }

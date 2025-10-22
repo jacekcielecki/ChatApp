@@ -1,6 +1,6 @@
-﻿namespace ChatApp.Shared.Data.Adapters.Entities;
+﻿namespace ChatApp.Shared.Model.Users;
 
-public class User
+public class UserDto
 {
     public Guid Id { get; set; }
     public required string Email { get; set; }

@@ -2,8 +2,9 @@
 
 namespace ChatApp.Shared.Model.Messages;
 
-public record GetMessagesRequest(
+public record GetMessagesParamsDto(
     Guid ChatId,
     ChatType ChatType,
     int PageSize, 
-    int PageNumber);
+    int PageNumber
+);

@@ -20,9 +20,9 @@ public class UpdateMessage
     [Function(nameof(UpdateMessage))]
     public async Task<IResult> Run(
         [HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req,
-        [FromBody] UpdateMessageRequest request)
+        [FromBody] MessageUpdateApiDto dto)
     {
-        var result = await _updateMessage.Update(request, req.User().Id);
+        var result = await _updateMessage.Update(dto, req.User().Id);
 
         var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
             _ => TypedResults.Ok(),

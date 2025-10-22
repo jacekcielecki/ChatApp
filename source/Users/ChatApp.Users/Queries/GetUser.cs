@@ -12,10 +12,10 @@ public class GetUser
         _loggedUserProvider = loggedUserProvider;
     }
 
-    public async Task<UserResponse> Get()
+    public async Task<UserDto> Get()
     {
         var user = await _loggedUserProvider.Get();
-        var response = user.ToResponse();
+        var response = user.ToDto();
 
         return response;
     }

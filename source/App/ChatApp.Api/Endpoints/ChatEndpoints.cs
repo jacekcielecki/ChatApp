@@ -25,11 +25,11 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/group",
-            async (CreateGroupChat createGroupChat, ILoggedUserProvider loggedUserProvider, CreateGroupChatRequest request) =>
+            async (CreateGroupChat createGroupChat, ILoggedUserProvider loggedUserProvider, GroupChatCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await createGroupChat.Create(request, user.Id);
+                var result = await createGroupChat.Create(dto, user.Id);
 
                 var response = result.Match<Results<Ok<Guid?>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
@@ -41,11 +41,11 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPost("/private",
-            async (CreatePrivateChat createPrivateChat, ILoggedUserProvider loggedUserProvider, CreatePrivateChatRequest request) =>
+            async (CreatePrivateChat createPrivateChat, ILoggedUserProvider loggedUserProvider, PrivateChatCreateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await createPrivateChat.Create(request, user.Id);
+                var result = await createPrivateChat.Create(dto, user.Id);
 
                 var response = result.Match<Results<Ok<Guid?>, BadRequest<HttpValidationProblemDetails>>>(
                     success => TypedResults.Ok(success.Value),
@@ -56,11 +56,11 @@ public static class ChatEndpoints
             .RequireAuthorization();
 
         chatEndpoints.MapPut("/",
-            async (UpdateGroupChat updateGroupChat, ILoggedUserProvider loggedUserProvider, UpdateGroupChatRequest request) =>
+            async (UpdateGroupChat updateGroupChat, ILoggedUserProvider loggedUserProvider, GroupChatUpdateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
 
-                var result = await updateGroupChat.Update(request, user.Id);
+                var result = await updateGroupChat.Update(dto, user.Id);
 
                 var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
                     _ => TypedResults.Ok(),

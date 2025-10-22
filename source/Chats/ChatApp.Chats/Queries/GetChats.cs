@@ -15,16 +15,18 @@ public class GetChats
         _getPrivateChatsRepository = getPrivateChatsRepository;
     }
 
-    public async Task<GetChatResponse> Get(Guid userId)
+    public async Task<List<ChatDto>> Get(Guid userId)
     {
         var privateChats = _getPrivateChatsRepository.Get(userId);
         var groupChats = _getGroupChatsRepository.Get(userId);
 
         await Task.WhenAll(groupChats, privateChats);
 
-        var response = new GetChatResponse(
-            privateChats.Result.ToResponse(),
-            groupChats.Result.ToResponse());
+        var response = new List<ChatDto>()
+            .Concat(privateChats.Result.Select(x => x.ToDto()))
+            .Concat(groupChats.Result.Select(x => x.ToDto()))
+            .OrderByDescending(x => x.Messages.FirstOrDefault()?.CreatedAt)
+            .ToList();
 
         return response;
     }

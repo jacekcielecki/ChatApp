@@ -22,6 +22,6 @@ public class GetChatsIntegrationTest : IClassFixture<IntegrationTestFixture>
         var result = await getChats.Get(authenticatedUserId);
 
         Assert.NotNull(result);
-        Assert.True(result.PrivateChats.Any(x => x.Id == existingChatId));
+        Assert.Contains(result, x => x.Id == existingChatId);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ChatApp.Chats.Core.Group;
-using ChatApp.Messages.Core;
 using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Messages;
@@ -20,15 +19,15 @@ public class CreateGroupChatMessage
         _createMessageRepository = createMessageRepository;
     }
 
-    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(CreateGroupChatMessageRequest request, Guid userId)
+    public async Task<OneOf<Success<Guid?>, Forbidden, ValidationErrors>> Create(GroupChatMessageCreateApiDto dto, Guid userId)
     {
-        var validationErrors = ValidateRequest(request);
+        var validationErrors = ValidateRequest(dto);
         if (validationErrors.Any())
         {
             return new ValidationErrors(validationErrors);
         }
 
-        var authorizationErrors = await Authorize(request, userId);
+        var authorizationErrors = await Authorize(dto, userId);
         if (authorizationErrors.Any())
         {
             return new Forbidden(authorizationErrors);
@@ -37,8 +36,8 @@ public class CreateGroupChatMessage
         var message = new Message
         {
             Id = Guid.NewGuid(),
-            ChatId = request.ChatId,
-            Content = request.Content,
+            ChatId = dto.ChatId,
+            Content = dto.Content,
             CreatedAt = DateTime.UtcNow,
             CreatedById = userId
         };
@@ -47,33 +46,33 @@ public class CreateGroupChatMessage
         return new Success<Guid?>(id);
     }
 
-    private Dictionary<string, string[]> ValidateRequest(CreateGroupChatMessageRequest? request)
+    private Dictionary<string, string[]> ValidateRequest(GroupChatMessageCreateApiDto? request)
     {
         var validationErrors = new Dictionary<string, string[]>();
 
         if (request is null)
         {
-            validationErrors.Add(nameof(CreateGroupChatMessageRequest), ["Request body not set"]);
+            validationErrors.Add(nameof(GroupChatMessageCreateApiDto), ["Request body not set"]);
             return validationErrors;
         }
 
         var maxContentLength = 2000;
         if (request.Content.Length > maxContentLength)
         {
-            validationErrors.Add(nameof(CreateGroupChatMessageRequest.Content), ["Message content maximum length is 2000 characters"]);
+            validationErrors.Add(nameof(GroupChatMessageCreateApiDto.Content), ["Message content maximum length is 2000 characters"]);
         }
 
         return validationErrors;
     }
 
-    private async Task<Dictionary<string, string[]>> Authorize(CreateGroupChatMessageRequest request, Guid userId)
+    private async Task<Dictionary<string, string[]>> Authorize(GroupChatMessageCreateApiDto request, Guid userId)
     {
         var errors = new Dictionary<string, string[]>();
 
         var chat = await _getGroupChatByIdRepository.Get(request.ChatId);
         if (chat is null)
         {
-            errors.Add(nameof(CreateGroupChatMessageRequest.ChatId), ["Group chat with specified id not found"]);
+            errors.Add(nameof(GroupChatMessageCreateApiDto.ChatId), ["Group chat with specified id not found"]);
             return errors;
         }
 

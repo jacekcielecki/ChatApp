@@ -26,10 +26,10 @@ public class GetMessagesIntegrationTests : IClassFixture<IntegrationTestFixture>
 
         const int pageSize = 5;
         const int pageNumber = 1;
-        var request = new GetMessagesRequest(existingGroupChatId, ChatType.Group, pageSize, pageNumber);
+        var request = new GetMessagesParamsDto(existingGroupChatId, ChatType.Group, pageSize, pageNumber);
 
         var result = await getMessages.Get(request, existingUserId);
 
-        Assert.Equal(typeof(Success<PagedResult<MessageResponse>>), result.Value.GetType());
+        Assert.Equal(typeof(Success<PagedResult<MessageDto>>), result.Value.GetType());
     }
 }
