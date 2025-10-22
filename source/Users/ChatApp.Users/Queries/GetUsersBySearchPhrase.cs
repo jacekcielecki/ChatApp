@@ -1,4 +1,5 @@
-﻿using ChatApp.Users.Core.Summary;
+﻿using ChatApp.Shared.Model.Users;
+using ChatApp.Users.Core.Summary;
 
 namespace ChatApp.Users.Queries;
 
@@ -11,9 +12,9 @@ public class GetUsersBySearchPhrase
         _getUsersBySearchPhraseRepository = getUsersBySearchPhraseRepository;
     }
 
-    public async Task<string[]> Get(string searchPhrase)
+    public async Task<IEnumerable<UserSummaryDto>> Get(string searchPhrase)
     {
-        var emails = await _getUsersBySearchPhraseRepository.Get(searchPhrase);
-        return emails;
+        var users = await _getUsersBySearchPhraseRepository.Get(searchPhrase);
+        return users;
     }
 }

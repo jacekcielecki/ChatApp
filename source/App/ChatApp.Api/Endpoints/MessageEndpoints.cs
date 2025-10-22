@@ -19,7 +19,7 @@ public static class MessageEndpoints
             () => Task.FromResult(TypedResults.Text("Web Api status: green.")))
             .RequireAuthorization();
 
-        messageEndpoints.MapPost("/",
+        messageEndpoints.MapGet("/",
             async (ILoggedUserProvider loggedUserProvider, GetMessages getMessages, GetMessagesParamsDto paramsDto) =>
             {
                 var user = await loggedUserProvider.Get();

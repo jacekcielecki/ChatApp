@@ -107,9 +107,9 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
             user = new User
             {
                 Id = Guid.NewGuid(),
-                Email = email,
-                GivenName = claims.First(x => x.Type == ClaimTypes.GivenName).Value,
-                FamilyName = claims.First(x => x.Type == ClaimTypes.Surname).Value,
+                Email = email.Trim(),
+                GivenName = claims.First(x => x.Type == ClaimTypes.GivenName).Value.Trim(),
+                FamilyName = claims.First(x => x.Type == ClaimTypes.Surname).Value.Trim(),
                 CreatedAt = DateTime.UtcNow
             };
             await _createUserRepository.Create(user);

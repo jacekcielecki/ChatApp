@@ -20,7 +20,7 @@ public class GetMessages
 
     [Function(nameof(GetMessages))]
     public async Task<IResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req,
         [FromBody] GetMessagesParamsDto paramsDto)
     {
         var result = await _getMessages.Get(paramsDto, req.User().Id);

@@ -25,7 +25,7 @@ public class GetChats
         var response = new List<ChatDto>()
             .Concat(privateChats.Result.Select(x => x.ToDto()))
             .Concat(groupChats.Result.Select(x => x.ToDto()))
-            .OrderByDescending(x => x.Messages.FirstOrDefault()?.CreatedAt)
+            .OrderByDescending(x => x.Messages.FirstOrDefault()?.CreatedAt is null ? x.CreatedAt : x.Messages.FirstOrDefault()?.CreatedAt)
             .ToList();
 
         return response;

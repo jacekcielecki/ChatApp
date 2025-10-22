@@ -22,7 +22,7 @@ public class GetGroupChatsRepository
             """
             SELECT
              gc.id, gc.name, gc.created_at, gc.created_by_id,
-             u.id, u.email, u.created_at,
+             u.id, u.email, u.given_name, u.family_name, u.created_at,
              me.id, me.chat_id, me.created_at, me.created_by_id, me.content
             FROM group_chats gc
             LEFT JOIN group_chats_users gcu ON gcu.group_chat_id = gc.id

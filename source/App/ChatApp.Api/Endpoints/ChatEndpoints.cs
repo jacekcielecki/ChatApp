@@ -55,7 +55,7 @@ public static class ChatEndpoints
             })
             .RequireAuthorization();
 
-        chatEndpoints.MapPut("/",
+        chatEndpoints.MapPut("/group",
             async (UpdateGroupChat updateGroupChat, ILoggedUserProvider loggedUserProvider, GroupChatUpdateApiDto dto) =>
             {
                 var user = await loggedUserProvider.Get();
