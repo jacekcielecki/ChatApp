@@ -27,6 +27,7 @@ public static class TypeRegister
         services.AddTransient<GetUsersBySearchPhraseRepository>();
         services.AddTransient<GetUser>();
         services.AddTransient<CreateUserRepository>();
+        services.AddTransient<GetOrCreateUserFromClaims>();
 
         return services;
     }
