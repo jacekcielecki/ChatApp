@@ -3,7 +3,6 @@ using ChatApp.Messages.Queries;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
 using ChatApp.Users.Core.Details;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Api.Endpoints;
@@ -12,95 +11,147 @@ public static class MessageEndpoints
 {
     public static void MapMessageEndpoints(this WebApplication app)
     {
-        var messageEndpoints = app
+        var api = app
             .MapGroup("/api/messages")
-            .WithTags("Messages");
-
-        messageEndpoints.Map("/GetWelcomeMsg",
-            () => Task.FromResult(TypedResults.Text("Web Api status: green.")))
+            .WithTags("Messages")
             .RequireAuthorization();
 
-        messageEndpoints.MapGet("/",
-            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] GetMessages getMessages, [FromBody] GetMessagesParamsDto paramsDto) =>
-            {
-                var user = await loggedUserProvider.Get();
+        // GET /api/messages/GetWelcomeMsg
+        api.MapGet("/GetWelcomeMsg", () => TypedResults.Text("Web API status: green."))
+            .WithName("GetWelcomeMessage")
+            .WithSummary("Returns a basic health/status message.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
 
-                var result = await getMessages.Get(paramsDto, user.Id);
+        // GET /api/messages
+        api.MapGet("/", GetMessagesPaged)
+            .WithName("GetMessages")
+            .WithSummary("Get messages from specified chat with pagination.")
+            .Produces<PagedResult<MessageDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
+            .ProducesValidationProblem();
 
-                var response = result.Match<Results<Ok<PagedResult<MessageDto>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    success => TypedResults.Ok(success.Value),
-                    _ => TypedResults.NotFound(),
-                    _ => TypedResults.Forbid(),
-                    err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
-                );
+        // POST /api/messages/group
+        api.MapPost("/group", CreateGroupMessage)
+            .WithName("CreateGroupMessage")
+            .WithSummary("Create a new message in a group chat.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .ProducesValidationProblem();
 
-                return response;
-            })
-            .RequireAuthorization();
+        // POST /api/messages/private
+        api.MapPost("/private", CreatePrivateMessage)
+            .WithName("CreatePrivateMessage")
+            .WithSummary("Create a new message in a private chat.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .ProducesValidationProblem();
 
-        messageEndpoints.MapPost("/group",
-            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] CreateGroupChatMessage createGroupChat, [FromBody] MessageCreateApiDto dto) =>
-            {
-                var user = await loggedUserProvider.Get();
+        // PUT /api/messages
+        api.MapPut("/", UpdateMessage)
+            .WithName("UpdateMessage")
+            .WithSummary("Update an existing message.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
+            .ProducesValidationProblem();
 
-                var result = await createGroupChat.Create(dto, user.Id);
+        // DELETE /api/messages/{id}
+        api.MapDelete("/{id:guid}", DeleteMessage)
+            .WithName("DeleteMessage")
+            .WithSummary("Delete a message by its ID.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound);
 
-                var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.Forbid(),
-                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+        // -------------------- Handlers --------------------
 
-                return response;
-            })
-            .RequireAuthorization();
+        async Task<IResult> GetMessagesPaged(
+            ILoggedUserProvider loggedUserProvider,
+            GetMessages getMessages,
+            [FromBody] GetMessagesParamsDto paramsDto)
+        {
+            var user = await loggedUserProvider.Get();
 
-        messageEndpoints.MapPost("/private",
-            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] CreatePrivateChatMessage createPrivateChatMessage, [FromBody] MessageCreateApiDto dto) =>
-            {
-                var user = await loggedUserProvider.Get();
+            var result = await getMessages.Get(paramsDto, user.Id);
 
-                var result = await createPrivateChatMessage.Create(dto, user.Id);
+            return result.Match<IResult>(
+                success => TypedResults.Ok(success.Value),
+                _ => TypedResults.NotFound(),
+                _ => TypedResults.Forbid(),
+                err => TypedResults.BadRequest(new HttpValidationProblemDetails(err.Errors))
+            );
+        }
 
-                var response = result.Match<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.Forbid(),
-                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+        async Task<IResult> CreateGroupMessage(
+            ILoggedUserProvider loggedUserProvider,
+            CreateGroupChatMessage createGroupChat,
+            MessageCreateApiDto dto)
+        {
+            var user = await loggedUserProvider.Get();
 
-                return response;
-            })
-            .RequireAuthorization();
+            var result = await createGroupChat.Create(dto, user.Id);
 
-        messageEndpoints.MapPut("/",
-            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] UpdateMessage updateMessage, [FromBody] MessageUpdateApiDto dto) =>
-            {
-                var user = await loggedUserProvider.Get();
+            return result.Match<IResult>(
+                _ => TypedResults.Ok(),
+                _ => TypedResults.Forbid(),
+                errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors))
+            );
+        }
 
-                var result = await updateMessage.Update(dto, user.Id);
+        async Task<IResult> CreatePrivateMessage(
+            ILoggedUserProvider loggedUserProvider,
+            CreatePrivateChatMessage createPrivateChatMessage,
+            MessageCreateApiDto dto)
+        {
+            var user = await loggedUserProvider.Get();
 
-                var response = result.Match<Results<Ok, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.NotFound(),
-                    _ => TypedResults.Forbid(),
-                    errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors)));
+            var result = await createPrivateChatMessage.Create(dto, user.Id);
 
-                return response;
-            })
-            .RequireAuthorization();
+            return result.Match<IResult>(
+                _ => TypedResults.Ok(),
+                _ => TypedResults.Forbid(),
+                errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors))
+            );
+        }
 
-        messageEndpoints.MapDelete("/{id:guid}",
-            async ([FromServices] ILoggedUserProvider loggedUserProvider, [FromServices] DeleteMessageById deleteMessageById, Guid id) =>
-            {
-                var user = await loggedUserProvider.Get();
+        async Task<IResult> UpdateMessage(
+            ILoggedUserProvider loggedUserProvider,
+            UpdateMessage updateMessage,
+            MessageUpdateApiDto dto)
+        {
+            var user = await loggedUserProvider.Get();
 
-                var result = await deleteMessageById.Delete(id, user.Id);
+            var result = await updateMessage.Update(dto, user.Id);
 
-                var response = result.Match<Results<Ok, NotFound, ForbidHttpResult>>(
-                    _ => TypedResults.Ok(),
-                    _ => TypedResults.NotFound(),
-                    _ => TypedResults.Forbid());
+            return result.Match<IResult>(
+                _ => TypedResults.Ok(),
+                _ => TypedResults.NotFound(),
+                _ => TypedResults.Forbid(),
+                errors => TypedResults.BadRequest(new HttpValidationProblemDetails(errors.Errors))
+            );
+        }
 
-                return response;
-            })
-            .RequireAuthorization();
+        async Task<IResult> DeleteMessage(
+            ILoggedUserProvider loggedUserProvider,
+            DeleteMessageById deleteMessageById,
+            Guid id)
+        {
+            var user = await loggedUserProvider.Get();
+
+            var result = await deleteMessageById.Delete(id, user.Id);
+
+            return result.Match<IResult>(
+                _ => TypedResults.Ok(),
+                _ => TypedResults.NotFound(),
+                _ => TypedResults.Forbid()
+            );
+        }
     }
 }
