@@ -12,11 +12,16 @@ public class CreateGroupChat
 {
     private readonly GetUserByIdRepository _getUserByIdRepository;
     private readonly CreateGroupChatRepository _createGroupChatRepository;
+    private readonly AddUsersToGroupChatRepository _addUsersToGroupChatRepository;
 
-    public CreateGroupChat(GetUserByIdRepository getUserByIdRepository, CreateGroupChatRepository createGroupChatRepository)
+    public CreateGroupChat(
+        GetUserByIdRepository getUserByIdRepository,
+        CreateGroupChatRepository createGroupChatRepository,
+        AddUsersToGroupChatRepository addUsersToGroupChatRepository)
     {
         _getUserByIdRepository = getUserByIdRepository;
         _createGroupChatRepository = createGroupChatRepository;
+        _addUsersToGroupChatRepository = addUsersToGroupChatRepository;
     }
 
     public async Task<OneOf<Success<Guid?>, ValidationErrors>> Create(GroupChatCreateApiDto dto, Guid userId)
@@ -40,19 +45,12 @@ public class CreateGroupChat
         var members = dto.Members
             .Append(userId)
             .Distinct()
-            .Select(x => new User
-            {
-                Id = x,
-                Email = "",
-                GivenName = "",
-                FamilyName = ""
-            })
             .ToList();
 
-        chat.Members = members;
+        await _createGroupChatRepository.Create(chat);
+        await _addUsersToGroupChatRepository.Add(members, chat.Id);
 
-        var id = await _createGroupChatRepository.Create(chat);
-        return new Success<Guid?>(id);
+        return new Success<Guid?>(chat.Id);
     }
 
     private async Task<Dictionary<string, string[]>> ValidateRequest(GroupChatCreateApiDto? request)

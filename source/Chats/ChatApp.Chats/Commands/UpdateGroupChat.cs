@@ -47,17 +47,18 @@ public class UpdateGroupChat
         var members = dto.Members
             .Append(userId)
             .Distinct()
-            .Select(x => new User
-            {
-                Id = x,
-                Email = "",
-                GivenName = "",
-                FamilyName = ""
-            })
             .ToList();
 
         chat.Name = dto.Name;
-        chat.Members = members;
+
+        foreach (var memberId in members)
+        {
+            var member = await _getUserByIdRepository.Get(memberId);
+            if (member is not null)
+            {
+                chat.Members.Add(member);
+            }
+        }
 
         await _updateGroupChatRepository.Update(chat);
         return new Success();

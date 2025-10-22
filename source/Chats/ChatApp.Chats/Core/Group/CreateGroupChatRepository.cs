@@ -1,5 +1,4 @@
-﻿using ChatApp.Chats.Core.Members;
-using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
+﻿using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using ChatApp.Shared.Data.Adapters.Entities;
 using Dapper;
 
@@ -8,12 +7,10 @@ namespace ChatApp.Chats.Core.Group;
 public class CreateGroupChatRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
-    private readonly AddUsersToGroupChatRepository _addUsersToGroupChatRepository;
 
-    public CreateGroupChatRepository(IDbConnectionFactory dbConnectionFactory, AddUsersToGroupChatRepository addUsersToGroupChatRepository)
+    public CreateGroupChatRepository(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
-        _addUsersToGroupChatRepository = addUsersToGroupChatRepository;
     }
 
     public async Task<Guid?> Create(GroupChat chat)
@@ -35,8 +32,6 @@ public class CreateGroupChatRepository
             created_at = chat.CreatedAt,
             created_by_id = chat.CreatedById
         });
-
-        await _addUsersToGroupChatRepository.Add(chat.Members, chatId);
 
         return chatId;
     }

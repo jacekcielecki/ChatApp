@@ -22,6 +22,7 @@ public static class TypeRegister
 
         services.AddTransient<ILoggedUserProvider, GetDummyLoggedUserProvider>();
         services.AddTransient<GetUserByEmailRepository>();
+        services.AddTransient<GetUserByIdRepository>();
         services.AddTransient<GetUsersBySearchPhrase>();
         services.AddTransient<GetUsersBySearchPhraseRepository>();
         services.AddTransient<GetUser>();

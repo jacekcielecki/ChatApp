@@ -37,6 +37,6 @@ public class UpdateGroupChatRepository
         await connection.ExecuteScalarAsync(sql, new { name = groupChat.Name, id = groupChat.Id });
 
         await _removeUsersFromGroupChatRepository.Delete(groupChat.Id);
-        await _addUsersToGroupChatRepository.Add(groupChat.Members, groupChat.Id);
+        await _addUsersToGroupChatRepository.Add(groupChat.Members.Select(x => x.Id).ToList(), groupChat.Id);
     }
 }
