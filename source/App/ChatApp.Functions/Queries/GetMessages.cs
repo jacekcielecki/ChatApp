@@ -1,6 +1,6 @@
+using ChatApp.Functions.Authorization;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
-using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Azure.Functions.Worker;
@@ -11,13 +11,11 @@ namespace ChatApp.Functions.Queries;
 
 public class GetMessages
 {
-    private readonly ILoggedUserProvider _loggedUserProvider;
     private readonly Core.GetMessages _getMessages;
 
-    public GetMessages(Core.GetMessages getMessages, ILoggedUserProvider loggedUserProvider)
+    public GetMessages(Core.GetMessages getMessages)
     {
         _getMessages = getMessages;
-        _loggedUserProvider = loggedUserProvider;
     }
 
     [Function(nameof(GetMessages))]
@@ -25,9 +23,7 @@ public class GetMessages
         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
         [FromBody] GetMessagesRequest request)
     {
-        var user = await _loggedUserProvider.Get();
-
-        var result = await _getMessages.Get(request, user.Id);
+        var result = await _getMessages.Get(request, req.User().Id);
 
         var response = result.Match<Results<Ok<PagedResult<MessageResponse>>, NotFound, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>>(
             success => TypedResults.Ok(success.Value),

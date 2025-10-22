@@ -18,7 +18,7 @@
 
         _apiResponse = await apiCall.Content.ReadAsStringAsync();
 
-        var functionsClient = new HttpClient();
+        var functionsClient = _httpClientFactory.CreateClient(HttpClients.ApiClient);
         var url = _configuration["Functions:GetWelcomeMessageUrl"];
         var functionsCall = await functionsClient.GetAsync(url);
         functionsCall.EnsureSuccessStatusCode();

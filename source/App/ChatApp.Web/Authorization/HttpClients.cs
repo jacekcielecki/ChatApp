@@ -3,4 +3,5 @@
 public class HttpClients
 {
     public const string ApiClient = nameof(ApiClient);
+    public const string AzFunctionsClient = nameof(AzFunctionsClient);
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 
 namespace ChatApp.Functions.Queries;
@@ -7,7 +6,7 @@ namespace ChatApp.Functions.Queries;
 public class GetErrorMsg
 {
     [Function(nameof(GetErrorMsg))]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+    public IResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
     {
         throw new ArgumentOutOfRangeException(nameof(req), "There was an error when processing your request.");
     }

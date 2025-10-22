@@ -10,11 +10,15 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<AuthorizationDelegatingHandler>();
 
-builder.Services.AddHttpClient("ApiClient", client =>
+builder.Services.AddHttpClient(HttpClients.ApiClient, client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
 })
 .AddHttpMessageHandler<AuthorizationDelegatingHandler>();
+
+builder.Services.AddHttpClient(HttpClients.AzFunctionsClient)
+    .AddHttpMessageHandler<AuthorizationDelegatingHandler>();
+
 
 builder.Services.AddMsalAuthentication(options =>
 {
