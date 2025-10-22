@@ -24,5 +24,17 @@
         {
             public static Guid Id = Guid.Parse("ff32d4d0-86ca-41be-9157-9a2ce3d5bcd4");
         }
+
+        public static class StudyGroupChat
+        {
+            public static Guid Id = Guid.Parse("C653AF32-7980-4480-ACF2-708A0653ECBA");
+
+            public static Guid DavidMessageId = Guid.Parse("cf1038bd-3680-41dd-9cb4-ed4a7644f8b8");
+        }
+
+        public static class AlicePrivateChat
+        {
+            public static Guid Id = Guid.Parse("4398407C-7AAB-40AA-A88A-618B7E4F5701");
+        }
     }
 }

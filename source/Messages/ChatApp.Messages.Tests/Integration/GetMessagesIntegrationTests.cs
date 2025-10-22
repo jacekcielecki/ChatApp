@@ -21,14 +21,11 @@ public class GetMessagesIntegrationTests : IClassFixture<IntegrationTestFixture>
     {
         var getMessages = _fixture.ResolveService<GetMessages>();
 
-        var existingGroupChatId = Guid.Parse("C653AF32-7980-4480-ACF2-708A0653ECBA");
-        var existingUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
-
         const int pageSize = 5;
         const int pageNumber = 1;
-        var request = new GetMessagesParamsDto(existingGroupChatId, ChatType.Group, pageSize, pageNumber);
+        var request = new GetMessagesParamsDto(TestConfig.StudyGroupChat.Id, ChatType.Group, pageSize, pageNumber);
 
-        var result = await getMessages.Get(request, existingUserId);
+        var result = await getMessages.Get(request, TestConfig.LoggedUserId);
 
         Assert.Equal(typeof(Success<PagedResult<MessageDto>>), result.Value.GetType());
     }

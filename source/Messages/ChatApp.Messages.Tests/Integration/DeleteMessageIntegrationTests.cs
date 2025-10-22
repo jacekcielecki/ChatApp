@@ -19,10 +19,7 @@ public class DeleteMessageIntegrationTests : IClassFixture<IntegrationTestFixtur
     {
         var deleteMessage = _fixture.ResolveService<DeleteMessageById>();
 
-        var authenticatedUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
-        var existingMessageId = Guid.Parse("989AB14F-9210-4A51-8EA6-256B553DA825");
-
-        var result = await deleteMessage.Delete(existingMessageId, authenticatedUserId);
+        var result = await deleteMessage.Delete(TestConfig.StudyGroupChat.DavidMessageId, TestConfig.LoggedUserId);
 
         Assert.Equal(typeof(Success), result.Value.GetType());
     }

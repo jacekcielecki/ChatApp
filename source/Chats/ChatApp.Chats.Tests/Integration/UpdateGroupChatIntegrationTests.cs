@@ -20,7 +20,7 @@ public class UpdateGroupChatIntegrationTests : IClassFixture<IntegrationTestFixt
         var updateGroupChat = _fixture.ResolveService<UpdateGroupChat>();
 
         var createPrivateChatRequest = new GroupChatUpdateApiDto(
-            TestConfig.ExistingGroupChat.Id,
+            TestConfig.StudyGroupChat.Id,
             "Test Group Chat updated",
             [TestConfig.UserAlice.Id, TestConfig.UserCharlie.Id]);
 

@@ -19,13 +19,9 @@ public class CreateGroupChatMessageIntegrationTests : IClassFixture<IntegrationT
     {
         var createGroupChatMessage = _fixture.ResolveService<CreateGroupChatMessage>();
 
-        var existingGroupChatId = Guid.Parse("C653AF32-7980-4480-ACF2-708A0653ECBA");
-        var existingUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
-        var messageContent = "Hi Guys!";
+        var request = new MessageCreateApiDto { ChatId = TestConfig.StudyGroupChat.Id, Content = "Hi Guys!" };
 
-        var request = new MessageCreateApiDto { ChatId = existingGroupChatId, Content = messageContent };
-
-        var result = await createGroupChatMessage.Create(request, existingUserId);
+        var result = await createGroupChatMessage.Create(request, TestConfig.LoggedUserId);
 
         Assert.Equal(typeof(Success<Guid?>), result.Value.GetType());
     }

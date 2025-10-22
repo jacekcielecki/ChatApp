@@ -1,5 +1,5 @@
 ﻿INSERT INTO "private_chats" ("id", "created_at", "first_user_id", "second_user_id")
-VALUES ('4398407C-7AAB-40AA-A88A-618B7E4F5701', NOW(), '98778b84-6108-45c0-b4b9-a7ac71059ce5', '98778b84-6108-45c0-b4b9-a7ac71059ce5');
+VALUES ('4398407C-7AAB-40AA-A88A-618B7E4F5701', NOW(), '98778b84-6108-45c0-b4b9-a7ac71059ce5', '67edf34c-2203-4052-9c0b-9eb400d9d6e2');
 
 INSERT INTO "messages" ("id", "created_at", "chat_id", "created_by_id", "content") VALUES
 ('3d430053-b960-4c51-b685-348feac08016', NOW(), '4398407C-7AAB-40AA-A88A-618B7E4F5701', '67edf34c-2203-4052-9c0b-9eb400d9d6e2', 'Hey David, how are you?'),

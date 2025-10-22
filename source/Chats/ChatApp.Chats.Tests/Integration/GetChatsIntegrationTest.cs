@@ -20,7 +20,7 @@ public class GetChatsIntegrationTest : IClassFixture<IntegrationTestFixture>
         var result = await getChats.Get(TestConfig.LoggedUserId);
 
         Assert.NotNull(result);
-        Assert.Contains(result, x => x.Id == TestConfig.ExistingPrivateChat.Id);
-        Assert.Contains(result, x => x.Id == TestConfig.ExistingGroupChat.Id);
+        Assert.Contains(result, x => x.Id == TestConfig.AlicePrivateChat.Id);
+        Assert.Contains(result, x => x.Id == TestConfig.StudyGroupChat.Id);
     }
 }

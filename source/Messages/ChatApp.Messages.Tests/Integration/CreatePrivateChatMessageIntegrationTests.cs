@@ -19,13 +19,9 @@ public class CreatePrivateChatMessageIntegrationTests : IClassFixture<Integratio
     {
         var createPrivateChatMessage = _fixture.ResolveService<CreatePrivateChatMessage>();
 
-        var authenticatedUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
-        var existingPrivateChatId = Guid.Parse("4398407C-7AAB-40AA-A88A-618B7E4F5701");
-        var messageContent = "Hi, how are you?";
+        var request = new MessageCreateApiDto { ChatId = TestConfig.AlicePrivateChat.Id, Content = "Hi, how are you?" };
 
-        var request = new MessageCreateApiDto { ChatId = existingPrivateChatId, Content = messageContent };
-
-        var result = await createPrivateChatMessage.Create(request, authenticatedUserId);
+        var result = await createPrivateChatMessage.Create(request, TestConfig.LoggedUserId);
 
         Assert.Equal(typeof(Success<Guid?>), result.Value.GetType());
     }
