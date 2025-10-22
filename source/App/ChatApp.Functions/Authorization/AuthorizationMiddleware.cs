@@ -113,12 +113,15 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
                 CreatedAt = DateTime.UtcNow
             };
             await _createUserRepository.Create(user);
+            user = await _getUserByEmailRepository.Get(email);
         }
 
-        user = await _getUserByEmailRepository.Get(email);
-        if (user is not null)
+        if (user is null)
         {
-            context.Items[nameof(User)] = user;
+            throw new Exception("User context not found in Function context.");
         }
+
+        context.Items.Add(new KeyValuePair<object, object>("User", user.ToResponse()));
+        context.GetHttpContext()?.Items.Add(new KeyValuePair<object, object?>("User", user.ToResponse()));
     }
 }

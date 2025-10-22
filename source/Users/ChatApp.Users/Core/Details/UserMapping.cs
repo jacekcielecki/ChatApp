@@ -7,6 +7,6 @@ public static class UserMapping
 {
     public static UserResponse ToResponse(this User user)
     {
-        return new UserResponse(user.Id, user.Email, user.CreatedAt);
+        return new UserResponse(user.Id, user.Email, user.GivenName, user.FamilyName, user.CreatedAt);
     }
 }

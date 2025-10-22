@@ -1,20 +1,21 @@
-﻿using ChatApp.Shared.Data.Adapters.Entities;
+﻿using ChatApp.Shared.Model.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
 namespace ChatApp.Functions.Authorization;
 
 public static class HttpRequestExtensions
 {
-    public static User User(this HttpRequestData req)
+    public static UserResponse User(this HttpRequestData req)
     {
-        req.FunctionContext.Items.TryGetValue(nameof(User), out var userValue);
-        return userValue as User ?? throw new NullReferenceException(nameof(User));
+        var user = req.FunctionContext.GetHttpContext()?.Items.First(x => x.Key.Equals("User")).Value as UserResponse;
+        return user ?? throw new NullReferenceException(nameof(User));
     }
 
-    public static User User(this HttpRequest req)
+    public static UserResponse User(this HttpRequest req)
     {
-        req.HttpContext.Items.TryGetValue(nameof(User), out var userValue);
-        return userValue as User ?? throw new NullReferenceException(nameof(User));
+        var user = req.HttpContext.Items.First(x => x.Key.Equals("User")).Value as UserResponse;
+        return user ?? throw new NullReferenceException(nameof(User));
     }
 }

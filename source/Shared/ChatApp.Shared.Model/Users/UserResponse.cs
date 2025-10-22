@@ -2,6 +2,8 @@
 
 public record UserResponse(
     Guid Id,
-    string Email,
+    string? Email,
+    string? GivenName,
+    string? FamilyName,
     DateTime CreatedAt
     );

@@ -19,7 +19,7 @@ public class GetUserByEmailRepository
 
         const string sql =
             """
-            SELECT id, email, created_at
+            SELECT id, email, given_name, family_name, created_at
             FROM users
             WHERE email = @email
             """;
