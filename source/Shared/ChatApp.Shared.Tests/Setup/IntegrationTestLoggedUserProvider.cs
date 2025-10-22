@@ -1,12 +1,13 @@
 ﻿using ChatApp.Shared.Model.Users;
+using ChatApp.Users.Core.Details;
 
-namespace ChatApp.Users.Core.Details;
+namespace ChatApp.Shared.Tests.Setup;
 
-public class GetDummyLoggedUserProvider : ILoggedUserProvider
+public class IntegrationTestLoggedUserProvider : ILoggedUserProvider
 {
     private readonly GetUserByEmailRepository _getUserByEmailRepository;
 
-    public GetDummyLoggedUserProvider(GetUserByEmailRepository getUserByEmailRepository)
+    public IntegrationTestLoggedUserProvider(GetUserByEmailRepository getUserByEmailRepository)
     {
         _getUserByEmailRepository = getUserByEmailRepository;
     }

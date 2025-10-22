@@ -19,7 +19,7 @@ public class UpdateMessageIntegrationTests : IClassFixture<IntegrationTestFixtur
     {
         var updateMessage = _fixture.ResolveService<UpdateMessage>();
 
-        var authenticatedUserId = Guid.Parse("98778b84-6108-45c0-b4b9-a7ac71059ce5");
+        var authenticatedUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
         var existingMessageId = Guid.Parse("989AB14F-9210-4A51-8EA6-256B553DA825");
 
         var request = new MessageUpdateApiDto(existingMessageId, "Message content updated");

@@ -16,12 +16,11 @@ public class GetChatsIntegrationTest : IClassFixture<IntegrationTestFixture>
     public async Task GetChats_Should_Return_Success_WithChats()
     {
         var getChats = _fixture.ResolveService<GetChats>();
-        var authenticatedUserId = Guid.Parse("98778b84-6108-45c0-b4b9-a7ac71059ce5");
-        var existingChatId = Guid.Parse("4398407C-7AAB-40AA-A88A-618B7E4F5701");
 
-        var result = await getChats.Get(authenticatedUserId);
+        var result = await getChats.Get(TestConfig.LoggedUserId);
 
         Assert.NotNull(result);
-        Assert.Contains(result, x => x.Id == existingChatId);
+        Assert.Contains(result, x => x.Id == TestConfig.ExistingPrivateChat.Id);
+        Assert.Contains(result, x => x.Id == TestConfig.ExistingGroupChat.Id);
     }
 }

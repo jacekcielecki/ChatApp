@@ -19,7 +19,7 @@ public class CreatePrivateChatMessageIntegrationTests : IClassFixture<Integratio
     {
         var createPrivateChatMessage = _fixture.ResolveService<CreatePrivateChatMessage>();
 
-        var authenticatedUserId = Guid.Parse("98778b84-6108-45c0-b4b9-a7ac71059ce5");
+        var authenticatedUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
         var existingPrivateChatId = Guid.Parse("4398407C-7AAB-40AA-A88A-618B7E4F5701");
         var messageContent = "Hi, how are you?";
 

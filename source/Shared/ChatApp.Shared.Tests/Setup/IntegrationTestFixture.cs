@@ -2,6 +2,7 @@
 using ChatApp.Messages;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
 using ChatApp.Users;
+using ChatApp.Users.Core.Details;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Testcontainers.PostgreSql;
@@ -36,6 +37,8 @@ public class IntegrationTestFixture : IAsyncLifetime
                 services.RegisterChatsCore();
                 services.RegisterMessagesCore();
                 services.RegisterUsersCore();
+
+                services.AddTransient<ILoggedUserProvider, IntegrationTestLoggedUserProvider>();
 
                 services.Remove(services.First(d => d.ServiceType == typeof(IDbConnectionFactory)));
                 services.AddTransient<IDbConnectionFactory, DbConnectionFactory>(_ => new DbConnectionFactory(dbConnectionString));

@@ -16,11 +16,10 @@ public class GetUserTests : IClassFixture<IntegrationTestFixture>
     public async Task GetUser_ReturnsUser_ByEmailClaim()
     {
         var getUser = _fixture.ResolveService<GetUser>();
-        var authenticatedUserId = Guid.Parse("98778b84-6108-45c0-b4b9-a7ac71059ce5");
 
         var user = await getUser.Get();
 
         Assert.NotNull(user);
-        Assert.True(user.Id == authenticatedUserId);
+        Assert.True(user.Id == TestConfig.LoggedUserId);
     }
 }

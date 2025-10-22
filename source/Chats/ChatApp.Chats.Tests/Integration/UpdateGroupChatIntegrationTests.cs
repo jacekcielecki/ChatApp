@@ -19,13 +19,12 @@ public class UpdateGroupChatIntegrationTests : IClassFixture<IntegrationTestFixt
     {
         var updateGroupChat = _fixture.ResolveService<UpdateGroupChat>();
 
-        var existingGroupChatId = Guid.Parse("C653AF32-7980-4480-ACF2-708A0653ECBA");
-        var existingUserId = Guid.Parse("a6e58f6e-fef3-458c-a26c-19cfc14d329e");
-        var existingUser2Id = Guid.Parse("ff32d4d0-86ca-41be-9157-9a2ce3d5bcd4");
+        var createPrivateChatRequest = new GroupChatUpdateApiDto(
+            TestConfig.ExistingGroupChat.Id,
+            "Test Group Chat updated",
+            [TestConfig.UserAlice.Id, TestConfig.UserCharlie.Id]);
 
-        var createPrivateChatRequest = new GroupChatUpdateApiDto(existingGroupChatId, "Test Group Chat updated", [existingUserId, existingUser2Id]);
-
-        var result = await updateGroupChat.Update(createPrivateChatRequest, existingUserId);
+        var result = await updateGroupChat.Update(createPrivateChatRequest, TestConfig.LoggedUserId);
 
         Assert.Equal(typeof(Success), result.Value.GetType());
     }
