@@ -44,15 +44,15 @@ public class GetPrivateChatsRepository
             return chat;
         }, new { userId }, splitOn: "id");
 
-        var result = privateChats.GroupBy(x => x.Id).Select(y =>
-        {
-            var single = y.First();
-            if (single.Messages.Count != 0)
+        var result = privateChats
+            .GroupBy(x => x.Id)
+            .Select(y =>
             {
-                single.Messages = y.Select(x => x.Messages.Single()).ToList();
-            }
-            return single;
-        });
+                var single = y.First();
+                single.Messages = y.SelectMany(x => x.Messages).ToList();
+                return single;
+            });
+
 
         return result;
     }

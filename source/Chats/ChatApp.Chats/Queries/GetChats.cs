@@ -15,19 +15,30 @@ public class GetChats
         _getPrivateChatsRepository = getPrivateChatsRepository;
     }
 
-    public async Task<List<ChatDto>> Get(Guid userId)
+    public async Task<ContactsAndChatsDto> Get(Guid userId)
     {
         var privateChats = _getPrivateChatsRepository.Get(userId);
         var groupChats = _getGroupChatsRepository.Get(userId);
 
         await Task.WhenAll(groupChats, privateChats);
 
-        var response = new List<ChatDto>()
+        var chats = new List<ChatDto>()
             .Concat(privateChats.Result.Select(x => x.ToDto()))
             .Concat(groupChats.Result.Select(x => x.ToDto()))
             .OrderByDescending(x => x.Messages.FirstOrDefault()?.CreatedAt is null ? x.CreatedAt : x.Messages.FirstOrDefault()?.CreatedAt)
             .ToList();
 
-        return response;
+        var result = new ContactsAndChatsDto
+        {
+            Chats = chats
+                .Where(x => x.Messages.Any())
+                .ToList(),
+            Contacts = privateChats.Result
+                .OrderBy(x => x.Receiver?.GivenName)
+                .ThenBy(x => x.Receiver?.FamilyName)
+                .ToDictionary(x => x.Receiver!.Id, x => $"{x.Receiver!.GivenName} {x.Receiver.FamilyName}")
+        };
+
+        return result;
     }
 }

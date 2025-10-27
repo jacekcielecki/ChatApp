@@ -17,8 +17,8 @@ public static class ChatEndpoints
         // GET /api/chats/me
         api.MapGet("/me", GetChats)
             .WithName("GetMyChats")
-            .WithSummary("Get authenticated user chats.")
-            .Produces<List<ChatDto>>(StatusCodes.Status200OK)
+            .WithSummary("Get authenticated user chats and contacts.")
+            .Produces<ContactsAndChatsDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
 
         // POST /api/chats/group
