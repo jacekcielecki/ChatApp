@@ -36,6 +36,7 @@ public class GetChats
             Contacts = privateChats.Result
                 .OrderBy(x => x.Receiver?.GivenName)
                 .ThenBy(x => x.Receiver?.FamilyName)
+                .Where(x => x.Id != userId)
                 .ToDictionary(x => x.Receiver!.Id, x => $"{x.Receiver!.GivenName} {x.Receiver.FamilyName}")
         };
 
