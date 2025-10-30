@@ -13,6 +13,8 @@ public static class UserExtensions
             Email = entity.Email,
             GivenName = entity.GivenName,
             FamilyName = entity.FamilyName,
+            ProfilePicUrl = entity.ProfilePicUrl,
+            Bio = entity.Bio,
             CreatedAt = entity.CreatedAt
         };
 

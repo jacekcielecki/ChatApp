@@ -18,7 +18,7 @@ public class GetPrivateChatsRepository
         const string sql = """
             SELECT pc.id, pc.created_at, pc.first_user_id, pc.second_user_id,
                    me.id, me.chat_id, me.created_at, me.created_by_id, me.content,
-                   u.id, u.email, u.given_name, u.family_name, u.created_at
+                   u.id, u.email, u.given_name, u.family_name, u.profile_picture_url, u.bio, u.created_at
             FROM private_chats pc
             LEFT JOIN messages me ON me.chat_id = pc.id
             LEFT JOIN users u ON u.id = 
