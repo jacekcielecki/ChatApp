@@ -349,3 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /source/App/ChatApp.Api/appsettings.Development.json
+/.idea/.idea.ChatApp/.idea

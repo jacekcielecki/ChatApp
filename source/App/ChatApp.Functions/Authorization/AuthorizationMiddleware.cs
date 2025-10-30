@@ -99,6 +99,8 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         var user = await _getOrCreateUserFromClaims.Run(claims);
 
         context.Items.Add(new KeyValuePair<object, object>("User", user.ToDto()));
-        context.GetHttpContext()?.Items.Add(new KeyValuePair<object, object?>("User", user.ToDto()));
+
+        if (context.GetHttpContext()?.Items is not null)
+            context.GetHttpContext()?.Items.Add(new KeyValuePair<object, object?>("User", user.ToDto()));
     }
 }

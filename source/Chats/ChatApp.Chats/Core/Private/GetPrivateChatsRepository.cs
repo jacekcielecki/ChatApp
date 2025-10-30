@@ -15,44 +15,51 @@ public class GetPrivateChatsRepository
 
     public async Task<IEnumerable<PrivateChat>> Get(Guid userId)
     {
-        const string sql =
-            """
+        const string sql = """
             SELECT pc.id, pc.created_at, pc.first_user_id, pc.second_user_id,
-             me.id, me.chat_id, me.created_at, me.created_by_id, me.content,
-             u.id, u.email, u.given_name, u.family_name, u.created_at
+                   me.id, me.chat_id, me.created_at, me.created_by_id, me.content,
+                   u.id, u.email, u.given_name, u.family_name, u.created_at
             FROM private_chats pc
             LEFT JOIN messages me ON me.chat_id = pc.id
             LEFT JOIN users u ON u.id = 
                 (CASE WHEN pc.first_user_id = @userId
-                    THEN pc.second_user_id
-                    ELSE pc.first_user_id
-                END)
+                      THEN pc.second_user_id
+                      ELSE pc.first_user_id
+                 END)
             WHERE pc.first_user_id = @userId OR pc.second_user_id = @userId
-            ORDER BY pc.created_at DESC
+            ORDER BY pc.created_at DESC, me.created_at ASC
             """;
 
         await using var connection = _dbConnectionFactory.Create();
 
-        var privateChats = await connection.QueryAsync<PrivateChat, Message?, User, PrivateChat>(sql, (chat, message, receiver) =>
-        {
-            chat.Messages = [];
-            if (message != null)
+        var privateChats = await connection.QueryAsync<PrivateChat, Message?, User, PrivateChat>(
+            sql,
+            (chat, message, receiver) =>
             {
-                chat.Messages.Add(message);
-            }
-            chat.Receiver = receiver;
-            return chat;
-        }, new { userId }, splitOn: "id");
+                chat.Messages = [];
+                if (message != null)
+                {
+                    chat.Messages.Add(message);
+                }
+
+                chat.Receiver = receiver;
+                return chat;
+            },
+            new { userId },
+            splitOn: "id"
+        );
 
         var result = privateChats
             .GroupBy(x => x.Id)
-            .Select(y =>
+            .Select(group =>
             {
-                var single = y.First();
-                single.Messages = y.SelectMany(x => x.Messages).ToList();
+                var single = group.First();
+                single.Messages = group
+                    .SelectMany(x => x.Messages)
+                    .OrderBy(m => m.CreatedAt)
+                    .ToList();
                 return single;
             });
-
 
         return result;
     }

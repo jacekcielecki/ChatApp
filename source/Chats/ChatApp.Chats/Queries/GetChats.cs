@@ -1,6 +1,7 @@
 ﻿using ChatApp.Chats.Core.Group;
 using ChatApp.Chats.Core.Private;
 using ChatApp.Shared.Model.Chats;
+using ChatApp.Shared.Model.Messages;
 
 namespace ChatApp.Chats.Queries;
 
@@ -28,11 +29,18 @@ public class GetChats
             .OrderByDescending(x => x.Messages.FirstOrDefault()?.CreatedAt is null ? x.CreatedAt : x.Messages.FirstOrDefault()?.CreatedAt)
             .ToList();
 
+        foreach (var chat in chats)
+        {
+            var ordered = chat.Messages
+                .OrderBy(x => x.CreatedAt)
+                .ToList();
+
+            chat.Messages = ordered;
+        }
+
         var result = new ContactsAndChatsDto
         {
-            Chats = chats
-                .Where(x => x.Messages.Any())
-                .ToList(),
+            Chats = chats,
             Contacts = privateChats.Result
                 .OrderBy(x => x.Receiver?.GivenName)
                 .ThenBy(x => x.Receiver?.FamilyName)

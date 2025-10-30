@@ -44,8 +44,9 @@ public class UpdateGroupChat
             return new Forbidden(authorizationErrors);
         }
 
+        chat.Members.Clear();
+
         var members = dto.Members
-            .Append(userId)
             .Distinct()
             .ToList();
 
