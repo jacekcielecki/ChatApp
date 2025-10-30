@@ -4,29 +4,28 @@ using Dapper;
 
 namespace ChatApp.Users.Core.Details;
 
-public class GetUserByIdRepository
+public class UpdateUserRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public GetUserByIdRepository(IDbConnectionFactory dbConnectionFactory)
+    public UpdateUserRepository(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<User?> Get(Guid id)
+    public async Task Update(User user)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         const string sql =
             """
-            SELECT id, email, given_name, family_name, profile_picture_url, bio, created_at
-            FROM users
-            WHERE id = @id
+               UPDATE users
+               SET profile_picture_url = @ProfilePictureUrl, bio = @Bio
+               WHERE id = @Id;
             """;
 
         await using var connection = _dbConnectionFactory.Create();
-        var user = await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
 
-        return user;
+        await connection.QuerySingleOrDefaultAsync<User>(sql, new { user.ProfilePicUrl, user.Bio, user.Id });
     }
 }

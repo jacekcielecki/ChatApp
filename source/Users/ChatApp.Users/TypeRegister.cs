@@ -1,5 +1,6 @@
 ﻿using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
+using ChatApp.Users.Commands;
 using ChatApp.Users.Core.Details;
 using ChatApp.Users.Core.Summary;
 using ChatApp.Users.Queries;
@@ -27,6 +28,8 @@ public static class TypeRegister
         services.AddTransient<GetUser>();
         services.AddTransient<CreateUserRepository>();
         services.AddTransient<GetOrCreateUserFromClaims>();
+        services.AddTransient<UpdateUser>();
+        services.AddTransient<UpdateUserRepository>();
 
         return services;
     }

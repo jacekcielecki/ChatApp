@@ -5,6 +5,8 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL,
   "family_name" varchar NOT NULL,
   "given_name" varchar NOT NULL,
+  "profile_picture_url" varchar,
+  "bio" varchar,
   "created_at" timestamp NOT NULL
 );
 
