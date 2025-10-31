@@ -38,15 +38,20 @@ public class UpdateUser
 
         if (dto is { DeleteProfilePicture: false, ProfilePicture: not null })
         {
-            var filePath = $"profilePictures/{dto.ProfilePicture.FileName}";
+            var filePath = $"profilePictures/{user.Id}/{dto.ProfilePicture}";
 
-            var upload = await _fileStorage.Upload(dto.ProfilePicture, filePath);
-            if (upload.IsError)
+            try
             {
-                errors.Add("Upload File", [upload.Status!]);
-                return new ValidationErrors(errors);
+                var upload = await _fileStorage.Upload(dto.ProfilePicture, filePath);
+                if (!upload.IsError)
+                {
+                    user.ProfilePictureUrl = upload.FileUri;
+                }
             }
-            user.ProfilePictureUrl = upload.FileUri;
+            catch (Exception)
+            {
+                // Sometimes file upload fails, but we don't want to block the user update because of that.
+            }
         }
 
         await _updateUserRepository.Update(user);
