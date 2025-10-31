@@ -1,4 +1,5 @@
-﻿using ChatApp.Shared.Model.Users;
+﻿using ChatApp.Shared.Data.BlobStorage;
+using ChatApp.Shared.Model.Users;
 using ChatApp.Shared.Model.ValueObjects;
 using ChatApp.Users.Core.Details;
 using OneOf;
@@ -10,11 +11,13 @@ public class UpdateUser
 {
     private readonly GetUserByIdRepository _getUserByIdRepository;
     private readonly UpdateUserRepository _updateUserRepository;
+    private readonly IFileStorage _fileStorage;
 
-    public UpdateUser(GetUserByIdRepository getUserByIdRepository, UpdateUserRepository updateUserRepository)
+    public UpdateUser(GetUserByIdRepository getUserByIdRepository, UpdateUserRepository updateUserRepository, IFileStorage fileStorage)
     {
         _getUserByIdRepository = getUserByIdRepository;
         _updateUserRepository = updateUserRepository;
+        _fileStorage = fileStorage;
     }
 
     public async Task<OneOf<Success, ValidationErrors>> Update(Guid userId, UserUpdateDto dto)
@@ -34,11 +37,17 @@ public class UpdateUser
         {
             user.ProfilePictureUrl = null;
         }
-        else
+        else if (dto.ProfilePicture is not null)
         {
-            //using var ms = new MemoryStream();
-            //await dto.ProfilePicture.CopyToAsync(ms);
-            //user.ProfilePicture = new ProfilePicture(ms.ToArray(), dto.ProfilePicture.ContentType);
+            var filePath = $"profilePictures/{dto.ProfilePicture.FileName}";
+
+            var res = await _fileStorage.Upload(dto.ProfilePicture, filePath);
+            if (res.IsError)
+            {
+                errors.Add("Upload File", [res.Status!]);
+                return new ValidationErrors(errors);
+            }
+            user.ProfilePictureUrl = res.FileUri;
         }
 
         await _updateUserRepository.Update(user);

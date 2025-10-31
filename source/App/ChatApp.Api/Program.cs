@@ -21,6 +21,9 @@ builder.Services.AddAuthorization();
 var dbConnectionString = builder.Configuration[Envars.DatabaseConnectionString];
 Environment.SetEnvironmentVariable(Envars.DatabaseConnectionString, dbConnectionString);
 
+var storageAccountConnectionString = builder.Configuration[Envars.StorageAccountConnectionString];
+Environment.SetEnvironmentVariable(Envars.StorageAccountConnectionString, storageAccountConnectionString);
+
 builder.Services.AddCors();
 
 builder.Services.RegisterChatsCore();

@@ -1,5 +1,6 @@
 ﻿using ChatApp.Shared.Data;
 using ChatApp.Shared.Data.Adapters.DbConnectionFactory;
+using ChatApp.Shared.Data.BlobStorage;
 using ChatApp.Users.Commands;
 using ChatApp.Users.Core.Details;
 using ChatApp.Users.Core.Summary;
@@ -20,7 +21,7 @@ public static class TypeRegister
 
             return new DbConnectionFactory(dbConnectionString);
         });
-
+        services.AddTransient<IFileStorage, BlobStorageClient>();
         services.AddTransient<GetUserByEmailRepository>();
         services.AddTransient<GetUserByIdRepository>();
         services.AddTransient<GetUsersBySearchPhrase>();
