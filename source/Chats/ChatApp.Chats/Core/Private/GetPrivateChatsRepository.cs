@@ -15,6 +15,8 @@ public class GetPrivateChatsRepository
 
     public async Task<IEnumerable<PrivateChat>> Get(Guid userId)
     {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         const string sql = """
             SELECT pc.id, pc.created_at, pc.first_user_id, pc.second_user_id,
                    me.id, me.chat_id, me.created_at, me.created_by_id, me.content,

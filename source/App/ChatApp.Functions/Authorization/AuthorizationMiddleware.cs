@@ -84,11 +84,18 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var claimsPrincipal = tokenHandler.ValidateToken(authorizationToken, validationParameters, out SecurityToken jwt);
 
-        if (claimsPrincipal.Identity is { IsAuthenticated: true })
+        try
         {
-            return new(true, claimsPrincipal.Claims);
+            var claimsPrincipal = tokenHandler.ValidateToken(authorizationToken, validationParameters, out SecurityToken jwt);
+            if (claimsPrincipal.Identity is { IsAuthenticated: true })
+            {
+                return new(true, claimsPrincipal.Claims);
+            }
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return new(false, []);
         }
 
         return new (false, []);

@@ -19,6 +19,7 @@ public class GetChats
     public async Task<ContactsAndChatsDto> Get(Guid userId)
     {
         var privateChats = _getPrivateChatsRepository.Get(userId);
+
         var groupChats = _getGroupChatsRepository.Get(userId);
 
         await Task.WhenAll(groupChats, privateChats);
