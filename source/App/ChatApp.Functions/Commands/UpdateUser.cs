@@ -1,5 +1,5 @@
 using ChatApp.Functions.Authorization;
-using ChatApp.Shared.Model.Users;
+using ChatApp.Users.Core.Details;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Azure.Functions.Worker;
@@ -20,10 +20,9 @@ public class UpdateUser
     public async Task<IResult> Run(
         [HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req)
     {
-        var form = await req.ReadFormAsync();
-        var dto = new UserUpdateDto { ProfilePicture = form.Files.GetFile("profilePicture"), Bio = form["bio"], DeleteProfilePicture = (form.ContainsKey("deleteProfilePicture") && form["deleteProfilePicture"] == "1") };
+        IFormCollection form = await req.ReadFormAsync();
 
-        var result = await _updateUser.Update(req.User().Id, dto);
+        var result = await _updateUser.Update(req.User().Id, form.GetUserUpdateDto());
 
         var response = result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
             _ => TypedResults.Ok(),

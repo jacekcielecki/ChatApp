@@ -29,9 +29,10 @@ public class UpdateUser
         }
 
         user.Bio = dto.Bio;
+
         if (dto.DeleteProfilePicture)
         {
-            user.ProfilePicUrl = null;
+            user.ProfilePictureUrl = null;
         }
         else
         {

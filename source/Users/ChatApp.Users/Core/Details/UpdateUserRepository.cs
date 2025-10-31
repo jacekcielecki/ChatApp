@@ -26,6 +26,11 @@ public class UpdateUserRepository
 
         await using var connection = _dbConnectionFactory.Create();
 
-        await connection.QuerySingleOrDefaultAsync<User>(sql, new { user.ProfilePicUrl, user.Bio, user.Id });
+        await connection.ExecuteScalarAsync(sql, new
+        {
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            Bio = user.Bio,
+            Id = user.Id
+        });
     }
 }
