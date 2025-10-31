@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 /source/App/ChatApp.Api/appsettings.Development.json
 /.idea/.idea.ChatApp/.idea
+/source/App/ChatApp.Functions/local.settings.json
