@@ -34,20 +34,19 @@ public class UpdateUser
         user.Bio = dto.Bio;
 
         if (dto.DeleteProfilePicture)
-        {
             user.ProfilePictureUrl = null;
-        }
-        else if (dto.ProfilePicture is not null)
+
+        if (dto is { DeleteProfilePicture: false, ProfilePicture: not null })
         {
             var filePath = $"profilePictures/{dto.ProfilePicture.FileName}";
 
-            var res = await _fileStorage.Upload(dto.ProfilePicture, filePath);
-            if (res.IsError)
+            var upload = await _fileStorage.Upload(dto.ProfilePicture, filePath);
+            if (upload.IsError)
             {
-                errors.Add("Upload File", [res.Status!]);
+                errors.Add("Upload File", [upload.Status!]);
                 return new ValidationErrors(errors);
             }
-            user.ProfilePictureUrl = res.FileUri;
+            user.ProfilePictureUrl = upload.FileUri;
         }
 
         await _updateUserRepository.Update(user);

@@ -23,24 +23,17 @@ public class BlobStorageClient : IFileStorage
                 HttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType }
             };
 
-            var tempPath = Path.GetTempFileName();
-            await using (var fs = new FileStream(tempPath, FileMode.Create))
+            await using (Stream data = file.OpenReadStream())
             {
-                await file.CopyToAsync(fs);
+                await blobClient.UploadAsync(data, options);
             }
-
-            await using (var uploadStream = File.OpenRead(tempPath))
-            {
-                await blobClient.UploadAsync(uploadStream, options);
-            }
-            File.Delete(tempPath);
 
             response.IsError = false;
             response.Status = "File uploaded successfully.";
             response.FileName = blobClient.Name;
             response.FileUri = blobClient.Uri.AbsoluteUri;
         }
-        catch (RequestFailedException ex)
+        catch (Exception ex)
         {
             response.IsError = true;
             response.Status = ex.Message;

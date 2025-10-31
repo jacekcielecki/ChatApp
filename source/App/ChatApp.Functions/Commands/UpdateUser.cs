@@ -22,7 +22,9 @@ public class UpdateUser
     {
         IFormCollection form = await req.ReadFormAsync();
 
-        var result = await _updateUser.Update(req.User().Id, form.GetUserUpdateDto());
+        var dto = form.GetUserUpdateDto();
+
+        var result = await _updateUser.Update(req.User().Id, dto);
 
         var response = result.Match<Results<Ok, BadRequest<HttpValidationProblemDetails>>>(
             _ => TypedResults.Ok(),
