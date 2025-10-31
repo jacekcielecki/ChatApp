@@ -18,6 +18,8 @@ public static class PrivateChatExtensions
             Email = entity.Receiver.Email,
             GivenName = entity.Receiver.GivenName,
             FamilyName = entity.Receiver.FamilyName,
+            ProfilePictureUrl = entity.Receiver.ProfilePictureUrl,
+            Bio = entity.Receiver.Bio,
             CreatedAt = entity.Receiver.CreatedAt
         };
 

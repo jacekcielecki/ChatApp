@@ -16,6 +16,8 @@ public static class GroupChatExtensions
                 Email = member.Email,
                 GivenName = member.GivenName,
                 FamilyName = member.FamilyName,
+                ProfilePictureUrl = member.ProfilePictureUrl,
+                Bio = member.Bio,
                 CreatedAt = member.CreatedAt
             })
             .ToList();
