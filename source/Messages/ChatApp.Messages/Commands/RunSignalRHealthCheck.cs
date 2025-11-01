@@ -5,15 +5,15 @@ namespace ChatApp.Messages.Commands;
 
 public class RunSignalRHealthCheck
 {
-    private readonly IHubContext<MessageHub> _hubContext;
+    private readonly IHubContext<MessageHub, IMessageClient> _hubContext;
 
-    public RunSignalRHealthCheck(IHubContext<MessageHub> hubContext)
+    public RunSignalRHealthCheck(IHubContext<MessageHub, IMessageClient> hubContext)
     {
         _hubContext = hubContext;
     }
 
     public async Task Run(string message)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveHealthCheck", message);
+        await _hubContext.Clients.All.ReceiveHealthCheck(message);
     }
 }

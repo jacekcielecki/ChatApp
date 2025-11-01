@@ -1,11 +1,29 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using ChatApp.Shared.Model.Messages;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.Messages.Core.Hubs;
 
-public sealed class MessageHub : Hub
+public interface IMessageClient
 {
-    public async Task SendHealthCheck(string message)
+    Task ReceiveHealthCheck(string message);
+    Task ReceiveMessage(MessageDto message);
+}
+
+public sealed class MessageHub : Hub<IMessageClient>
+{
+    public async Task JoinChats(List<Guid> chats)
     {
-        await Clients.All.SendAsync("ReceiveHealthCheck", message);
+        foreach (var chat in chats)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"Chat:{chat}");
+        }
+    }
+
+    public async Task LeaveChats(List<Guid> chats)
+    {
+        foreach (var chat in chats)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"Chat:{chat}");
+        }
     }
 }
