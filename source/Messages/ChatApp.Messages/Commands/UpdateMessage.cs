@@ -48,7 +48,7 @@ public class UpdateMessage
 
         await _updateMessageRepository.Update(message);
 
-        await _messageClient.Clients.Group($"Chat:{message.ChatId}").ReceiveMessageDelete(message.ChatId, message.Id);
+        await _messageClient.Clients.Group($"Chat:{message.ChatId}").ReceiveMessageUpdate(message.ToDto());
 
         return new Success();
     }

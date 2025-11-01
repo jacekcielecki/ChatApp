@@ -56,7 +56,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MessageHub>("/messageHub");
+app.MapHub<MessageHub>("/messageHub")
+    .RequireAuthorization();
 
 app.MapUserEndpoints();
 app.MapChatEndpoints();

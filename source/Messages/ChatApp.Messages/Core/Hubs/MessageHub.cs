@@ -15,9 +15,13 @@ public sealed class MessageHub : Hub<IMessageClient>
 {
     public async Task JoinChats(List<Guid> chats)
     {
-        foreach (var chat in chats)
+        var isAuthenticated = Context.User.Identity?.IsAuthenticated is true;
+        if (isAuthenticated)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"Chat:{chat}");
+            foreach (var chat in chats)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"Chat:{chat}");
+            }
         }
     }
 
