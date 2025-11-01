@@ -7,6 +7,8 @@ public interface IMessageClient
 {
     Task ReceiveHealthCheck(string message);
     Task ReceiveMessage(MessageDto message);
+    Task ReceiveMessageUpdate(MessageDto message);
+    Task ReceiveMessageDelete(Guid chatId, Guid messageId);
 }
 
 public sealed class MessageHub : Hub<IMessageClient>

@@ -1,6 +1,8 @@
 ﻿using ChatApp.Messages.Core.Details;
+using ChatApp.Messages.Core.Hubs;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.ValueObjects;
+using Microsoft.AspNetCore.SignalR;
 using OneOf;
 using OneOf.Types;
 
@@ -10,11 +12,17 @@ public class DeleteMessageById
 {
     private readonly DeleteMessageByIdRepository _deleteMessageByIdRepository;
     private readonly GetMessageByIdRepository _getMessageByIdRepository;
+    private readonly IHubContext<MessageHub, IMessageClient> _messageClient;
 
-    public DeleteMessageById(DeleteMessageByIdRepository deleteMessageByIdRepository, GetMessageByIdRepository getMessageByIdRepository)
+    public DeleteMessageById(
+        DeleteMessageByIdRepository deleteMessageByIdRepository,
+        GetMessageByIdRepository getMessageByIdRepository,
+        IHubContext<MessageHub, IMessageClient> messageClient
+        )
     {
         _deleteMessageByIdRepository = deleteMessageByIdRepository;
         _getMessageByIdRepository = getMessageByIdRepository;
+        _messageClient = messageClient;
     }
 
     public async Task<OneOf<Success, NotFound, Forbidden>> Delete(Guid messageId, Guid userId)
@@ -32,6 +40,9 @@ public class DeleteMessageById
         }
 
         await _deleteMessageByIdRepository.Delete(messageId);
+
+        await _messageClient.Clients.Group($"Chat:{message.ChatId}").ReceiveMessageDelete(message.ChatId, messageId);
+
         return new Success();
     }
 
@@ -42,7 +53,6 @@ public class DeleteMessageById
         if (message.CreatedById != userId)
         {
             errors.Add(nameof(Message.CreatedById), ["User is not allowed to delete specified message"]);
-            return errors;
         }
 
         return errors;

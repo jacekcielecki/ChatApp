@@ -1,6 +1,8 @@
 ﻿using ChatApp.Messages.Core.Details;
+using ChatApp.Messages.Core.Hubs;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
+using Microsoft.AspNetCore.SignalR;
 using OneOf;
 using OneOf.Types;
 
@@ -10,11 +12,17 @@ public class UpdateMessage
 {
     private readonly GetMessageByIdRepository _getMessageByIdRepository;
     private readonly UpdateMessageRepository _updateMessageRepository;
+    private readonly IHubContext<MessageHub, IMessageClient> _messageClient;
 
-    public UpdateMessage(GetMessageByIdRepository getMessageByIdRepository, UpdateMessageRepository updateMessageRepository)
+    public UpdateMessage(
+        GetMessageByIdRepository getMessageByIdRepository,
+        UpdateMessageRepository updateMessageRepository,
+        IHubContext<MessageHub, IMessageClient> messageClient
+        )
     {
         _getMessageByIdRepository = getMessageByIdRepository;
         _updateMessageRepository = updateMessageRepository;
+        _messageClient = messageClient;
     }
 
     public async Task<OneOf<Success, NotFound, Forbidden, ValidationErrors>> Update(MessageUpdateApiDto dto, Guid userId)
@@ -39,6 +47,9 @@ public class UpdateMessage
         message.Content = dto.Content;
 
         await _updateMessageRepository.Update(message);
+
+        await _messageClient.Clients.Group($"Chat:{message.ChatId}").ReceiveMessageDelete(message.ChatId, message.Id);
+
         return new Success();
     }
 
