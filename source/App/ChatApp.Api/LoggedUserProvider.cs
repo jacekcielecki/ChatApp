@@ -6,12 +6,12 @@ namespace ChatApp.Api;
 public class LoggedUserProvider : ILoggedUserProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly GetOrCreateUserFromClaims _getOrCreateUserFromClaims;
+    private readonly HandleFirstLogin _handleFirstLogin;
 
-    public LoggedUserProvider(IHttpContextAccessor httpContextAccessor, GetOrCreateUserFromClaims getOrCreateUserFromClaims)
+    public LoggedUserProvider(IHttpContextAccessor httpContextAccessor, HandleFirstLogin handleFirstLogin)
     {
         _httpContextAccessor = httpContextAccessor;
-        _getOrCreateUserFromClaims = getOrCreateUserFromClaims;
+        _handleFirstLogin = handleFirstLogin;
     }
 
     public async Task<UserDto> Get()
@@ -21,7 +21,7 @@ public class LoggedUserProvider : ILoggedUserProvider
 
         if (claims is not null)
         {
-            var user = await _getOrCreateUserFromClaims.Run(claims);
+            var user = await _handleFirstLogin.Handle(claims);
 
             return user.ToDto();
         }

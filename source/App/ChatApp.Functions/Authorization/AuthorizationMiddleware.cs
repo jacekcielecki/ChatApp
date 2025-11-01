@@ -13,11 +13,11 @@ namespace ChatApp.Functions.Authorization;
 
 public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
 {
-    private readonly GetOrCreateUserFromClaims _getOrCreateUserFromClaims;
+    private readonly HandleFirstLogin _handleFirstLogin;
 
-    public AuthorizationMiddleware(GetOrCreateUserFromClaims getOrCreateUserFromClaims)
+    public AuthorizationMiddleware(HandleFirstLogin handleFirstLogin)
     {
-        _getOrCreateUserFromClaims = getOrCreateUserFromClaims;
+        _handleFirstLogin = handleFirstLogin;
     }
 
     public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
@@ -103,7 +103,7 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
 
     private async Task EnrichFunctionContext(FunctionContext context, List<Claim> claims)
     {
-        var user = await _getOrCreateUserFromClaims.Run(claims);
+        var user = await _handleFirstLogin.Handle(claims);
 
         context.Items.Add(new KeyValuePair<object, object>("User", user.ToDto()));
 

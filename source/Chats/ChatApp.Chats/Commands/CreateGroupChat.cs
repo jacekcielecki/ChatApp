@@ -1,8 +1,10 @@
 ﻿using ChatApp.Chats.Core.Group;
+using ChatApp.Chats.Core.Hubs;
 using ChatApp.Chats.Core.Members;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Chats;
 using ChatApp.Shared.Model.ValueObjects;
+using Microsoft.AspNetCore.SignalR;
 using OneOf;
 using OneOf.Types;
 
@@ -13,15 +15,19 @@ public class CreateGroupChat
     private readonly GetUserByIdRepository _getUserByIdRepository;
     private readonly CreateGroupChatRepository _createGroupChatRepository;
     private readonly AddUsersToGroupChatRepository _addUsersToGroupChatRepository;
+    private readonly IHubContext<ChatHub, IMessageClient> _messageClient;
 
     public CreateGroupChat(
         GetUserByIdRepository getUserByIdRepository,
         CreateGroupChatRepository createGroupChatRepository,
-        AddUsersToGroupChatRepository addUsersToGroupChatRepository)
+        AddUsersToGroupChatRepository addUsersToGroupChatRepository,
+        IHubContext<ChatHub, IMessageClient> messageClient
+        )
     {
         _getUserByIdRepository = getUserByIdRepository;
         _createGroupChatRepository = createGroupChatRepository;
         _addUsersToGroupChatRepository = addUsersToGroupChatRepository;
+        _messageClient = messageClient;
     }
 
     public async Task<OneOf<Success<Guid?>, ValidationErrors>> Create(GroupChatCreateApiDto dto, Guid userId)
@@ -49,6 +55,12 @@ public class CreateGroupChat
 
         await _createGroupChatRepository.Create(chat);
         await _addUsersToGroupChatRepository.Add(members, chat.Id);
+
+        var memberIdentifiers = members
+            .Select(x => x.ToString())
+            .ToArray();
+
+        await _messageClient.Clients.Users(memberIdentifiers).ReceiveChat(chat.ToDto());
 
         return new Success<Guid?>(chat.Id);
     }

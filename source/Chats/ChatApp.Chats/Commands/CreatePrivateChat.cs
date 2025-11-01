@@ -1,8 +1,10 @@
-﻿using ChatApp.Chats.Core.Members;
+﻿using ChatApp.Chats.Core.Hubs;
+using ChatApp.Chats.Core.Members;
 using ChatApp.Chats.Core.Private;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Chats;
 using ChatApp.Shared.Model.ValueObjects;
+using Microsoft.AspNetCore.SignalR;
 using OneOf;
 using OneOf.Types;
 
@@ -13,14 +15,18 @@ public class CreatePrivateChat
     private readonly GetUserByIdRepository _getUserByIdRepository;
     private readonly CreatePrivateChatRepository _createPrivateChatRepository;
     private readonly GetPrivateChatByIdRepository _getPrivateChatByIdRepository;
+    private readonly IHubContext<ChatHub, IMessageClient> _messageClient;
 
     public CreatePrivateChat(GetUserByIdRepository getUserByIdRepository,
         CreatePrivateChatRepository createPrivateChatRepository,
-        GetPrivateChatByIdRepository getPrivateChatByIdRepository)
+        GetPrivateChatByIdRepository getPrivateChatByIdRepository,
+        IHubContext<ChatHub, IMessageClient> messageClient
+        )
     {
         _getUserByIdRepository = getUserByIdRepository;
         _createPrivateChatRepository = createPrivateChatRepository;
         _getPrivateChatByIdRepository = getPrivateChatByIdRepository;
+        _messageClient = messageClient;
     }
 
     public async Task<OneOf<Success<Guid?>, ValidationErrors>> Create(PrivateChatCreateApiDto dto, Guid userId)
@@ -41,6 +47,15 @@ public class CreatePrivateChat
         };
 
         var id = await _createPrivateChatRepository.Create(chat);
+
+        var memberIdentifiers = new List<string>
+        {
+            chat.FirstUserId.ToString(),
+            chat.SecondUserId.ToString()
+        };
+
+        await _messageClient.Clients.Users(memberIdentifiers).ReceiveChat(chat.ToDto());
+
         return new Success<Guid?>(id);
     }
 
