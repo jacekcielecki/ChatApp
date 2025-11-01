@@ -1,13 +1,13 @@
-﻿using ChatApp.Messages.Core.Hubs;
+﻿using ChatApp.Chats.Core.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.Messages.Commands;
 
 public class RunSignalRHealthCheck
 {
-    private readonly IHubContext<MessageHub, IMessageClient> _hubContext;
+    private readonly IHubContext<ChatHub, IMessageClient> _hubContext;
 
-    public RunSignalRHealthCheck(IHubContext<MessageHub, IMessageClient> hubContext)
+    public RunSignalRHealthCheck(IHubContext<ChatHub, IMessageClient> hubContext)
     {
         _hubContext = hubContext;
     }

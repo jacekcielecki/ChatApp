@@ -1,5 +1,5 @@
-﻿using ChatApp.Messages.Core.Details;
-using ChatApp.Messages.Core.Hubs;
+﻿using ChatApp.Chats.Core.Hubs;
+using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.ValueObjects;
 using Microsoft.AspNetCore.SignalR;
@@ -12,12 +12,12 @@ public class DeleteMessageById
 {
     private readonly DeleteMessageByIdRepository _deleteMessageByIdRepository;
     private readonly GetMessageByIdRepository _getMessageByIdRepository;
-    private readonly IHubContext<MessageHub, IMessageClient> _messageClient;
+    private readonly IHubContext<ChatHub, IMessageClient> _messageClient;
 
     public DeleteMessageById(
         DeleteMessageByIdRepository deleteMessageByIdRepository,
         GetMessageByIdRepository getMessageByIdRepository,
-        IHubContext<MessageHub, IMessageClient> messageClient
+        IHubContext<ChatHub, IMessageClient> messageClient
         )
     {
         _deleteMessageByIdRepository = deleteMessageByIdRepository;

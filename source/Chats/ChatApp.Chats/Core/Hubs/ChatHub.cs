@@ -1,7 +1,8 @@
-﻿using ChatApp.Shared.Model.Messages;
+﻿using ChatApp.Shared.Model.Chats;
+using ChatApp.Shared.Model.Messages;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChatApp.Messages.Core.Hubs;
+namespace ChatApp.Chats.Core.Hubs;
 
 public interface IMessageClient
 {
@@ -9,9 +10,11 @@ public interface IMessageClient
     Task ReceiveMessage(MessageDto message);
     Task ReceiveMessageUpdate(MessageDto message);
     Task ReceiveMessageDelete(Guid chatId, Guid messageId);
+    Task ReceiveChat(ChatDto chat);
+    Task ReceiveChatUpdate(ChatDto chat);
 }
 
-public sealed class MessageHub : Hub<IMessageClient>
+public sealed class ChatHub : Hub<IMessageClient>
 {
     public async Task JoinChats(List<Guid> chats)
     {

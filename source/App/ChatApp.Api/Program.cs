@@ -1,8 +1,8 @@
 using ChatApp.Api;
 using ChatApp.Api.Endpoints;
 using ChatApp.Chats;
+using ChatApp.Chats.Core.Hubs;
 using ChatApp.Messages;
-using ChatApp.Messages.Core.Hubs;
 using ChatApp.Shared.Data;
 using ChatApp.Users;
 using ChatApp.Users.Core.Details;
@@ -56,7 +56,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MessageHub>("/messageHub")
+app.MapHub<ChatHub>("/chatHub")
     .RequireAuthorization();
 
 app.MapUserEndpoints();

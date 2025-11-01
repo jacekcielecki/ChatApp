@@ -1,5 +1,5 @@
-﻿using ChatApp.Messages.Core.Details;
-using ChatApp.Messages.Core.Hubs;
+﻿using ChatApp.Chats.Core.Hubs;
+using ChatApp.Messages.Core.Details;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
 using Microsoft.AspNetCore.SignalR;
@@ -12,12 +12,12 @@ public class UpdateMessage
 {
     private readonly GetMessageByIdRepository _getMessageByIdRepository;
     private readonly UpdateMessageRepository _updateMessageRepository;
-    private readonly IHubContext<MessageHub, IMessageClient> _messageClient;
+    private readonly IHubContext<ChatHub, IMessageClient> _messageClient;
 
     public UpdateMessage(
         GetMessageByIdRepository getMessageByIdRepository,
         UpdateMessageRepository updateMessageRepository,
-        IHubContext<MessageHub, IMessageClient> messageClient
+        IHubContext<ChatHub, IMessageClient> messageClient
         )
     {
         _getMessageByIdRepository = getMessageByIdRepository;

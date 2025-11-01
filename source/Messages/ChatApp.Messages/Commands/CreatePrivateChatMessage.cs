@@ -1,6 +1,6 @@
-﻿using ChatApp.Chats.Core.Private;
+﻿using ChatApp.Chats.Core.Hubs;
+using ChatApp.Chats.Core.Private;
 using ChatApp.Messages.Core.Details;
-using ChatApp.Messages.Core.Hubs;
 using ChatApp.Shared.Data.Adapters.Entities;
 using ChatApp.Shared.Model.Messages;
 using ChatApp.Shared.Model.ValueObjects;
@@ -14,12 +14,12 @@ public class CreatePrivateChatMessage
 {
     private readonly GetPrivateChatByIdRepository _getPrivateChatByIdRepository;
     private readonly CreateMessageRepository _createMessageRepository;
-    private readonly IHubContext<MessageHub, IMessageClient> _messageClient;
+    private readonly IHubContext<ChatHub, IMessageClient> _messageClient;
 
     public CreatePrivateChatMessage(
         GetPrivateChatByIdRepository getPrivateChatByIdRepository,
         CreateMessageRepository createMessageRepository,
-        IHubContext<MessageHub, IMessageClient> messageClient
+        IHubContext<ChatHub, IMessageClient> messageClient
         )
     {
         _getPrivateChatByIdRepository = getPrivateChatByIdRepository;
