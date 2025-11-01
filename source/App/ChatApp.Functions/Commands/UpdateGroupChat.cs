@@ -18,7 +18,7 @@ public class UpdateGroupChat
     }
 
     [Function(nameof(UpdateGroupChat))]
-    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "put")] HttpRequest req, [FromBody] GroupChatUpdateApiDto dto)
+    public async Task<IResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "chats/group")] HttpRequest req, [FromBody] GroupChatUpdateApiDto dto)
     {
         var result = await _updateGroupChat.Update(dto, req.User().Id);
 

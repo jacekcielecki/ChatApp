@@ -19,7 +19,7 @@ public class CreateGroupChat
 
     [Function(nameof(CreateGroupChat))]
     public async Task<Results<Ok<Guid?>, BadRequest<HttpValidationProblemDetails>>> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "chats/group")] HttpRequest req,
         [FromBody] GroupChatCreateApiDto dto)
     {
         var result = await _createGroupChat.Create(dto, req.User().Id);

@@ -7,7 +7,7 @@ namespace ChatApp.Functions.Queries;
 public class GetWelcomeMsg
 {
     [Function(nameof(GetWelcomeMsg))]
-    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "messages/GetWelcomeMsg")] HttpRequestData req)
     {
         return Results.Text("Azure Functions status: green");
     }

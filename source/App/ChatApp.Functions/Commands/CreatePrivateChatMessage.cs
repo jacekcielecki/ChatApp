@@ -19,7 +19,7 @@ public class CreatePrivateChatMessage
 
     [Function(nameof(CreatePrivateChatMessage))]
     public async Task<Results<Ok, ForbidHttpResult, BadRequest<HttpValidationProblemDetails>>> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "messages/private")] HttpRequest req,
         [FromBody] MessageCreateApiDto dto)
     {
         var result = await _createPrivateChatMessage.Create(dto, req.User().Id);

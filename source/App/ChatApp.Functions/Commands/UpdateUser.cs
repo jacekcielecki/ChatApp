@@ -18,7 +18,7 @@ public class UpdateUser
 
     [Function(nameof(UpdateUser))]
     public async Task<IResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "users/me")] HttpRequest req)
     {
         IFormCollection form = await req.ReadFormAsync();
 

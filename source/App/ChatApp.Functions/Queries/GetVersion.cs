@@ -7,7 +7,7 @@ namespace ChatApp.Functions.Queries;
 public class GetVersion
 {
     [Function(nameof(GetVersion))]
-    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
+    public IResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "version")] HttpRequest req)
     {
         return Results.Text(Environment.GetEnvironmentVariable(Envars.Version));
     }

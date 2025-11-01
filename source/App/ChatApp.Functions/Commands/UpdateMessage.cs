@@ -19,7 +19,7 @@ public class UpdateMessage
 
     [Function(nameof(UpdateMessage))]
     public async Task<IResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "put")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "messages")] HttpRequest req,
         [FromBody] MessageUpdateApiDto dto)
     {
         var result = await _updateMessage.Update(dto, req.User().Id);
