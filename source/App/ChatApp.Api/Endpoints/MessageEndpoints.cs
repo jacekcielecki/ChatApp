@@ -16,6 +16,13 @@ public static class MessageEndpoints
             .WithTags("Messages")
             .RequireAuthorization();
 
+        // GET /api/messages/RunSignalRHealthCheck
+        api.MapGet("/RunSignalRHealthCheck", RunSignalRHealthCheck)
+            .WithName("RunSignalRHealthCheck")
+            .WithSummary("Sends test web socket message to all clients.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+
         // GET /api/messages/GetWelcomeMsg
         api.MapGet("/GetWelcomeMsg", () => TypedResults.Text("Web API status: green."))
             .WithName("GetWelcomeMessage")
@@ -152,6 +159,15 @@ public static class MessageEndpoints
                 _ => TypedResults.NotFound(),
                 _ => TypedResults.Forbid()
             );
+        }
+
+        async Task<IResult> RunSignalRHealthCheck(
+            RunSignalRHealthCheck runSignalRHealthCheck,
+            string message)
+        {
+            await runSignalRHealthCheck.Run(message);
+
+            return TypedResults.Ok();
         }
     }
 }

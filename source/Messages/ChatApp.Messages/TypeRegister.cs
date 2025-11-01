@@ -31,6 +31,7 @@ public static class TypeRegister
         services.AddTransient<UpdateMessageRepository>();
         services.AddTransient<GetMessagesRepository>();
         services.AddTransient<GetMessages>();
+        services.AddTransient<RunSignalRHealthCheck>();
 
         return services;
     }

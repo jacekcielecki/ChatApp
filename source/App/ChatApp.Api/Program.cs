@@ -2,6 +2,7 @@ using ChatApp.Api;
 using ChatApp.Api.Endpoints;
 using ChatApp.Chats;
 using ChatApp.Messages;
+using ChatApp.Messages.Core.Hubs;
 using ChatApp.Shared.Data;
 using ChatApp.Users;
 using ChatApp.Users.Core.Details;
@@ -30,6 +31,7 @@ builder.Services.RegisterChatsCore();
 builder.Services.RegisterMessagesCore();
 builder.Services.RegisterUsersCore();
 
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
@@ -45,6 +47,7 @@ if (!app.Environment.IsProduction())
 
 app.UseCors(policy => policy
     .WithOrigins("https://localhost:7206", "http://localhost:5173")
+    .AllowCredentials()
     .AllowAnyHeader()
     .AllowAnyMethod());
 
@@ -52,6 +55,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<MessageHub>("/messageHub");
 
 app.MapUserEndpoints();
 app.MapChatEndpoints();
